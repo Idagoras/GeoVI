@@ -16,6 +16,6 @@ endif()
 include_directories(
     ${OSMIUM_INCLUDE_DIRS}
     ${EXPAT_INCLUDE_DIRS}
-    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/GeoVI
 )
 link_directories(${CMAKE_SOURCE_DIR}/lib)
