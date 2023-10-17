@@ -10,13 +10,15 @@ namespace geovi
     namespace io{
         class Reader {
         public:
-            osmium::io::Reader osmium_reader;
+            
             osmium::io::Header header;
             Reader(std::string file_name):osmium_reader(file_name,osmium::osm_entity_bits::all){
                 header = osmium_reader.header();
             }
-
-
+            osmium::io::Reader& getOSMReader();
+            
+        private:
+            osmium::io::Reader osmium_reader;
         };
 
     } // namespace io 
