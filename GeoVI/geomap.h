@@ -2,6 +2,7 @@
 #define GEOVI_GEOMAP_H
 
 #include "reader.h"
+#include <boost/graph/graphml.hpp>
 
 namespace geovi
 {
@@ -44,7 +45,7 @@ namespace geovi
 
             class GeoMap{
             public:
-
+                typedef int64_t map_object_id_type ;
                 typedef enum {
                     circle,
                     Rectangle,
@@ -89,6 +90,9 @@ namespace geovi
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
+
+                GeoMap POISOfAnAreaWithCenter(Location loc);
+                GeoMap POISOfAnAreaWithCenterObjectID(map_object_id_type id);
 
 
             private:
