@@ -2,7 +2,7 @@
 #define GEOVI_GEOMAP_H
 
 #include "reader.h"
-#include <boost/graph/graphml.hpp>
+// #include <boost/graph/graphml.hpp>
 
 namespace geovi
 {
@@ -13,7 +13,6 @@ namespace geovi
                 typedef enum{
                     Amenity, // Used to map facilities used by visitors and residents.
                     Aeroway, // This is used to tag different forms of transportation for people or goods by using aerial wires. 
-                    Aeroway, // These are mainly related to aerodromes, airfields other ground facilities that support the operation of airplanes and helicopters.
                     Barriers, // These are used to describe barriers and obstacles that are usually involved by traveling.
                     Boundary, // These are used to describe administrative and other boundaries.
                     Building, // This is used to identify individual buildings or groups of connected buildings.
@@ -48,7 +47,7 @@ namespace geovi
                 typedef int64_t map_object_id_type ;
                 typedef enum {
                     circle,
-                    Rectangle,
+                    rectangle,
                 } GeoMapShapeType;
                 
                 typedef struct{
@@ -59,7 +58,7 @@ namespace geovi
 
                 } Location;
 
-                typedef struct Shape
+                typedef struct 
                 {
                     // 中心点
                     Location center;
@@ -91,8 +90,8 @@ namespace geovi
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
 
-                GeoMap POISOfAnAreaWithCenter(Location loc);
-                GeoMap POISOfAnAreaWithCenterObjectID(map_object_id_type id);
+               // GeoMap POISOfAnAreaWithCenter(Location loc);
+               // GeoMap POISOfAnAreaWithCenterObjectID(map_object_id_type id);
 
 
             private:
