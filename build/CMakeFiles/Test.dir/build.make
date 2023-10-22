@@ -94,7 +94,6 @@ Test_EXTERNAL_OBJECTS =
 ../bin/Test: CMakeFiles/Test.dir/build.make
 ../bin/Test: ../lib/libgeovi.a
 ../bin/Test: /usr/lib/x86_64-linux-gnu/libexpat.so
-../bin/Test: /usr/lib/x86_64-linux-gnu/libexpat.so
 ../bin/Test: /usr/lib/x86_64-linux-gnu/libbz2.so
 ../bin/Test: /usr/lib/x86_64-linux-gnu/libz.so
 ../bin/Test: CMakeFiles/Test.dir/link.txt
