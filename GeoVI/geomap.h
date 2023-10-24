@@ -2,7 +2,22 @@
 #define GEOVI_GEOMAP_H
 
 #include "reader.h"
-// #include <boost/graph/graphml.hpp>
+#include <boost/graph/adjacency_list.hpp>
+
+using namespace boost;
+
+namespace boost{
+    enum vertex_semantic_sensitivity_t{
+        vertex_semantic_sensitivity = 2042
+    };
+    BOOST_INSTALL_PROPERTY(vertex,semantic_sensitivity);
+
+    enum vertex_location_t{
+        vertex_location = 1111
+    };
+    BOOST_INSTALL_PROPERTY(vertex,location);
+
+}
 
 namespace geovi
 {
@@ -90,12 +105,25 @@ namespace geovi
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
 
+                bool addNode(std::string name,int64_t id,double semantic_sensitivity = -1);
+                bool addWay();
+
                // GeoMap POISOfAnAreaWithCenter(Location loc);
                // GeoMap POISOfAnAreaWithCenterObjectID(map_object_id_type id);
 
 
             private:
-                
+                adjacency_list<vecS,vecS,directedS,
+                property<vertex_name_t,std::string,
+                         property<vertex_index_t,int64_t,
+                         property<vertex_semantic_sensitivity_t,double,
+                         property<vertex_location_t,GeoMap::Location>>>>,
+                property<edge_name_t,std::string,
+                         property<edge_index_t,int64_t,
+                         property<edge_capacity_t,double>>>> graph;
+                int nodes_num;
+                int ways_num;
+                int relations_num;
 
             };   
 

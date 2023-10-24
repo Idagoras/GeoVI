@@ -14,10 +14,10 @@ endif()
 
 # expat
 
-find_package(EXPAT REQUIRED)
-if(NOT EXPAT_FOUND)
-    message(WARNING "Libexpat not found!\n")
-endif()
+#find_package(EXPAT REQUIRED)
+#if(NOT EXPAT_FOUND)
+#    message(WARNING "Libexpat not found!\n")
+#endif()
 
 # boost
 
@@ -25,6 +25,7 @@ find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
     message(WARNING "Boost not found!\n")
 endif()
+message(STATUS "${Boost_LIBRARIES}")
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
@@ -41,4 +42,4 @@ link_libraries(
 
 
 add_executable(Test test/test.cc)
-target_link_libraries(Test geovi ${EXPAT_LIBRARIES} ${OSMIUM_XML_LIBRARIES})
+target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES})
