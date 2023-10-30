@@ -37,7 +37,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
 )
 
-aux_source_directory( GeoVI SRC_LIST)
+aux_source_directory(GeoVI SRC_LIST)
 add_library(geovi ${SRC_LIST})
 link_libraries(
     ${BOOST_LIBRARYDIR}
@@ -46,5 +46,7 @@ link_libraries(
 
 add_executable(Test test/test.cc)
 add_executable(Test_Converter test/test_converter.cc)
+add_executable(Test_Voronoi test/test_voronoi.cc)
 target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES} PROJ::proj)
 target_link_libraries(Test_Converter PROJ::proj geovi)
+target_link_libraries(Test_Voronoi geovi PROJ::proj)

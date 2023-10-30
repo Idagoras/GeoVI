@@ -3,20 +3,39 @@
 
 #include <boost/polygon/voronoi.hpp>
 #include "convert.h"
+#include <vector>
 
 namespace bp = boost::polygon;
+
+template <>
+struct bp::geometry_concept<geovi::Point2> { typedef point_concept type; };
+  
+template <>
+struct bp::point_traits<geovi::Point2> {
+        typedef int coordinate_type;
+   
+        static inline coordinate_type get(const geovi::Point2& point, orientation_2d orient) {
+            return (orient == HORIZONTAL) ? point.x : point.y;
+        }
+};      
 
 namespace geovi{
     namespace algorithm{
         namespace voronoi_diagram
         {
+
+        
             class VoronoiDiagram{
             public:
                 using VD =  bp::voronoi_diagram<double>;
+                using Points = std::vector<Point2>;
                 friend class VoronoiDiagramBuilder;
-                VoronoiDiagram();
+                VoronoiDiagram(){};
+                Points vertices();
+
             private:
                 VD vd;
+                Points points;
             };
 
             class VoronoiDiagramBuilder{

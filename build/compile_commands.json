@@ -28,5 +28,10 @@
   "directory": "/home/idagoras/GeoVI/build",
   "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test_Converter.dir/test/test_converter.cc.o -c /home/idagoras/GeoVI/test/test_converter.cc",
   "file": "/home/idagoras/GeoVI/test/test_converter.cc"
+},
+{
+  "directory": "/home/idagoras/GeoVI/build",
+  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o -c /home/idagoras/GeoVI/test/test_voronoi.cc",
+  "file": "/home/idagoras/GeoVI/test/test_voronoi.cc"
 }
 ]

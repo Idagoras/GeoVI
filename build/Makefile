@@ -155,6 +155,19 @@ Test_Converter/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/build
 .PHONY : Test_Converter/fast
 
+#=============================================================================
+# Target rules for targets named Test_Voronoi
+
+# Build rule for target.
+Test_Voronoi: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test_Voronoi
+.PHONY : Test_Voronoi
+
+# fast build rule for target.
+Test_Voronoi/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/build
+.PHONY : Test_Voronoi/fast
+
 GeoVI/convert.o: GeoVI/convert.cpp.o
 .PHONY : GeoVI/convert.o
 
@@ -299,6 +312,30 @@ test/test_converter.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.s
 .PHONY : test/test_converter.cc.s
 
+test/test_voronoi.o: test/test_voronoi.cc.o
+.PHONY : test/test_voronoi.o
+
+# target to build an object file
+test/test_voronoi.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o
+.PHONY : test/test_voronoi.cc.o
+
+test/test_voronoi.i: test/test_voronoi.cc.i
+.PHONY : test/test_voronoi.i
+
+# target to preprocess a source file
+test/test_voronoi.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.i
+.PHONY : test/test_voronoi.cc.i
+
+test/test_voronoi.s: test/test_voronoi.cc.s
+.PHONY : test/test_voronoi.s
+
+# target to generate assembly for a file
+test/test_voronoi.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.s
+.PHONY : test/test_voronoi.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -309,6 +346,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... Test"
 	@echo "... Test_Converter"
+	@echo "... Test_Voronoi"
 	@echo "... geovi"
 	@echo "... GeoVI/convert.o"
 	@echo "... GeoVI/convert.i"
@@ -328,6 +366,9 @@ help:
 	@echo "... test/test_converter.o"
 	@echo "... test/test_converter.i"
 	@echo "... test/test_converter.s"
+	@echo "... test/test_voronoi.o"
+	@echo "... test/test_voronoi.i"
+	@echo "... test/test_voronoi.s"
 .PHONY : help
 
 

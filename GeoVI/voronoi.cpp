@@ -26,12 +26,21 @@ void VoronoiDiagramBuilder::build(InputCoordinateSystemType inputType,VoronoiDia
     }
     convertPointIndexWithOrigin(origin,points);
     for(auto& point : points){
-        point.x = double(int(point.x*multiple));
-        point.y = double(int(point.y*multiple));
+        double x = double(int(point.x*multiple));
+        double y = double(int(point.y*multiple));
+        voronoi_diagram.points.push_back(Point2{x,y});
     }
-
-   // bp::construct_voronoi()
+    bp::construct_voronoi(voronoi_diagram.points.begin(),voronoi_diagram.points.end(),&voronoi_diagram.vd);
+    
 
 }
 
 
+VoronoiDiagram::Points VoronoiDiagram::vertices(){
+    VoronoiDiagram::Points ps;
+    for(bp::voronoi_diagram<double>::const_vertex_iterator it = vd.vertices().begin();
+    it != vd.vertices().end();it++){
+        ps.push_back(Point2{it->x(),it->y()});
+    }
+    return ps;
+}

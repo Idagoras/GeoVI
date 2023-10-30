@@ -12,14 +12,14 @@ using namespace NS_PROJ::util;
 
 namespace geovi{
 
-using CoordinateSystemType = enum {
+using CoordinateSystemType = enum CoordinateSystemType {
     WGS84,
     UTM,
     Cartesian2,
     Cartesian3
 };
 
-using NumericalAccuracy = enum {
+using NumericalAccuracy = enum NumericalAccuracy{
     meter = 1,
     decimeter = 10,
     centimeter = 100,
@@ -133,7 +133,7 @@ struct Segement{
 
 class CoordinateSystemConverter{
 public:
-    CoordinateSystemConverter();
+    CoordinateSystemConverter(){};
     CoordinateSystemConverter(LongitudeBands bd):band(bd){};
     bool convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point);
 

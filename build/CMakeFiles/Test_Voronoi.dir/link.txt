@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -rdynamic CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o -o ../bin/Test_Voronoi  -Wl,-rpath,/usr/local/lib ../lib/libgeovi.a /usr/local/lib/libproj.so.25.9.3.0 
