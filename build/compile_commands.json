@@ -1,8 +1,8 @@
 [
 {
   "directory": "/home/idagoras/GeoVI/build",
-  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/Voronoi.cpp.o -c /home/idagoras/GeoVI/GeoVI/Voronoi.cpp",
-  "file": "/home/idagoras/GeoVI/GeoVI/Voronoi.cpp"
+  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/convert.cpp.o -c /home/idagoras/GeoVI/GeoVI/convert.cpp",
+  "file": "/home/idagoras/GeoVI/GeoVI/convert.cpp"
 },
 {
   "directory": "/home/idagoras/GeoVI/build",
@@ -16,7 +16,17 @@
 },
 {
   "directory": "/home/idagoras/GeoVI/build",
+  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o -c /home/idagoras/GeoVI/GeoVI/voronoi.cpp",
+  "file": "/home/idagoras/GeoVI/GeoVI/voronoi.cpp"
+},
+{
+  "directory": "/home/idagoras/GeoVI/build",
   "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test.dir/test/test.cc.o -c /home/idagoras/GeoVI/test/test.cc",
   "file": "/home/idagoras/GeoVI/test/test.cc"
+},
+{
+  "directory": "/home/idagoras/GeoVI/build",
+  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test_Converter.dir/test/test_converter.cc.o -c /home/idagoras/GeoVI/test/test_converter.cc",
+  "file": "/home/idagoras/GeoVI/test/test_converter.cc"
 }
 ]

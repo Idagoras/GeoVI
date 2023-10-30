@@ -1,1 +1,1 @@
-/usr/bin/g++ -g -rdynamic CMakeFiles/Test.dir/test/test.cc.o -o ../bin/Test  ../lib/libgeovi.a -lexpat -lbz2 -lz 
+/usr/bin/g++ -g -rdynamic CMakeFiles/Test.dir/test/test.cc.o -o ../bin/Test  -Wl,-rpath,/usr/local/lib ../lib/libgeovi.a -lexpat -lbz2 -lz /usr/local/lib/libproj.so.25.9.3.0 

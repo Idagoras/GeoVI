@@ -8,9 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/idagoras/GeoVI/GeoVI/Voronoi.cpp" "CMakeFiles/geovi.dir/GeoVI/Voronoi.cpp.o" "gcc" "CMakeFiles/geovi.dir/GeoVI/Voronoi.cpp.o.d"
+  "/home/idagoras/GeoVI/GeoVI/convert.cpp" "CMakeFiles/geovi.dir/GeoVI/convert.cpp.o" "gcc" "CMakeFiles/geovi.dir/GeoVI/convert.cpp.o.d"
   "/home/idagoras/GeoVI/GeoVI/geomap.cpp" "CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o" "gcc" "CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o.d"
   "/home/idagoras/GeoVI/GeoVI/reader.cpp" "CMakeFiles/geovi.dir/GeoVI/reader.cpp.o" "gcc" "CMakeFiles/geovi.dir/GeoVI/reader.cpp.o.d"
+  "/home/idagoras/GeoVI/GeoVI/voronoi.cpp" "CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o" "gcc" "CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o.d"
   )
 
 # Targets to which this target links.

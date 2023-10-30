@@ -96,6 +96,7 @@ Test_EXTERNAL_OBJECTS =
 ../bin/Test: /usr/lib/x86_64-linux-gnu/libexpat.so
 ../bin/Test: /usr/lib/x86_64-linux-gnu/libbz2.so
 ../bin/Test: /usr/lib/x86_64-linux-gnu/libz.so
+../bin/Test: /usr/local/lib/libproj.so.25.9.3.0
 ../bin/Test: CMakeFiles/Test.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable ../bin/Test"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/Test.dir/link.txt --verbose=$(VERBOSE)

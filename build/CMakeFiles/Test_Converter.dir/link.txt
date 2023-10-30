@@ -1,0 +1,1 @@
+/usr/bin/g++ -g -rdynamic CMakeFiles/Test_Converter.dir/test/test_converter.cc.o -o ../bin/Test_Converter  -Wl,-rpath,/usr/local/lib /usr/local/lib/libproj.so.25.9.3.0 ../lib/libgeovi.a 
