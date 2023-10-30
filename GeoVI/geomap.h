@@ -3,6 +3,8 @@
 
 #include "reader.h"
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/geometry/index/rtree.hpp>
+#include <boost/polygon/voronoi.hpp>
 
 using namespace boost;
 
@@ -54,6 +56,7 @@ namespace geovi
                     Tourism, // This is used to map places and things of specific interest to tourists.
                     Water, // This is used to describe type of water body and is only used together with natural=water.
                     Waterway, // This is used to described different types of waterways. When mapping the way of a river, stream, drain, canal, etc. these need to be aligned in the direction of the water flow. 
+                    None,
                     
                 } OSMMapFeature; // Standard OSM Map Features
 
@@ -100,13 +103,27 @@ namespace geovi
                     Location top_left_vertex;
                 } Rectangle;
                 
+                typedef struct {
+                    std::string name;
+                    map_object_id_type id;
+                    double semantic_sensitivity = -1;
+                    OSMMapFeature map_feature = OSMMapFeature::None;
+                } GeoNode;
+
+                typedef struct {
+                    GeoNode& source;
+                    GeoNode& target;
+                    map_object_id_type id;
+                    std::string name;
+                    double capacity;
+                } GeoWay;
 
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
 
-                bool addNode(std::string name,int64_t id,double semantic_sensitivity = -1);
-                bool addWay();
+                bool addNode(GeoNode node);
+                bool addWay(GeoNode source,GeoNode target);
 
                // GeoMap POISOfAnAreaWithCenter(Location loc);
                // GeoMap POISOfAnAreaWithCenterObjectID(map_object_id_type id);
@@ -128,7 +145,11 @@ namespace geovi
             };   
 
             class GeoVoronoiMap{
-
+            public:
+                using VoronoiDiagram = boost::polygon::voronoi_diagram<double>;
+            private:
+                VoronoiDiagram vd;
+                
             };
             
         }   // namespace map

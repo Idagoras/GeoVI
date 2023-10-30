@@ -25,7 +25,10 @@ find_package(Boost REQUIRED)
 if(NOT Boost_FOUND)
     message(WARNING "Boost not found!\n")
 endif()
-message(STATUS "${Boost_LIBRARIES}")
+
+# proj
+find_package(PROJ REQUIRED CONFIG)
+
 
 include_directories(
     ${Boost_INCLUDE_DIRS}
@@ -42,4 +45,6 @@ link_libraries(
 
 
 add_executable(Test test/test.cc)
-target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES})
+add_executable(Test_Converter test/test_converter.cc)
+target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES} PROJ::proj)
+target_link_libraries(Test_Converter PROJ::proj geovi)

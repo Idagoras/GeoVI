@@ -1,8 +1,8 @@
+#ifndef GEOVI_CONVERT_H
+#define GEOVI_CONVERT_H
+
 #include <iostream>
 #include <proj/coordinateoperation.hpp>
-#include <proj/crs.hpp>
-#include <proj/io.hpp>
-#include <proj/util.hpp>
 #include <string>
 
 using namespace NS_PROJ::crs;
@@ -12,8 +12,22 @@ using namespace NS_PROJ::util;
 
 namespace geovi{
 
+using CoordinateSystemType = enum {
+    WGS84,
+    UTM,
+    Cartesian2,
+    Cartesian3
+};
+
+using NumericalAccuracy = enum {
+    meter = 1,
+    decimeter = 10,
+    centimeter = 100,
+    millimeter = 1000,
+};
+
 using LongtitudeBands= enum LongitudeBands{
-    band_1 = 1,
+    band_1 = 32601,
     band_2,
     band_3,
     band_4,
@@ -112,17 +126,25 @@ struct Point2 {
     double y;
 };
 
+struct Segement{
+    Point2 p0;
+    Point2 p1;
+};
 
 class CoordinateSystemConverter{
 public:
-    CoordinateSystemConverter(LongitudeBands lonb,LatitudeBands latb){
-        
-    }
-    
+    CoordinateSystemConverter();
+    CoordinateSystemConverter(LongitudeBands bd):band(bd){};
+    bool convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point);
 
+    
 private:
-    CRSNNPtr sourceCRS;
-    CRSNNPtr targetCRS;
+    LongitudeBands band;
+    DatabaseContextNNPtr dbContext = DatabaseContext::create();
+    bool convertBetweenWGS84AndUTM(Point2& point);
+    bool convertBetweenUTMAndWGS84(Point2& point);
     
 };
 }
+
+#endif

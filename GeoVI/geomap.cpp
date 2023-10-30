@@ -1,10 +1,12 @@
 #include "GeoVI/geomap.h"
 #include <osmium/handler.hpp>
-#include <osmium/osm.hpp>
 #include <osmium/io/any_input.hpp>
 #include <osmium/visitor.hpp>
 #include <iostream>
 #include <map>
+#include <osmium/osm/way.hpp>
+#include <osmium/osm/node_ref_list.hpp>
+#include <osmium/osm/node.hpp>
 
 
 
@@ -21,7 +23,7 @@ class GeoMapHandler : public osmium::handler::Handler{
                 void node(const osmium::Node& node);
                 void relation(const osmium::Relation& relation);
 
-                
+
 
             private:
                 geovi::geo::map::GeoMap& gmap;
@@ -31,15 +33,17 @@ class GeoMapHandler : public osmium::handler::Handler{
 // class GeoMapHandler
 
 void GeoMapHandler::way(const osmium::Way& way){
-   // std::cout << "way id " << way.id() <<  std::endl;
-  //  const osmium::WayNodeList& nodes = way.nodes();
-  //  std::cout << "node size = " << nodes.size() << std::endl;
-    gmap.addWay();
+
+  //  osmium::WayNodeList& nodes = way.nodes();
+  //  osmium::NodeRef* beginNode = const_cast<osmium::NodeRef*>(nodes.begin());
+  //  osmium::NodeRef* endNode = const_cast<osmium::NodeRef*>(nodes.end());
+
+    // gmap.addWay();
 }
 
 void GeoMapHandler::node(const osmium::Node& node){
    // std::cout << "node id " << node.id() << "latitude = "<< node.location().lat() << " " << "longtitude =" << node.location().lon() << std::endl;
-    gmap.addNode("",node.id());
+   // gmap.addNode("",node.id());
 }
 
 void GeoMapHandler::relation(const osmium::Relation& relation){
@@ -93,7 +97,7 @@ GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape
     std::cout << "graph vertex : " << boost::num_vertices(graph) << std::endl;
 }
 
-bool GeoMap::addNode(std::string name,int64_t id,double semantic_sensitivity){
+bool GeoMap::addNode(GeoNode node){
     VertexDescriptor v = add_vertex(graph);
     VertexNameMap name_map = get(vertex_name,graph);
 
@@ -103,7 +107,7 @@ bool GeoMap::addNode(std::string name,int64_t id,double semantic_sensitivity){
     return true;
 }
 
-bool GeoMap::addWay(){
+bool GeoMap::addWay(GeoNode source,GeoNode target){
     ways_num ++;
     return true;
 }
