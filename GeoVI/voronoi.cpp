@@ -44,3 +44,4 @@ VoronoiDiagram::Points VoronoiDiagram::vertices(){
     }
     return ps;
 }
+

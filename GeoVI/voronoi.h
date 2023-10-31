@@ -29,10 +29,19 @@ namespace geovi{
             public:
                 using VD =  bp::voronoi_diagram<double>;
                 using Points = std::vector<Point2>;
+                using Segements = std::vector<Segement>;
+                using Lines = std::vector<Line>;
                 friend class VoronoiDiagramBuilder;
                 VoronoiDiagram(){};
                 Points vertices();
-
+                Points generators();
+                Segements finiteEdges();
+                Lines infiniteEdges();
+                std::pair<Point2,bool> cellIncludePoint(Point2 p);
+                std::pair<Segement,bool> edgeIncludePoint(Point2 p);
+                
+                
+                
             private:
                 VD vd;
                 Points points;

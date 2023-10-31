@@ -118,17 +118,31 @@ using LatitudeBands = enum LatitudeBands{
     Z
 };
 
+using Direction = enum Direction{
+    positive, // always on right hand
+    negative, // always on left hand
+};
+
 using degree = float;
 
 
 struct Point2 {
     double x;
     double y;
+    Point2(){x=0;y=0;};
+    Point2(int a,int b):x(a),y(b){}
 };
 
 struct Segement{
     Point2 p0;
     Point2 p1;
+    Segement(int x1,int y1,int x2,int y2):p0(x1,y1),p1(x2,y2){}
+};
+
+struct Line {
+    Point2 p0;
+    double slope;
+    Direction dir = Direction::positive;
 };
 
 class CoordinateSystemConverter{
