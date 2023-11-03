@@ -1,4 +1,5 @@
 #include "voronoi.h"
+#include <queue>
 
 using namespace geovi::algorithm::voronoi_diagram;
 
@@ -8,6 +9,33 @@ void convertPointIndexWithOrigin(geovi::Point2& origin,std::vector<geovi::Point2
         point.x = origin.x - point.x;
         point.y = origin.y - point.y;
     }
+}
+
+void BFS(VoronoiDiagram::Matrix& matrix,VoronoiDiagram::VD& vd){
+    std::queue<VoronoiDiagram::VD::cell_type*> cqueue;
+    VoronoiDiagram::Matrix visit(matrix.size1(),matrix.size2());
+    for(auto it = vd.cells().begin();it!=vd.cells().end();it++){
+        visit.insert_element(it->source_index(),it->source_index(),1);
+        std::queue<VoronoiDiagram::VD::cell_type*> empty;
+        std::swap(empty,cqueue);
+        auto source = *it;
+        cqueue.push(&source);
+        while( !cqueue.empty()){
+            auto cell = cqueue.front();
+            if (!cell->is_degenerate() ){
+                auto edge = cell->incident_edge();
+                do{
+                    auto neighbor = edge->twin()->cell();
+                    if(!visit.at_element(it->source_index(),neighbor->source_index())){
+                        matrix.insert_element(it->source_index(),neighbor->source_index(),matrix.at_element(it->source_index(),cell->source_index())+1);
+                        cqueue.push(neighbor);
+                        visit.insert_element(it->source_index(),neighbor->source_index(),1);
+                    }
+                } while( edge != cell->incident_edge());
+            }
+            cqueue.pop();
+        }
+    } 
 }
 
 VoronoiDiagramBuilder::VoronoiDiagramBuilder(NumericalAccuracy numericalAccuracy,Origin originPoint){
@@ -31,7 +59,6 @@ void VoronoiDiagramBuilder::build(InputCoordinateSystemType inputType,VoronoiDia
         voronoi_diagram.points.push_back(Point2{x,y});
     }
     bp::construct_voronoi(voronoi_diagram.points.begin(),voronoi_diagram.points.end(),&voronoi_diagram.vd);
-    
 
 }
 
@@ -45,3 +72,20 @@ VoronoiDiagram::Points VoronoiDiagram::vertices(){
     return ps;
 }
 
+VoronoiDiagram::Matrix VoronoiDiagram::shortestPathBetweenCells(){
+    VoronoiDiagram::Matrix m(vd.num_cells(),vd.num_cells());
+    BFS(m,vd);
+    return m;
+}
+
+VoronoiDiagram::Points VoronoiDiagram::sites(){
+    return points;
+}
+
+VoronoiDiagram::Segements VoronoiDiagram::finiteEdges(){
+    VoronoiDiagram::Segements segements;
+    for(auto it = vd.edges().begin(); it != vd.edges().end(); it ++ ){
+
+    }
+    return segements;
+}

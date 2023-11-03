@@ -2,6 +2,7 @@
 #define GEOVI_VORONOI_H
 
 #include <boost/polygon/voronoi.hpp>
+#include <boost/numeric/ublas/matrix.hpp>
 #include "convert.h"
 #include <vector>
 
@@ -27,24 +28,30 @@ namespace geovi{
         
             class VoronoiDiagram{
             public:
-                using VD =  bp::voronoi_diagram<double>;
+                using matrix_element_type = double;
+                using coordinate_type = double;
+                using VD =  bp::voronoi_diagram<coordinate_type>;
                 using Points = std::vector<Point2>;
                 using Segements = std::vector<Segement>;
                 using Lines = std::vector<Line>;
+                using Matrix = boost::numeric::ublas::matrix<matrix_element_type>;
                 friend class VoronoiDiagramBuilder;
                 VoronoiDiagram(){};
                 Points vertices();
-                Points generators();
+                Points sites();
                 Segements finiteEdges();
                 Lines infiniteEdges();
                 std::pair<Point2,bool> cellIncludePoint(Point2 p);
                 std::pair<Segement,bool> edgeIncludePoint(Point2 p);
+                Matrix shortestPathBetweenCells();
+
                 
                 
                 
             private:
                 VD vd;
                 Points points;
+                Matrix spaths;
             };
 
             class VoronoiDiagramBuilder{
