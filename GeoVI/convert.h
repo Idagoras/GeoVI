@@ -119,8 +119,8 @@ using LatitudeBands = enum LatitudeBands{
 };
 
 using Direction = enum Direction{
-    positive, // always on right hand
-    negative, // always on left hand
+    in, 
+    out, 
 };
 
 using degree = float;
@@ -142,7 +142,7 @@ struct Segement{
 struct Line {
     Point2 p0;
     double slope;
-    Direction dir = Direction::positive;
+    Direction dir = Direction::in;
 };
 
 class CoordinateSystemConverter{

@@ -85,7 +85,35 @@ VoronoiDiagram::Points VoronoiDiagram::sites(){
 VoronoiDiagram::Segements VoronoiDiagram::finiteEdges(){
     VoronoiDiagram::Segements segements;
     for(auto it = vd.edges().begin(); it != vd.edges().end(); it ++ ){
-
+        if( it->is_finite()){
+            Segement segement = Segement(it->vertex0()->x(),it->vertex0()->y(),it->vertex1()->x(),it->vertex1()->y());
+            segements.push_back(segement);
+        }  
     }
     return segements;
+}
+
+VoronoiDiagram::Lines VoronoiDiagram::infiniteEdges(){
+    VoronoiDiagram::Lines lines;
+    for(auto it = vd.edges().begin(); it != vd.edges().end() ; it ++ ){
+        if ( it -> is_infinite()){
+            Line line = Line();
+            if ( it->vertex0() == NULL ){
+                line.p0 = Point2(it->vertex1()->x(),it->vertex1()->y());
+                auto cell = it->cell();
+                auto neighbor = it->twin()->cell();
+                line.slope = (points[cell->source_index()].x-points[neighbor->source_index()].x)/(points[cell->source_index()].y-points[neighbor->source_index()].y);
+                line.dir = Direction::in;
+            }
+            if ( it->vertex1() == NULL ){
+                line.p0 = Point2(it->vertex0()->x(),it->vertex0()->y());
+                auto cell = it->cell();
+                auto neighbor = it->twin()->cell();
+                line.slope = (points[cell->source_index()].x-points[neighbor->source_index()].x)/(points[cell->source_index()].y-points[neighbor->source_index()].y);
+                line.dir = Direction::out;
+            }
+            lines.push_back(line);
+        }
+    }
+    return lines;
 }
