@@ -1,7 +1,10 @@
-#ifndef MECHANISM_H
-#define MECHANISM_H
+#ifndef GEOVI_MECHANISM_H
+#define GEOVI_MECHANISM_H
 
 #include <map>
+#include <vector>
+#include "GeoVI/geomap.h"
+
 
 namespace geovi {
     namespace algorithm{
@@ -28,6 +31,7 @@ namespace geovi {
                 using DistanceMeasurement = enum DistanceMeasurement;
                 using ScoreType = enum ScoreType;
                 using Score = std::map<ScoreType,double>;
+                using Distribution = std::vector<double>;
 
                 virtual void buildDistribution(float _epsilon);
                 virtual void computerInferenceFunction();
@@ -37,6 +41,8 @@ namespace geovi {
                 Score score();
 
             protected:
+                Distribution prior;
+                Distribution dist;
                 float epsilon;
                 float start_time;
                 float end_time;
@@ -46,11 +52,21 @@ namespace geovi {
 
 
             class PLMG : public Mechanism {
-
+            
             };
 
             class GEM : public Mechanism {
+            public:
+                GEM(geovi::geo::map::GeoMap& map);
 
+                virtual void buildDistribution(float _epsilon) override;
+                virtual void computerInferenceFunction() override;
+                virtual void computerAE(Attack attack) override;
+                virtual void computerPC() override;
+                virtual void computerQ_loss() override;
+
+            private:
+                geovi::geo::map::GeoMap& geomap;
             };
 
             class GVEM : public Mechanism {

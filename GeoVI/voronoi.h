@@ -10,11 +10,11 @@ namespace bp = boost::polygon;
 
 template <>
 struct bp::geometry_concept<geovi::Point2> { typedef point_concept type; };
-  
+
 template <>
 struct bp::point_traits<geovi::Point2> {
         typedef int coordinate_type;
-   
+    
         static inline coordinate_type get(const geovi::Point2& point, orientation_2d orient) {
             return (orient == HORIZONTAL) ? point.x : point.y;
         }

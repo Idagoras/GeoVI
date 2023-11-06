@@ -132,12 +132,12 @@ namespace geovi
             private:
                 adjacency_list<vecS,vecS,directedS,
                 property<vertex_name_t,std::string,
-                         property<vertex_index_t,int64_t,
-                         property<vertex_semantic_sensitivity_t,double,
-                         property<vertex_location_t,GeoMap::Location>>>>,
+                        property<vertex_index_t,int64_t,
+                        property<vertex_semantic_sensitivity_t,double,
+                        property<vertex_location_t,GeoMap::Location>>>>,
                 property<edge_name_t,std::string,
-                         property<edge_index_t,int64_t,
-                         property<edge_capacity_t,double>>>> graph;
+                        property<edge_index_t,int64_t,
+                        property<edge_capacity_t,double>>>> graph;
                 int nodes_num;
                 int ways_num;
                 int relations_num;
