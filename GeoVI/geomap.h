@@ -5,9 +5,11 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/geometry/index/rtree.hpp>
 #include <boost/polygon/voronoi.hpp>
+#include "convert.h"
+#include <vector>
 
 using namespace boost;
-
+using namespace geovi;
 namespace boost{
     enum vertex_semantic_sensitivity_t{
         vertex_semantic_sensitivity = 2042
@@ -26,6 +28,8 @@ namespace geovi
     namespace geo
     {
         namespace map{
+
+                
 
                 typedef enum{
                     Amenity, // Used to map facilities used by visitors and residents.
@@ -62,6 +66,7 @@ namespace geovi
 
             class GeoMap{
             public:
+                
                 typedef int64_t map_object_id_type ;
                 typedef enum {
                     circle,
@@ -118,12 +123,19 @@ namespace geovi
                     double capacity;
                 } GeoWay;
 
+                typedef adjacency_list_traits< listS, listS, directedS >::vertex_descriptor  vertex_descriptor;
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
 
                 bool addNode(GeoNode node);
                 bool addWay(GeoNode source,GeoNode target);
+
+                std::vector<Point2> getNodes();
+                std::vector<GeoNode> getNodes();
+                
+
+
 
                // GeoMap POISOfAnAreaWithCenter(Location loc);
                // GeoMap POISOfAnAreaWithCenterObjectID(map_object_id_type id);
@@ -134,15 +146,22 @@ namespace geovi
                 property<vertex_name_t,std::string,
                         property<vertex_index_t,int64_t,
                         property<vertex_semantic_sensitivity_t,double,
-                        property<vertex_location_t,GeoMap::Location>>>>,
+                        property<vertex_location_t,GeoMap::Location,
+                        property<vertex_predecessor_t,vertex_descriptor,
+                        property<vertex_distance_t, double>>>>>>,
                 property<edge_name_t,std::string,
                         property<edge_index_t,int64_t,
-                        property<edge_capacity_t,double>>>> graph;
+                        property<edge_weight_t,double>>>> graph;
                 int nodes_num;
                 int ways_num;
                 int relations_num;
-
+                float max_lat;
+                float max_lon;
+                float min_lat;
+                float min_lon;
             };   
+
+            
 
             class GeoVoronoiMap{
             public:

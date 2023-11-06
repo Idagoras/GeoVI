@@ -31,7 +31,7 @@ namespace geovi {
                 using DistanceMeasurement = enum DistanceMeasurement;
                 using ScoreType = enum ScoreType;
                 using Score = std::map<ScoreType,double>;
-                using Distribution = std::vector<double>;
+                using DiscreteDistribution = std::vector<double>;
 
                 virtual void buildDistribution(float _epsilon);
                 virtual void computerInferenceFunction();
@@ -41,8 +41,8 @@ namespace geovi {
                 Score score();
 
             protected:
-                Distribution prior;
-                Distribution dist;
+                DiscreteDistribution prior;
+                DiscreteDistribution dist;
                 float epsilon;
                 float start_time;
                 float end_time;

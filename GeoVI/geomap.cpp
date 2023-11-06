@@ -56,11 +56,13 @@ void GeoMapHandler::relation(const osmium::Relation& relation){
 using VertexProperties = property<vertex_name_t,std::string,
                         property<vertex_index_t,int64_t,
                         property<vertex_semantic_sensitivity_t,double,
-                        property<vertex_location_t,GeoMap::Location>>>>;
+                        property<vertex_location_t,GeoMap::Location,
+                        property<vertex_predecessor_t,vertex_descriptor,
+                        property<vertex_distance_t, double>>>>>>;
 
 using EdgeProperties =  property<edge_name_t,std::string,
                         property<edge_index_t,int64_t,
-                        property<edge_capacity_t,double>>>;
+                        property<edge_weight_t,double>>>;
 
 using Graph = adjacency_list<vecS,vecS,directedS,VertexProperties,EdgeProperties>;
 
