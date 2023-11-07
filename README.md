@@ -1,4 +1,4 @@
-# GeoVI  ![Static Badge](https://img.shields.io/badge/build-passed-orange) 
+# GeoVI  ![Static Badge](https://img.shields.io/badge/build-passed-orange)
 
 Geographic indistinguishability mechanism under Voronoi diagram partitioning
 
@@ -13,7 +13,7 @@ Geographic indistinguishability mechanism under Voronoi diagram partitioning
 
   + ✅经纬度坐标点（ WGS84 ）到 UTM 投影坐标系下的二维坐标点转换
   + ✅维诺图的可视化
-+ ⭕计算维诺图中 cell 之间的最短距离
++ ✅计算维诺图中 cell 之间的最短距离
 + ⭕为每个 cell 的添加语义敏感度
 
   + ⭕语义敏感度的计算方法
@@ -26,7 +26,7 @@ Geographic indistinguishability mechanism under Voronoi diagram partitioning
   + ☑拉普拉斯噪声
 + ⭕实现地点扰动的地理图指数机制
 
-  + ⭕地理图指数机制
+  + ✅地理图指数机制
   + ⭕扰动区域内 K - 匿名机制的实现
 + ⭕服务质量的优化算法实现
 
