@@ -121,7 +121,6 @@ namespace geovi
                     double capacity;
                 } GeoWay;
 
-                typedef adjacency_list_traits< listS, listS, directedS >::vertex_descriptor  vertex_descriptor;
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);

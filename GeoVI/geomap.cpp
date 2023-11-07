@@ -1,4 +1,4 @@
-#include "GeoVI/geomap.h"
+#include "geomap.h"
 #include <osmium/handler.hpp>
 #include <osmium/io/any_input.hpp>
 #include <osmium/visitor.hpp>
@@ -7,29 +7,42 @@
 #include <osmium/osm/way.hpp>
 #include <osmium/osm/node_ref_list.hpp>
 #include <osmium/osm/node.hpp>
+#include <string>
+#include "language.h"
 
 
 
 using namespace geovi::geo::map;
 using namespace geovi::algorithm;
+using namespace geovi;
+using namespace std;
+
+class TagProcessor {
+public:
+    using Language = geovi::language::Language;
+    static OSMMapFeature getMapFeature(osmium::TagList& tag_list);
+    static string getName(osmium::TagList& tag_list,Language language);
+    
+    
+};
 
 class GeoMapHandler : public osmium::handler::Handler{
-            public:
+public:
                 
 
-                GeoMapHandler(geovi::geo::map::GeoMap& map):gmap(map){
-                    osmium::handler::Handler();
-                };
-                void way(const osmium::Way& way);
-                void node(const osmium::Node& node);
-                void relation(const osmium::Relation& relation);
+    GeoMapHandler(geovi::geo::map::GeoMap& map):gmap(map){
+        osmium::handler::Handler();
+    };
+    void way(const osmium::Way& way);
+    void node(const osmium::Node& node);
+    void relation(const osmium::Relation& relation);
 
 
 
-            private:
-                geovi::geo::map::GeoMap& gmap;
+private:
+    geovi::geo::map::GeoMap& gmap;
 
-            };
+};
 
 // class GeoMapHandler
 

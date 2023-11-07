@@ -92,6 +92,16 @@ namespace geovi{
 
             };
         }
+
+        namespace semantic {
+                class SemanticSimiliarityCaculator {
+
+                };
+
+                class SemanticSensitivityCaculator {
+
+                };
+        }
     }
 }
 
