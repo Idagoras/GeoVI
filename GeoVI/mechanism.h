@@ -3,7 +3,7 @@
 
 #include <map>
 #include <vector>
-#include "GeoVI/geomap.h"
+#include "geomap.h"
 
 
 namespace geovi {

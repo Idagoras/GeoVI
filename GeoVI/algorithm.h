@@ -4,8 +4,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <vector>
+#include "convert.h"
 
-using namespace boost;
 
 namespace boost{
     enum vertex_semantic_sensitivity_t{
@@ -23,6 +23,7 @@ namespace boost{
 
 namespace geovi{
     namespace algorithm{
+        using namespace boost;
 
         using VertexDescriptor = adjacency_list_traits<vecS,vecS,directedS>::vertex_descriptor;
         using EdgeDescriptor = adjacency_list_traits<vecS,vecS,directedS>::edge_descriptor;
@@ -51,23 +52,28 @@ namespace geovi{
         using ConstVertexSemanticSensitivityMap = property_map<Graph,vertex_semantic_sensitivity_t>::const_type;
         using VertexLocationMap = property_map<Graph,vertex_location_t>::type;
         using ConstVertexLocationMap = property_map<Graph,vertex_location_t>::const_type;
+        using VertexDistanceMap = property_map<Graph,vertex_distance_t>::type;
+        using ConstVertexDistanceMap = property_map<Graph,vertex_distance_t>::const_type;
+        using VertexPredecessorMap = property_map<Graph,vertex_predecessor_t>::type;
+        using ConstVertexPredecessorMap = property_map<Graph,vertex_predecessor_t>::const_type;
 
 
         using EdgeNameMap = property_map<Graph,edge_name_t>::type ;
         using ConstEdgeNameMap = property_map<Graph,edge_name_t>::const_type ;
         using EdgeIndexMap = property_map<Graph,edge_index_t>::type;
         using ConstEdgeIndexMap = property_map<Graph,edge_index_t>::const_type;
-        using EdgeCapacityMap = property_map<Graph,edge_capacity_t>::type;
-        using ConstEdgeCapacityMap = property_map<Graph,edge_capacity_t>::const_type;
+        using EdgeWeightMap = property_map<Graph,edge_weight_t>::type;
+        using ConstEdgeWeightMap = property_map<Graph,edge_weight_t>::const_type;
 
 
         namespace distance {
 
-            using ShortestPathMatrix = boost::numeric::ublas:matrix<double>;
+            using ShortestPathMatrix = boost::numeric::ublas::matrix<double>;
 
             class ShortestPathCaculator{
             public:
-                void caculateShortestPath();
+                using Index = int64_t;
+                void caculateShortestPathViaDijkstra(Graph& graph,Index origin_index);
             };
         }
 

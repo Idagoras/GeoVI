@@ -11,6 +11,7 @@
 
 
 using namespace geovi::geo::map;
+using namespace geovi::algorithm;
 
 class GeoMapHandler : public osmium::handler::Handler{
             public:
@@ -52,7 +53,7 @@ void GeoMapHandler::relation(const osmium::Relation& relation){
 
 
 // class GeoMap
-
+/*
 using VertexProperties = property<vertex_name_t,std::string,
                         property<vertex_index_t,int64_t,
                         property<vertex_semantic_sensitivity_t,double,
@@ -87,7 +88,7 @@ using EdgeIndexMap = property_map<Graph,edge_index_t>::type;
 using ConstEdgeIndexMap = property_map<Graph,edge_index_t>::const_type;
 using EdgeCapacityMap = property_map<Graph,edge_capacity_t>::type;
 using ConstEdgeCapacityMap = property_map<Graph,edge_capacity_t>::const_type;
-
+*/
 GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape_type(type),mshape(shape){
     graph = Graph(0);
     nodes_num = 0;

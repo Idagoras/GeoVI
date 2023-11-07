@@ -5,11 +5,9 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/geometry/index/rtree.hpp>
 #include <boost/polygon/voronoi.hpp>
-#include "convert.h"
+#include "algorithm.h"
 #include <vector>
 
-using namespace boost;
-using namespace geovi;
 namespace boost{
     enum vertex_semantic_sensitivity_t{
         vertex_semantic_sensitivity = 2042
@@ -132,7 +130,6 @@ namespace geovi
                 bool addWay(GeoNode source,GeoNode target);
 
                 std::vector<Point2> getNodes();
-                std::vector<GeoNode> getNodes();
                 
 
 
@@ -142,16 +139,7 @@ namespace geovi
 
 
             private:
-                adjacency_list<vecS,vecS,directedS,
-                property<vertex_name_t,std::string,
-                        property<vertex_index_t,int64_t,
-                        property<vertex_semantic_sensitivity_t,double,
-                        property<vertex_location_t,GeoMap::Location,
-                        property<vertex_predecessor_t,vertex_descriptor,
-                        property<vertex_distance_t, double>>>>>>,
-                property<edge_name_t,std::string,
-                        property<edge_index_t,int64_t,
-                        property<edge_weight_t,double>>>> graph;
+                geovi::algorithm::Graph graph;
                 int nodes_num;
                 int ways_num;
                 int relations_num;
