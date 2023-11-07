@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/usr/local/include/**",
-                "/usr/include/**"
+               // "/usr/include/**"
             ],
             "defines": [],
             "macFrameworkPath": [
