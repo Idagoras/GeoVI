@@ -7,19 +7,8 @@
 #include <boost/polygon/voronoi.hpp>
 #include "algorithm.h"
 #include <vector>
+#include <map>
 
-namespace boost{
-    enum vertex_semantic_sensitivity_t{
-        vertex_semantic_sensitivity = 2042
-    };
-    BOOST_INSTALL_PROPERTY(vertex,semantic_sensitivity);
-
-    enum vertex_location_t{
-        vertex_location = 1111
-    };
-    BOOST_INSTALL_PROPERTY(vertex,location);
-
-}
 
 namespace geovi
 {
@@ -66,6 +55,7 @@ namespace geovi
             public:
                 
                 typedef int64_t map_object_id_type ;
+               
                 typedef enum {
                     circle,
                     rectangle,
@@ -110,7 +100,8 @@ namespace geovi
                     std::string name;
                     map_object_id_type id;
                     double semantic_sensitivity = -1;
-                    OSMMapFeature map_feature = OSMMapFeature::None;
+                    Location loc;
+                    vector<std::tuple<string,OSMMapFeature,string>> features;
                 } GeoNode;
 
                 typedef struct {
@@ -121,6 +112,7 @@ namespace geovi
                     double capacity;
                 } GeoWay;
 
+                typedef std::map<map_object_id_type,GeoNode> NodeMap;
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
@@ -139,6 +131,7 @@ namespace geovi
 
             private:
                 geovi::algorithm::Graph graph;
+                NodeMap nodemap;
                 int nodes_num;
                 int ways_num;
                 int relations_num;
