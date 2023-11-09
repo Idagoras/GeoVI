@@ -5,7 +5,7 @@ using namespace geovi::io;
 
 
 int main(){
-    Reader reader = Reader("../OSM/nanjing.xml");
+    Reader reader("../OSM/nanjing.xml");
     GeoMap mymap = GeoMap(reader,GeoMap::GeoMapShapeType::circle,GeoMap::Circle());
     return 0;
 }

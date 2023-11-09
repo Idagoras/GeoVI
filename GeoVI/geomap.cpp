@@ -102,6 +102,7 @@ public:
     void way(const osmium::Way& way);
     void node(const osmium::Node& node);
     void relation(const osmium::Relation& relation);
+    void getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode);
 
 
 
@@ -112,32 +113,49 @@ private:
 
 // class GeoMapHandler
 
+void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode){
+    TagProcessor tp;
+    auto features = tp.getMapFeature(node.tags());
+    if( tp.getName(node.tags(),TagProcessor::Language::zh).compare("nameless") != 0){
+        std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
+        for(auto feature : features){
+        std::cout << "node's mapfeature is " << get<0>(feature) << " value is " << get<2>(feature) << std::endl;
+        }
+    }
+    gnode.index = gmap.numOfNodes();
+    gnode.name = tp.getName(node.tags(),TagProcessor::Language::zh);
+    gnode.features = tp.getMapFeature(node.tags());
+    gnode.id = node.id();
+    gnode.loc = GeoMap::Location{node.location().lon(),node.location().lat()};
+    
+}
+
 void GeoMapHandler::way(const osmium::Way& way){
+    std::cout << "way's id is " << way.id() << std::endl;
 
-  //  osmium::WayNodeList& nodes = way.nodes();
-  //  osmium::NodeRef* beginNode = const_cast<osmium::NodeRef*>(nodes.begin());
-  //  osmium::NodeRef* endNode = const_cast<osmium::NodeRef*>(nodes.end());
-
-    // gmap.addWay();
+    const osmium::WayNodeList& nodes = way.nodes();
+    osmium::object_id_type refs[nodes.size()];
+    int index = 0;
+    for(auto it = nodes.begin(); it != nodes.end(); ++ it ){
+        auto node = *it;
+        if( !gmap.hasNode(node.ref())){
+            std::cout << "node is not exist in nodes set" << std::endl;
+        }
+        refs[index] = node.ref();
+        ++ index;
+        //std::cout << "node ref in way id " << way.id() << "ref id is " << node.ref() << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void GeoMapHandler::node(const osmium::Node& node){
    // std::cout << "node id " << node.id() << "latitude = "<< node.location().lat() << " " << "longtitude =" << node.location().lon() << std::endl;
    // gmap.addNode("",node.id());
-   TagProcessor tp;
-   auto features = tp.getMapFeature(node.tags());
-   if( tp.getName(node.tags(),TagProcessor::Language::zh).compare("nameless") != 0){
-        std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
-        for(auto feature : features){
-        std::cout << "node's mapfeature is " << get<0>(feature) << " value is " << get<2>(feature) << std::endl;
-        }
+   if ( !gmap.hasNode(node.id())){
+        GeoMap::GeoNode gnode;
+        getGeoNode(node,gnode);
+        gmap.addNode(gnode);
    }
-   GeoMap::GeoNode gnode ;
-   gnode.name = tp.getName(node.tags(),TagProcessor::Language::zh);
-   gnode.features = tp.getMapFeature(node.tags());
-   gnode.id = node.id();
-   gnode.loc = GeoMap::Location{node.location().lon(),node.location().lat()};
-   gmap.addNode(gnode);
    
   // std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
   
@@ -162,15 +180,29 @@ GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape
 }
 
 bool GeoMap::addNode(GeoNode node){
-    nodemap.insert(pair<map_object_id_type,GeoNode>(node.id,node));
-    VertexDescriptor v = add_vertex(graph);
-    VertexNameMap name_map = get(vertex_name,graph);
-    nodes_num ++;
-    name_map[v] = std::to_string(nodes_num);
-    return true;
+    if( !hasNode(node.id)){
+        nodemap.insert(pair<map_object_id_type,GeoNode>(node.id,node));
+        VertexDescriptor v = add_vertex(graph);
+        VertexNameMap name_map = get(vertex_name,graph);
+        nodes_num ++;
+        name_map[v] = std::to_string(nodes_num);
+        return true;
+    }
+    return false;
 }
 
 bool GeoMap::addWay(GeoNode source,GeoNode target){
     ways_num ++;
     return true;
+}
+
+bool GeoMap::hasNode(GeoMap::map_object_id_type node_id){
+    return nodemap.find(node_id) != nodemap.end();
+}
+
+const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
+    if( hasNode(node_id) ){
+        return &(nodemap.find(node_id)->second);
+    }
+    return NULL;
 }

@@ -99,9 +99,10 @@ namespace geovi
                 typedef struct {
                     std::string name;
                     map_object_id_type id;
+                    int index = -1;
                     double semantic_sensitivity = -1;
                     Location loc;
-                    vector<std::tuple<string,OSMMapFeature,string>> features;
+                    std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
                 } GeoNode;
 
                 typedef struct {
@@ -117,9 +118,13 @@ namespace geovi
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
 
+                inline int numOfNodes(){
+                    return nodes_num;
+                }
                 bool addNode(GeoNode node);
                 bool addWay(GeoNode source,GeoNode target);
-
+                bool hasNode(map_object_id_type node_id);
+                const GeoNode* getNode(map_object_id_type node_id);
                 std::vector<Point2> getNodes();
                 
 

@@ -142,31 +142,29 @@ Test/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/build
 .PHONY : Test/fast
 
-#=============================================================================
-# Target rules for targets named Test_Converter
+GeoVI/algorithm.o: GeoVI/algorithm.cpp.o
+.PHONY : GeoVI/algorithm.o
 
-# Build rule for target.
-Test_Converter: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test_Converter
-.PHONY : Test_Converter
+# target to build an object file
+GeoVI/algorithm.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o
+.PHONY : GeoVI/algorithm.cpp.o
 
-# fast build rule for target.
-Test_Converter/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/build
-.PHONY : Test_Converter/fast
+GeoVI/algorithm.i: GeoVI/algorithm.cpp.i
+.PHONY : GeoVI/algorithm.i
 
-#=============================================================================
-# Target rules for targets named Test_Voronoi
+# target to preprocess a source file
+GeoVI/algorithm.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.i
+.PHONY : GeoVI/algorithm.cpp.i
 
-# Build rule for target.
-Test_Voronoi: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test_Voronoi
-.PHONY : Test_Voronoi
+GeoVI/algorithm.s: GeoVI/algorithm.cpp.s
+.PHONY : GeoVI/algorithm.s
 
-# fast build rule for target.
-Test_Voronoi/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/build
-.PHONY : Test_Voronoi/fast
+# target to generate assembly for a file
+GeoVI/algorithm.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.s
+.PHONY : GeoVI/algorithm.cpp.s
 
 GeoVI/convert.o: GeoVI/convert.cpp.o
 .PHONY : GeoVI/convert.o
@@ -215,6 +213,30 @@ GeoVI/geomap.s: GeoVI/geomap.cpp.s
 GeoVI/geomap.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/geomap.cpp.s
 .PHONY : GeoVI/geomap.cpp.s
+
+GeoVI/mechanism.o: GeoVI/mechanism.cpp.o
+.PHONY : GeoVI/mechanism.o
+
+# target to build an object file
+GeoVI/mechanism.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o
+.PHONY : GeoVI/mechanism.cpp.o
+
+GeoVI/mechanism.i: GeoVI/mechanism.cpp.i
+.PHONY : GeoVI/mechanism.i
+
+# target to preprocess a source file
+GeoVI/mechanism.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.i
+.PHONY : GeoVI/mechanism.cpp.i
+
+GeoVI/mechanism.s: GeoVI/mechanism.cpp.s
+.PHONY : GeoVI/mechanism.s
+
+# target to generate assembly for a file
+GeoVI/mechanism.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.s
+.PHONY : GeoVI/mechanism.cpp.s
 
 GeoVI/reader.o: GeoVI/reader.cpp.o
 .PHONY : GeoVI/reader.o
@@ -288,54 +310,6 @@ test/test.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/test/test.cc.s
 .PHONY : test/test.cc.s
 
-test/test_converter.o: test/test_converter.cc.o
-.PHONY : test/test_converter.o
-
-# target to build an object file
-test/test_converter.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.o
-.PHONY : test/test_converter.cc.o
-
-test/test_converter.i: test/test_converter.cc.i
-.PHONY : test/test_converter.i
-
-# target to preprocess a source file
-test/test_converter.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.i
-.PHONY : test/test_converter.cc.i
-
-test/test_converter.s: test/test_converter.cc.s
-.PHONY : test/test_converter.s
-
-# target to generate assembly for a file
-test/test_converter.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.s
-.PHONY : test/test_converter.cc.s
-
-test/test_voronoi.o: test/test_voronoi.cc.o
-.PHONY : test/test_voronoi.o
-
-# target to build an object file
-test/test_voronoi.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o
-.PHONY : test/test_voronoi.cc.o
-
-test/test_voronoi.i: test/test_voronoi.cc.i
-.PHONY : test/test_voronoi.i
-
-# target to preprocess a source file
-test/test_voronoi.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.i
-.PHONY : test/test_voronoi.cc.i
-
-test/test_voronoi.s: test/test_voronoi.cc.s
-.PHONY : test/test_voronoi.s
-
-# target to generate assembly for a file
-test/test_voronoi.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.s
-.PHONY : test/test_voronoi.cc.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -345,15 +319,19 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Test"
-	@echo "... Test_Converter"
-	@echo "... Test_Voronoi"
 	@echo "... geovi"
+	@echo "... GeoVI/algorithm.o"
+	@echo "... GeoVI/algorithm.i"
+	@echo "... GeoVI/algorithm.s"
 	@echo "... GeoVI/convert.o"
 	@echo "... GeoVI/convert.i"
 	@echo "... GeoVI/convert.s"
 	@echo "... GeoVI/geomap.o"
 	@echo "... GeoVI/geomap.i"
 	@echo "... GeoVI/geomap.s"
+	@echo "... GeoVI/mechanism.o"
+	@echo "... GeoVI/mechanism.i"
+	@echo "... GeoVI/mechanism.s"
 	@echo "... GeoVI/reader.o"
 	@echo "... GeoVI/reader.i"
 	@echo "... GeoVI/reader.s"
@@ -363,12 +341,6 @@ help:
 	@echo "... test/test.o"
 	@echo "... test/test.i"
 	@echo "... test/test.s"
-	@echo "... test/test_converter.o"
-	@echo "... test/test_converter.i"
-	@echo "... test/test_converter.s"
-	@echo "... test/test_voronoi.o"
-	@echo "... test/test_voronoi.i"
-	@echo "... test/test_voronoi.s"
 .PHONY : help
 
 

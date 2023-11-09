@@ -1,6 +1,11 @@
 [
 {
   "directory": "/home/idagoras/GeoVI/build",
+  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o -c /home/idagoras/GeoVI/GeoVI/algorithm.cpp",
+  "file": "/home/idagoras/GeoVI/GeoVI/algorithm.cpp"
+},
+{
+  "directory": "/home/idagoras/GeoVI/build",
   "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/convert.cpp.o -c /home/idagoras/GeoVI/GeoVI/convert.cpp",
   "file": "/home/idagoras/GeoVI/GeoVI/convert.cpp"
 },
@@ -8,6 +13,11 @@
   "directory": "/home/idagoras/GeoVI/build",
   "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o -c /home/idagoras/GeoVI/GeoVI/geomap.cpp",
   "file": "/home/idagoras/GeoVI/GeoVI/geomap.cpp"
+},
+{
+  "directory": "/home/idagoras/GeoVI/build",
+  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o -c /home/idagoras/GeoVI/GeoVI/mechanism.cpp",
+  "file": "/home/idagoras/GeoVI/GeoVI/mechanism.cpp"
 },
 {
   "directory": "/home/idagoras/GeoVI/build",
@@ -23,15 +33,5 @@
   "directory": "/home/idagoras/GeoVI/build",
   "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test.dir/test/test.cc.o -c /home/idagoras/GeoVI/test/test.cc",
   "file": "/home/idagoras/GeoVI/test/test.cc"
-},
-{
-  "directory": "/home/idagoras/GeoVI/build",
-  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test_Converter.dir/test/test_converter.cc.o -c /home/idagoras/GeoVI/test/test_converter.cc",
-  "file": "/home/idagoras/GeoVI/test/test_converter.cc"
-},
-{
-  "directory": "/home/idagoras/GeoVI/build",
-  "command": "/usr/bin/g++ -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -I/home/idagoras/GeoVI -g -o CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o -c /home/idagoras/GeoVI/test/test_voronoi.cc",
-  "file": "/home/idagoras/GeoVI/test/test_voronoi.cc"
 }
 ]

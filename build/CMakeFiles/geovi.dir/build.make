@@ -69,10 +69,24 @@ include CMakeFiles/geovi.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/geovi.dir/flags.make
 
+CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: CMakeFiles/geovi.dir/flags.make
+CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: ../GeoVI/algorithm.cpp
+CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: CMakeFiles/geovi.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o -MF CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o.d -o CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o -c /home/idagoras/GeoVI/GeoVI/algorithm.cpp
+
+CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/idagoras/GeoVI/GeoVI/algorithm.cpp > CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.i
+
+CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/idagoras/GeoVI/GeoVI/algorithm.cpp -o CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.s
+
 CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: CMakeFiles/geovi.dir/flags.make
 CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: ../GeoVI/convert.cpp
 CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: CMakeFiles/geovi.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/geovi.dir/GeoVI/convert.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/geovi.dir/GeoVI/convert.cpp.o"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/geovi.dir/GeoVI/convert.cpp.o -MF CMakeFiles/geovi.dir/GeoVI/convert.cpp.o.d -o CMakeFiles/geovi.dir/GeoVI/convert.cpp.o -c /home/idagoras/GeoVI/GeoVI/convert.cpp
 
 CMakeFiles/geovi.dir/GeoVI/convert.cpp.i: cmake_force
@@ -86,7 +100,7 @@ CMakeFiles/geovi.dir/GeoVI/convert.cpp.s: cmake_force
 CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: CMakeFiles/geovi.dir/flags.make
 CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: ../GeoVI/geomap.cpp
 CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: CMakeFiles/geovi.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o -MF CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o.d -o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o -c /home/idagoras/GeoVI/GeoVI/geomap.cpp
 
 CMakeFiles/geovi.dir/GeoVI/geomap.cpp.i: cmake_force
@@ -97,10 +111,24 @@ CMakeFiles/geovi.dir/GeoVI/geomap.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/geovi.dir/GeoVI/geomap.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/idagoras/GeoVI/GeoVI/geomap.cpp -o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.s
 
+CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: CMakeFiles/geovi.dir/flags.make
+CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: ../GeoVI/mechanism.cpp
+CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: CMakeFiles/geovi.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o -MF CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o.d -o CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o -c /home/idagoras/GeoVI/GeoVI/mechanism.cpp
+
+CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/idagoras/GeoVI/GeoVI/mechanism.cpp > CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.i
+
+CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/idagoras/GeoVI/GeoVI/mechanism.cpp -o CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.s
+
 CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: CMakeFiles/geovi.dir/flags.make
 CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: ../GeoVI/reader.cpp
 CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: CMakeFiles/geovi.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/geovi.dir/GeoVI/reader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/geovi.dir/GeoVI/reader.cpp.o"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/geovi.dir/GeoVI/reader.cpp.o -MF CMakeFiles/geovi.dir/GeoVI/reader.cpp.o.d -o CMakeFiles/geovi.dir/GeoVI/reader.cpp.o -c /home/idagoras/GeoVI/GeoVI/reader.cpp
 
 CMakeFiles/geovi.dir/GeoVI/reader.cpp.i: cmake_force
@@ -114,7 +142,7 @@ CMakeFiles/geovi.dir/GeoVI/reader.cpp.s: cmake_force
 CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: CMakeFiles/geovi.dir/flags.make
 CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: ../GeoVI/voronoi.cpp
 CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: CMakeFiles/geovi.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o -MF CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o.d -o CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o -c /home/idagoras/GeoVI/GeoVI/voronoi.cpp
 
 CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.i: cmake_force
@@ -127,21 +155,25 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.s: cmake_force
 
 # Object files for target geovi
 geovi_OBJECTS = \
+"CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o" \
 "CMakeFiles/geovi.dir/GeoVI/convert.cpp.o" \
 "CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o" \
+"CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o" \
 "CMakeFiles/geovi.dir/GeoVI/reader.cpp.o" \
 "CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o"
 
 # External object files for target geovi
 geovi_EXTERNAL_OBJECTS =
 
+../lib/libgeovi.a: CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o
 ../lib/libgeovi.a: CMakeFiles/geovi.dir/GeoVI/convert.cpp.o
 ../lib/libgeovi.a: CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o
+../lib/libgeovi.a: CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o
 ../lib/libgeovi.a: CMakeFiles/geovi.dir/GeoVI/reader.cpp.o
 ../lib/libgeovi.a: CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o
 ../lib/libgeovi.a: CMakeFiles/geovi.dir/build.make
 ../lib/libgeovi.a: CMakeFiles/geovi.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX static library ../lib/libgeovi.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/idagoras/GeoVI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library ../lib/libgeovi.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/geovi.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/geovi.dir/link.txt --verbose=$(VERBOSE)
 

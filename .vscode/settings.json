@@ -75,6 +75,7 @@
         "variant": "cpp",
         "*.ipp": "cpp",
         "any": "cpp",
-        "__tuple": "cpp"
+        "__tuple": "cpp",
+        "charconv": "cpp"
     }
 }

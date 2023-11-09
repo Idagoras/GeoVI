@@ -1,2 +1,2 @@
-/usr/bin/ar qc ../lib/libgeovi.a CMakeFiles/geovi.dir/GeoVI/convert.cpp.o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o CMakeFiles/geovi.dir/GeoVI/reader.cpp.o CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o
+/usr/bin/ar qc ../lib/libgeovi.a CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o CMakeFiles/geovi.dir/GeoVI/convert.cpp.o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o CMakeFiles/geovi.dir/GeoVI/reader.cpp.o CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o
 /usr/bin/ranlib ../lib/libgeovi.a

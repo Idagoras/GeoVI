@@ -14,8 +14,10 @@ namespace geovi
             osmium::io::Header header;
             Reader(std::string file_name):osmium_reader(file_name,osmium::osm_entity_bits::all){
                 header = osmium_reader.header();
+                
             }
             osmium::io::Reader& getOSMReader();
+            void readOSMEntityFromHandler(osmium::osm_entity_bits osm_ebits,osmium::handler::Hander handler);
             
         private:
             osmium::io::Reader osmium_reader;
