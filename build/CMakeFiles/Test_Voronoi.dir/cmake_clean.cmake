@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../bin/Test_Voronoi"
-  "../bin/Test_Voronoi.pdb"
+  "/Users/wuwei/C++/GeoVI/bin/Test_Voronoi"
+  "/Users/wuwei/C++/GeoVI/bin/Test_Voronoi.pdb"
   "CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o"
   "CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o.d"
 )

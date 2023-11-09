@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(GeoVI)
 
+#set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
@@ -45,8 +49,8 @@ link_libraries(
 
 
 add_executable(Test test/test.cc)
-add_executable(Test_Converter test/test_converter.cc)
-add_executable(Test_Voronoi test/test_voronoi.cc)
+#add_executable(Test_Converter test/test_converter.cc)
+#add_executable(Test_Voronoi test/test_voronoi.cc)
 target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES} PROJ::proj)
-target_link_libraries(Test_Converter PROJ::proj geovi)
-target_link_libraries(Test_Voronoi geovi PROJ::proj)
+#target_link_libraries(Test_Converter PROJ::proj geovi)
+#target_link_libraries(Test_Voronoi geovi PROJ::proj)

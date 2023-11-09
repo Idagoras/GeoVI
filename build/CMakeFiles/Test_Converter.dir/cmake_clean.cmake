@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "../bin/Test_Converter"
-  "../bin/Test_Converter.pdb"
+  "/Users/wuwei/C++/GeoVI/bin/Test_Converter"
+  "/Users/wuwei/C++/GeoVI/bin/Test_Converter.pdb"
   "CMakeFiles/Test_Converter.dir/test/test_converter.cc.o"
   "CMakeFiles/Test_Converter.dir/test/test_converter.cc.o.d"
 )

@@ -130,13 +130,13 @@ struct Point2 {
     double x;
     double y;
     Point2(){x=0;y=0;};
-    Point2(int a,int b):x(a),y(b){}
+    Point2(double a,double b):x(a),y(b){}
 };
 
 struct Segement{
     Point2 p0;
     Point2 p1;
-    Segement(int x1,int y1,int x2,int y2):p0(x1,y1),p1(x2,y2){}
+    Segement(double x1,double y1,double x2,double y2):p0(x1,y1),p1(x2,y2){}
 };
 
 struct Line {

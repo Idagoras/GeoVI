@@ -8,18 +8,7 @@
 #include "algorithm.h"
 #include <vector>
 
-namespace boost{
-    enum vertex_semantic_sensitivity_t{
-        vertex_semantic_sensitivity = 2042
-    };
-    BOOST_INSTALL_PROPERTY(vertex,semantic_sensitivity);
 
-    enum vertex_location_t{
-        vertex_location = 1111
-    };
-    BOOST_INSTALL_PROPERTY(vertex,location);
-
-}
 
 namespace geovi
 {
