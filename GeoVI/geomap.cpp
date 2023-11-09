@@ -59,15 +59,15 @@ class TagProcessor {
 public:
     using Language = geovi::language::Language;
     using FeatureTupleArray = vector<std::tuple<string,OSMMapFeature,string>>;
-    FeatureTupleArray getMapFeature(osmium::TagList& tag_list);
-    string getName(osmium::TagList& tag_list,Language language);
+    FeatureTupleArray getMapFeature(const osmium::TagList& tag_list);
+    string getName(const osmium::TagList& tag_list,Language language);
     
     
 };
 
 // class TagProcessor
 
-TagProcessor::FeatureTupleArray TagProcessor::getMapFeature(osmium::TagList& tag_list){
+TagProcessor::FeatureTupleArray TagProcessor::getMapFeature(const osmium::TagList& tag_list){
     FeatureTupleArray arr;
     for(auto it = tag_list.begin(); it != tag_list.end(); it ++ ){
         auto key = it -> key();
@@ -85,11 +85,11 @@ TagProcessor::FeatureTupleArray TagProcessor::getMapFeature(osmium::TagList& tag
 
 }
 
-string TagProcessor::getName(osmium::TagList& tag_list,Language language){
+string TagProcessor::getName(const osmium::TagList& tag_list,Language language){
     if( tag_list.has_key("name") ){
         return tag_list["name"];
     }
-    return string();
+    return string("nameless");
 }
 
 class GeoMapHandler : public osmium::handler::Handler{
@@ -102,6 +102,7 @@ public:
     void way(const osmium::Way& way);
     void node(const osmium::Node& node);
     void relation(const osmium::Relation& relation);
+    void getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode);
 
 
 
@@ -112,18 +113,53 @@ private:
 
 // class GeoMapHandler
 
+void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode){
+    TagProcessor tp;
+    auto features = tp.getMapFeature(node.tags());
+    if( tp.getName(node.tags(),TagProcessor::Language::zh).compare("nameless") != 0){
+        std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
+        for(auto feature : features){
+        std::cout << "node's mapfeature is " << get<0>(feature) << " value is " << get<2>(feature) << std::endl;
+        }
+    }
+    gnode.index = gmap.numOfNodes();
+    gnode.name = tp.getName(node.tags(),TagProcessor::Language::zh);
+    gnode.features = tp.getMapFeature(node.tags());
+    gnode.id = node.id();
+    gnode.loc = GeoMap::Location{node.location().lon(),node.location().lat()};
+    
+}
+
 void GeoMapHandler::way(const osmium::Way& way){
+    std::cout << "way's id is " << way.id() << std::endl;
 
-  //  osmium::WayNodeList& nodes = way.nodes();
-  //  osmium::NodeRef* beginNode = const_cast<osmium::NodeRef*>(nodes.begin());
-  //  osmium::NodeRef* endNode = const_cast<osmium::NodeRef*>(nodes.end());
-
-    // gmap.addWay();
+    const osmium::WayNodeList& nodes = way.nodes();
+    osmium::object_id_type refs[nodes.size()];
+    int index = 0;
+    for(auto it = nodes.begin(); it != nodes.end(); ++ it ){
+        auto node = *it;
+        if( !gmap.hasNode(node.ref())){
+            std::cout << "node is not exist in nodes set" << std::endl;
+        }
+        refs[index] = node.ref();
+        ++ index;
+        //std::cout << "node ref in way id " << way.id() << "ref id is " << node.ref() << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 void GeoMapHandler::node(const osmium::Node& node){
    // std::cout << "node id " << node.id() << "latitude = "<< node.location().lat() << " " << "longtitude =" << node.location().lon() << std::endl;
    // gmap.addNode("",node.id());
+   if ( !gmap.hasNode(node.id())){
+        GeoMap::GeoNode gnode;
+        getGeoNode(node,gnode);
+        gmap.addNode(gnode);
+   }
+   
+  // std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
+  
+  
 }
 
 void GeoMapHandler::relation(const osmium::Relation& relation){
@@ -132,42 +168,7 @@ void GeoMapHandler::relation(const osmium::Relation& relation){
 
 
 // class GeoMap
-/*
-using VertexProperties = property<vertex_name_t,std::string,
-                        property<vertex_index_t,int64_t,
-                        property<vertex_semantic_sensitivity_t,double,
-                        property<vertex_location_t,GeoMap::Location,
-                        property<vertex_predecessor_t,vertex_descriptor,
-                        property<vertex_distance_t, double>>>>>>;
 
-using EdgeProperties =  property<edge_name_t,std::string,
-                        property<edge_index_t,int64_t,
-                        property<edge_weight_t,double>>>;
-
-using Graph = adjacency_list<vecS,vecS,directedS,VertexProperties,EdgeProperties>;
-
-using VertexDescriptor = graph_traits<Graph>::vertex_descriptor;
-using EdgeDescriptor = graph_traits<Graph>::edge_descriptor;
-using VertexIterator = graph_traits<Graph>::vertex_iterator;
-using EdgeIterator = graph_traits<Graph>::edge_iterator;
-
-using VertexNameMap = property_map<Graph,vertex_name_t>::type ;
-using ConstVertexNameMap = property_map<Graph,vertex_name_t>::const_type ;  
-using VertexIndexMap = property_map<Graph,vertex_index_t>::type ;
-using ConstVertexIndexMap = property_map<Graph,vertex_index_t>::const_type ;
-using VertexSemanticSensitivityMap = property_map<Graph,vertex_semantic_sensitivity_t>::type;
-using ConstVertexSemanticSensitivityMap = property_map<Graph,vertex_semantic_sensitivity_t>::const_type;
-using VertexLocationMap = property_map<Graph,vertex_location_t>::type;
-using ConstVertexLocationMap = property_map<Graph,vertex_location_t>::const_type;
-
-
-using EdgeNameMap = property_map<Graph,edge_name_t>::type ;
-using ConstEdgeNameMap = property_map<Graph,edge_name_t>::const_type ;
-using EdgeIndexMap = property_map<Graph,edge_index_t>::type;
-using ConstEdgeIndexMap = property_map<Graph,edge_index_t>::const_type;
-using EdgeCapacityMap = property_map<Graph,edge_capacity_t>::type;
-using ConstEdgeCapacityMap = property_map<Graph,edge_capacity_t>::const_type;
-*/
 GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape_type(type),mshape(shape){
     graph = Graph(0);
     nodes_num = 0;
@@ -175,21 +176,33 @@ GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape
     GeoMapHandler handler(*this);
     osmium::apply(reader.getOSMReader(),handler);
     reader.getOSMReader().close();
-    std::cout<< "node count = " << nodes_num << " " << "way count = " << ways_num << std::endl;
-    std::cout << "graph vertex : " << boost::num_vertices(graph) << std::endl;
+
 }
 
 bool GeoMap::addNode(GeoNode node){
-    VertexDescriptor v = add_vertex(graph);
-    VertexNameMap name_map = get(vertex_name,graph);
-
-   // std::cout<<nodes_num<<std::endl;
-    nodes_num ++;
-    name_map[v] = std::to_string(nodes_num);
-    return true;
+    if( !hasNode(node.id)){
+        nodemap.insert(pair<map_object_id_type,GeoNode>(node.id,node));
+        VertexDescriptor v = add_vertex(graph);
+        VertexNameMap name_map = get(vertex_name,graph);
+        nodes_num ++;
+        name_map[v] = std::to_string(nodes_num);
+        return true;
+    }
+    return false;
 }
 
 bool GeoMap::addWay(GeoNode source,GeoNode target){
     ways_num ++;
     return true;
+}
+
+bool GeoMap::hasNode(GeoMap::map_object_id_type node_id){
+    return nodemap.find(node_id) != nodemap.end();
+}
+
+const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
+    if( hasNode(node_id) ){
+        return &(nodemap.find(node_id)->second);
+    }
+    return NULL;
 }

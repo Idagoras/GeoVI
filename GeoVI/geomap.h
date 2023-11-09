@@ -7,8 +7,12 @@
 #include <boost/polygon/voronoi.hpp>
 #include "algorithm.h"
 #include <vector>
+#include <map>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 98bae6a2436ca14d572fde74a1983c71d3457a9d
 
 namespace geovi
 {
@@ -55,6 +59,7 @@ namespace geovi
             public:
                 
                 typedef int64_t map_object_id_type ;
+               
                 typedef enum {
                     circle,
                     rectangle,
@@ -98,8 +103,10 @@ namespace geovi
                 typedef struct {
                     std::string name;
                     map_object_id_type id;
+                    int index = -1;
                     double semantic_sensitivity = -1;
-                    OSMMapFeature map_feature = OSMMapFeature::None;
+                    Location loc;
+                    std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
                 } GeoNode;
 
                 typedef struct {
@@ -110,13 +117,18 @@ namespace geovi
                     double capacity;
                 } GeoWay;
 
+                typedef std::map<map_object_id_type,GeoNode> NodeMap;
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
 
+                inline int numOfNodes(){
+                    return nodes_num;
+                }
                 bool addNode(GeoNode node);
                 bool addWay(GeoNode source,GeoNode target);
-
+                bool hasNode(map_object_id_type node_id);
+                const GeoNode* getNode(map_object_id_type node_id);
                 std::vector<Point2> getNodes();
                 
 
@@ -128,6 +140,7 @@ namespace geovi
 
             private:
                 geovi::algorithm::Graph graph;
+                NodeMap nodemap;
                 int nodes_num;
                 int ways_num;
                 int relations_num;
