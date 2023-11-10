@@ -132,20 +132,40 @@ void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode){
 
 void GeoMapHandler::way(const osmium::Way& way){
     std::cout << "way's id is " << way.id() << std::endl;
-
+    TagProcessor tp;
+    auto features = tp.getMapFeature(way.tags());
+    auto name = tp.getName(way.tags(),TagProcessor::Language::zh);
     const osmium::WayNodeList& nodes = way.nodes();
     osmium::object_id_type refs[nodes.size()];
-    int index = 0;
+    int index = 0;                                                                                                                                                        
     for(auto it = nodes.begin(); it != nodes.end(); ++ it ){
         auto node = *it;
         if( !gmap.hasNode(node.ref())){
-            std::cout << "node is not exist in nodes set" << std::endl;
+            std::cout << "node is not exist in nodes set" <<  std::endl;
+            std::cout << "fail to add way" << std::endl;
+            return;
         }
         refs[index] = node.ref();
         ++ index;
         //std::cout << "node ref in way id " << way.id() << "ref id is " << node.ref() << std::endl;
     }
-    std::cout << std::endl;
+    const GeoMap::GeoNode* primary;
+    for (int i = 0 ; i < index ; ++ i ){
+        if(primary == NULL)
+            primary = gmap.getNode(refs[i]);
+        auto current = gmap.getNode(refs[i]);
+        GeoMap::GeoWay gway = {
+            *primary,
+            *current,
+            way.id(),
+            0,
+            -1,
+            name,
+            features
+        };
+        gmap.addWay(gway);
+        primary = current;
+    }
 }
 
 void GeoMapHandler::node(const osmium::Node& node){
@@ -185,13 +205,19 @@ bool GeoMap::addNode(GeoNode node){
         VertexDescriptor v = add_vertex(graph);
         VertexNameMap name_map = get(vertex_name,graph);
         nodes_num ++;
-        name_map[v] = std::to_string(nodes_num);
+        name_map[v] = std::to_string(nodes_num);                                                                                            
         return true;
     }
     return false;
 }
 
-bool GeoMap::addWay(GeoNode source,GeoNode target){
+bool GeoMap::addWay(GeoWay way){
+    Point2 sp = {way.source.loc.latitude,way.source.loc.longitude};
+    Point2 tp = {way.target.loc.latitude,way.target.loc.longitude};
+    CoordinateSystemConverter converter(LongitudeBands::band_31);
+    converter.convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,sp);
+    converter.convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,tp);
+    way.capacity = DistanceCaculator::euclidDistance2D(sp,tp);
     ways_num ++;
     return true;
 }

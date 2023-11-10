@@ -4,6 +4,7 @@
 #include <iostream>
 #include <proj/coordinateoperation.hpp>
 #include <string>
+#include <cmath>
 
 using namespace NS_PROJ::crs;
 using namespace NS_PROJ::io;
@@ -158,6 +159,13 @@ private:
     bool convertBetweenWGS84AndUTM(Point2& point);
     bool convertBetweenUTMAndWGS84(Point2& point);
     
+};
+
+class DistanceCaculator{
+public:
+   inline static double euclidDistance2D(const Point2& p1,const Point2& p2){
+        return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2));
+   } 
 };
 }
 
