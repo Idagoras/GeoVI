@@ -7,6 +7,7 @@
 #include <boost/polygon/voronoi.hpp>
 #include "algorithm.h"
 #include <vector>
+#include <string>
 #include <map>
 
 <<<<<<< HEAD
@@ -110,11 +111,13 @@ namespace geovi
                 } GeoNode;
 
                 typedef struct {
-                    GeoNode& source;
-                    GeoNode& target;
+                    const GeoNode& source;
+                    const GeoNode& target;
                     map_object_id_type id;
+                    double capacity = 0;
+                    int index = -1;
                     std::string name;
-                    double capacity;
+                    std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
                 } GeoWay;
 
                 typedef std::map<map_object_id_type,GeoNode> NodeMap;
@@ -126,7 +129,7 @@ namespace geovi
                     return nodes_num;
                 }
                 bool addNode(GeoNode node);
-                bool addWay(GeoNode source,GeoNode target);
+                bool addWay(GeoWay way);
                 bool hasNode(map_object_id_type node_id);
                 const GeoNode* getNode(map_object_id_type node_id);
                 std::vector<Point2> getNodes();
