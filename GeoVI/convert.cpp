@@ -9,10 +9,10 @@
 using namespace geovi;
 
 bool CoordinateSystemConverter::convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point){
-    if( srcCRS == CoordinateSystemType::WGS84 && srcCRS == CoordinateSystemType::UTM){
+    if( srcCRS == CoordinateSystemType::WGS84 && targetCRS == CoordinateSystemType::UTM){
         return convertBetweenWGS84AndUTM(point);
     }
-    if( srcCRS == CoordinateSystemType::UTM && srcCRS == CoordinateSystemType::WGS84){
+    if( srcCRS == CoordinateSystemType::UTM && targetCRS == CoordinateSystemType::WGS84){
         return convertBetweenUTMAndWGS84(point);
     }
     return false;
