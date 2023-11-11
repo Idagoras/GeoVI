@@ -171,20 +171,21 @@ void GeoMapHandler::way(const osmium::Way& way){
 void GeoMapHandler::node(const osmium::Node& node){
    // std::cout << "node id " << node.id() << "latitude = "<< node.location().lat() << " " << "longtitude =" << node.location().lon() << std::endl;
    // gmap.addNode("",node.id());
-   if ( !gmap.hasNode(node.id())){
+    if ( !gmap.hasNode(node.id())){
         GeoMap::GeoNode gnode;
         getGeoNode(node,gnode);
         gmap.addNode(gnode);
-   }
-   
+    }
+
   // std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
-  
-  
+
+
 }
 
 void GeoMapHandler::relation(const osmium::Relation& relation){
 
 }
+
 
 
 // class GeoMap
@@ -202,10 +203,8 @@ GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape
 bool GeoMap::addNode(GeoNode node){
     if( !hasNode(node.id)){
         nodemap.insert(pair<map_object_id_type,GeoNode>(node.id,node));
-        VertexDescriptor v = add_vertex(graph);
-        VertexNameMap name_map = get(vertex_name,graph);
-        nodes_num ++;
-        name_map[v] = std::to_string(nodes_num);                                                                                            
+        addNodeToGraph(node);        
+        nodes_num ++;                                                                                          
         return true;
     }
     return false;
@@ -218,6 +217,8 @@ bool GeoMap::addWay(GeoWay way){
     converter.convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,sp);
     converter.convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,tp);
     way.capacity = DistanceCaculator::euclidDistance2D(sp,tp);
+    way.index = ways_num;
+    addWayToGraph(way);
     ways_num ++;
     return true;
 }
@@ -231,4 +232,25 @@ const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
         return &(nodemap.find(node_id)->second);
     }
     return NULL;
+}
+void GeoMap::addNodeToGraph(GeoNode& node){
+    VertexDescriptor v = add_vertex(graph);
+    VertexNameMap name_map = get(vertex_name,graph);
+    name_map[v] = node.name;
+
+    VertexLocationMap location_map = get(vertex_location,graph);
+    location_map[v] = Point2{node.loc.latitude,node.loc.longitude};
+
+}
+
+void GeoMap::addWayToGraph(GeoWay& way){
+    int sr_index = way.source.index;
+    int tg_index = way.target.index;
+    auto sr_vertex_descriptor = vertex(sr_index,graph);
+    auto tg_vertex_descriptor = vertex(tg_index,graph);
+    EdgeDescriptor e = add_edge(sr_vertex_descriptor,tg_vertex_descriptor,graph).first;
+    EdgeWeightMap weight_map = get(edge_weight,graph);
+    weight_map[e] = way.capacity;
+    EdgeNameMap name_map = get(edge_name,graph);
+    name_map[e] = way.name;
 }

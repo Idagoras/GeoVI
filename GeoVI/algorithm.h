@@ -25,14 +25,14 @@ namespace geovi{
     namespace algorithm{
         using namespace boost;
 
-        using VertexDescriptor = adjacency_list_traits<vecS,vecS,directedS>::vertex_descriptor;
-        using EdgeDescriptor = adjacency_list_traits<vecS,vecS,directedS>::edge_descriptor;
+        using VertexDescriptor = adjacency_list_traits<vecS,vecS,undirectedS>::vertex_descriptor;
+        using EdgeDescriptor = adjacency_list_traits<vecS,vecS,undirectedS>::edge_descriptor;
 
 
         using VertexProperties = property<vertex_name_t,std::string,
                         property<vertex_index_t,int64_t,
                         property<vertex_semantic_sensitivity_t,double,
-                        property<vertex_location_t,int,
+                        property<vertex_location_t,Point2,
                         property<vertex_predecessor_t, VertexDescriptor,
                         property<vertex_distance_t, double>>>>>>;
 
@@ -40,7 +40,7 @@ namespace geovi{
                                 property<edge_index_t,int64_t,
                                 property<edge_weight_t,double>>>;
 
-        using Graph = adjacency_list<vecS,vecS,directedS,VertexProperties,EdgeProperties>;
+        using Graph = adjacency_list<vecS,vecS,undirectedS,VertexProperties,EdgeProperties>;
 
 
 

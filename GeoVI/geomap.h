@@ -10,10 +10,6 @@
 #include <string>
 #include <map>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 98bae6a2436ca14d572fde74a1983c71d3457a9d
 
 namespace geovi
 {
@@ -60,7 +56,7 @@ namespace geovi
             public:
                 
                 typedef int64_t map_object_id_type ;
-               
+            
                 typedef enum {
                     circle,
                     rectangle,
@@ -151,6 +147,9 @@ namespace geovi
                 float max_lon;
                 float min_lat;
                 float min_lon;
+
+                void addNodeToGraph(GeoNode& node);
+                void addWayToGraph(GeoWay& way);
             };   
 
             
