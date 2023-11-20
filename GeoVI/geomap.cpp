@@ -53,7 +53,11 @@ static vector<pair<string,OSMMapFeature>> feature_with_name_string = {
 };
 
 
-
+using TagField = enum TagFeild {
+    name = 0,
+    map_feature = 1,
+    feature_value = 2
+};
 
 class TagProcessor {
 public:
@@ -119,7 +123,7 @@ void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode){
     if( tp.getName(node.tags(),TagProcessor::Language::zh).compare("nameless") != 0){
         std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
         for(auto feature : features){
-        std::cout << "node's mapfeature is " << get<0>(feature) << " value is " << get<2>(feature) << std::endl;
+        std::cout << "node's mapfeature is " << get<TagFeild::map_feature>(feature) << " value is " << get<TagFeild::feature_value>(feature) << std::endl;
         }
     }
     gnode.index = gmap.numOfNodes();
@@ -190,7 +194,7 @@ void GeoMapHandler::relation(const osmium::Relation& relation){
 
 // class GeoMap
 
-GeoMap::GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape):shape_type(type),mshape(shape){
+GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):shape_type(type),mshape(shape){
     graph = Graph(0);
     nodes_num = 0;
     ways_num = 0;

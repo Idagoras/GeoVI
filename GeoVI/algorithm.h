@@ -94,13 +94,40 @@ namespace geovi{
         }
 
         namespace semantic {
+                using role = enum role{
+                    user = 0,
+                    maintainer = 1
+                };
+                using stay_time = float;
+                using semantic_similarity = float;
+
+                using POI = struct POI {
+                    Point2 loc;
+                    stay_time st;
+
+                };
+                using UserPOIS = std::vector<Point2>;
+                using POIS = std::vector<Point2>;
+                class SemanticCategoryCaculator{
+                    static void TF_IDF_UserSemanticsCategory(const UserPOIS& upois,const POIS& pois);
+                    static void TF_IDF_GeoSemanticsCategory(const POIS& large,const POIS& small);
+                };
+
                 class SemanticSimiliarityCaculator {
+                    static semantic_similarity caculate(const POI& poi_1,const POI& poi_2); 
+                };
+
+                class PrivacySensitivityCaculator {
+                    
+                };
+        }
+
+        namespace distribution {
+                class PlanarLaplacian {
 
                 };
 
-                class SemanticSensitivityCaculator {
-
-                };
+                
         }
     }
 }

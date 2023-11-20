@@ -3,8 +3,9 @@
 
 #include <map>
 #include <vector>
+#include <cmath>
 #include "geomap.h"
-
+#include "convert.h"
 
 namespace geovi {
     namespace algorithm{
@@ -70,6 +71,25 @@ namespace geovi {
             };
 
             class GVEM : public Mechanism {
+
+            };
+
+            class DP3_SLOC : public Mechanism {
+            public:
+                DP3_SLOC(double rl,double rm);
+                virtual void buildDistribution(float _epsilon) override;
+                virtual void computerInferenceFunction() override;
+                virtual void computerAE(Attack attack) override;
+                virtual void computerPC() override;
+                virtual void computerQ_loss() override;
+                inline double requirementFunction(double l){ return pow(l/l_s,2); }
+                inline double InverseRequirementFunction(double req){ return sqrt(req)*l_s;}
+
+            private:
+                std::vector<std::tuple<float,Point2,Point2>> E;
+                double r_large;
+                double r_small;
+                double l_s;
 
             };
         }

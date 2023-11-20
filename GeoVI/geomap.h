@@ -119,7 +119,7 @@ namespace geovi
                 typedef std::map<map_object_id_type,GeoNode> NodeMap;
                 GeoMapShapeType shape_type;
                 Shape mshape;
-                GeoMap(geovi::io::Reader& reader,GeoMapShapeType type,Shape shape);
+                GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
 
                 inline int numOfNodes(){
                     return nodes_num;

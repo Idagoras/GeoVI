@@ -4,6 +4,9 @@
 #include <proj/util.hpp>
 #include <vector>
 #include <cmath>
+#include <sstream>
+#include <ctime>
+#include <iomanip>
 
 
 using namespace geovi;
@@ -55,7 +58,7 @@ bool CoordinateSystemConverter::convertBetweenWGS84AndUTM(Point2& point){
     auto authFactoryEPSG = AuthorityFactory::create(dbContext,"EPSG");
     auto sourceCRS = authFactoryEPSG->createCoordinateReferenceSystem("4326");
     auto targetCRS = authFactoryEPSG->createCoordinateReferenceSystem(std::to_string(int(band)));
-     auto list = CoordinateOperationFactory::create()->createOperations(
+    auto list = CoordinateOperationFactory::create()->createOperations(
         sourceCRS, targetCRS, coord_op_ctxt);
     if(list.empty()){
         return false;
@@ -74,4 +77,20 @@ bool CoordinateSystemConverter::convertBetweenWGS84AndUTM(Point2& point){
     proj_context_destroy(ctx);
 
     return true;
+}
+
+std::chrono::system_clock::time_point StringAndTimeConverter::convertStringToTime(const std::string& timeStr,const char* fmt){
+    std::tm tm = {};
+    std::istringstream ss(timeStr);
+    ss >> std::get_time(&tm,fmt);
+    std::time_t tt =std::mktime(&tm);
+    return std::chrono::system_clock::from_time_t(tt);
+}
+
+std::string StringAndTimeConverter::formatTime(const std::chrono::system_clock::time_point& timePoint,const char* fmt){
+    std::time_t tt = std::chrono::system_clock::to_time_t(timePoint);
+    std::tm* tm = std::localtime(&tt);
+    std::ostringstream oss;
+    oss << std::put_time(tm,fmt);
+    return oss.str();
 }

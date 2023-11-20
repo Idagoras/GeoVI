@@ -4,6 +4,7 @@
 #include <iostream>
 #include <proj/coordinateoperation.hpp>
 #include <string>
+#include <chrono>
 #include <cmath>
 
 using namespace NS_PROJ::crs;
@@ -12,6 +13,7 @@ using namespace NS_PROJ::operation;
 using namespace NS_PROJ::util;
 
 namespace geovi{
+
 
 using CoordinateSystemType = enum CoordinateSystemType {
     WGS84,
@@ -146,6 +148,51 @@ struct Line {
     Direction dir = Direction::in;
 };
 
+struct CheckInData {
+    int64_t user_id;
+    std::chrono::system_clock::time_point timePoint;
+    double latitude;
+    double longtitude;
+    int64_t location_id;
+};
+
+// example:39.984702,116.318417,0,492,39744.1201851852,2008-10-23,02:53:04
+
+struct TrajectoryPoint {
+    double latitude;
+    double longtitude;
+    double feild;
+    double altitude;
+    double days_f;
+    std::chrono::system_clock::time_point timePoint;
+};
+
+struct TransportationModeLabel {
+    std::chrono::system_clock::time_point startTime;
+    std::chrono::system_clock::time_point endTime;
+    TransportationMode mode;
+};
+
+struct Trajectory{
+    int64_t user_id;
+    CoordinateSystemType crs;
+    std::vector<TransportationModelLabel> trans_labels;
+    std::vector<TrajectoryPoint> tj_points;
+}
+
+using TransportationMode = enum Mv {
+    walk,
+    bike,
+    bus,
+    car,
+    subway,
+    train,
+    airplane,
+    boat,
+    run,
+    motorcycle
+};
+
 class CoordinateSystemConverter{
 public:
     CoordinateSystemConverter(){};
@@ -163,10 +210,17 @@ private:
 
 class DistanceCaculator{
 public:
-   inline static double euclidDistance2D(const Point2& p1,const Point2& p2){
+    inline static double euclidDistance2D(const Point2& p1,const Point2& p2){
         return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2));
-   } 
+    } 
 };
-}
 
+class StringAndTimeConverter{
+public:
+    static std::chrono::system_clock::time_point convertStringToTime(const std::string& timeStr,const char* fmt);
+    static std::string formatTime(const std::chrono::system_clock::time_point& timePoint,const char* fmt);
+
+};
+
+}
 #endif

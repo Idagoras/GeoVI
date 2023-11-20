@@ -2,6 +2,6 @@
 
 using namespace geovi::io;
 
-osmium::io::Reader& Reader::getOSMReader(){
+osmium::io::Reader& OSMReader::getOSMReader(){
     return this-> osmium_reader;
 }
