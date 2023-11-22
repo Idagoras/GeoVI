@@ -167,7 +167,7 @@ struct TrajectoryPoint {
     std::chrono::system_clock::time_point timePoint;
 };
 
-struct TransportationModeLabel {
+using TransportationModeLabel = struct TransportationModeLabel {
     std::chrono::system_clock::time_point startTime;
     std::chrono::system_clock::time_point endTime;
     TransportationMode mode;
@@ -176,9 +176,9 @@ struct TransportationModeLabel {
 struct Trajectory{
     int64_t user_id;
     CoordinateSystemType crs;
-    std::vector<TransportationModelLabel> trans_labels;
+    std::vector<TransportationModeLabel> trans_labels;
     std::vector<TrajectoryPoint> tj_points;
-}
+};
 
 using TransportationMode = enum Mv {
     walk,

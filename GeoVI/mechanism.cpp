@@ -6,6 +6,7 @@ namespace ggm  = geovi::geo::map;
 namespace gad  = geovi::algorithm::distance;
 
 
+
 void caculatePriorDistribution(ggm::GeoMap& map,gam::Mechanism::DiscreteDistribution& dist){
     
 }
@@ -27,5 +28,9 @@ void gam::GEM::buildDistribution(float _epsilon){
     for(int64_t i = 0; i < index ; i++ ){
         dist[i] /= mass_sum;
     }
+
+}
+
+geovi::CheckInData gam::GEM::computer(const geovi::CheckInData& check_in_data){
 
 }

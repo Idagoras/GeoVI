@@ -34,6 +34,8 @@ namespace geovi {
                 using Score = std::map<ScoreType,double>;
                 using DiscreteDistribution = std::vector<double>;
 
+                virtual CheckInData computer(const CheckInData& check_in_data);
+                virtual Trajectory computer(const Trajectory& trajectory_data);
                 virtual void buildDistribution(float _epsilon);
                 virtual void computerInferenceFunction();
                 virtual void computerAE(Attack attack);
@@ -61,6 +63,7 @@ namespace geovi {
                 GEM(geovi::geo::map::GeoMap& map);
 
                 virtual void buildDistribution(float _epsilon) override;
+                virtual CheckInData computer(const CheckInData& check_in_data) override;
                 virtual void computerInferenceFunction() override;
                 virtual void computerAE(Attack attack) override;
                 virtual void computerPC() override;
