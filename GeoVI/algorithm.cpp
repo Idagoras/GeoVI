@@ -5,10 +5,12 @@
 
 using namespace geovi::algorithm::distance;
 using namespace geovi::algorithm::sample;
+using namespace geovi::geo::map;
 
-// ShortestPathCaculator
 
-void ShortestPathCaculator::caculateShortestPathViaDijkstra(Graph& graph,Index origin_index){
+// ShortestPathCalculator
+
+void ShortestPathCalculator::calculateShortestPathViaDijkstra(Graph& graph,Index origin_index){
     VertexDescriptor origin_vertex = vertex(origin_index,graph);
     VertexPredecessorMap p = get(vertex_predecessor,graph);
     VertexDistanceMap d = get(vertex_distance,graph);
@@ -30,3 +32,7 @@ int DiscreteDistributionSampler::SampleFromDiscreteDistribution(Weights weights)
     std::discrete_distribution<int> dist(weights.begin(),weights.end());
     return dist(gen);
 }
+
+// CellGrowingAndMergingCalculator
+
+using Region = GeoMap::GeoRegion;

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/Users/wuwei/C++/GeoVI/lib/libgeovi.a"
-  "/Users/wuwei/C++/GeoVI/lib/libgeovi.pdb"
+  "/Users/wuwei/workspace/GeoVI/lib/libgeovi.a"
+  "/Users/wuwei/workspace/GeoVI/lib/libgeovi.pdb"
   "CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o"
   "CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o.d"
   "CMakeFiles/geovi.dir/GeoVI/convert.cpp.o"

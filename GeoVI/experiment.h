@@ -13,8 +13,8 @@ namespace geovi
     class DataSet {
     public:
         using DataList = std::vector<T>;
-        using iterator = DataList::iterator;
-        using const_iterator = DataList::const_iterator;
+        using iterator = typename DataList::iterator;
+        using const_iterator = typename DataList::const_iterator;
         const_iterator begin() { return m_ds.begin();}
         const_iterator end() { return m_ds.end(); }
         void description();
@@ -46,7 +46,7 @@ namespace geovi
             rdf
         };
         DataSetMaker(LoadingMethod lm,const char* url,FileType file_type,Data<T> dataType);
-        void make(DataSet& ds);
+        void make(DataSet<T>& ds);
     
     };
 

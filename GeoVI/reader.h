@@ -19,7 +19,7 @@ namespace geovi
                 
             }
             osmium::io::Reader& getOSMReader();
-           // void readOSMEntityFromHandler(osmium::osm_entity_bits::type osm_ebits,osmium::handler::Hander handler){}
+           // void readOSMEntityFromHandler(osmium::osm_entity_bits::type osm_ebits,osmium::handler::Handler handler){}
             
         private:
             osmium::io::Reader osmium_reader;

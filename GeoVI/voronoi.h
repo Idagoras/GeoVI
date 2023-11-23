@@ -24,7 +24,6 @@ namespace geovi{
     namespace algorithm{
         namespace voronoi_diagram
         {
-
         
             class VoronoiDiagram{
             public:
@@ -32,14 +31,14 @@ namespace geovi{
                 using coordinate_type = double;
                 using VD =  bp::voronoi_diagram<coordinate_type>;
                 using Points = std::vector<Point2>;
-                using Segements = std::vector<Segement>;
+                using Segments = std::vector<Segement>;
                 using Lines = std::vector<Line>;
                 using Matrix = boost::numeric::ublas::matrix<matrix_element_type>;
                 friend class VoronoiDiagramBuilder;
                 VoronoiDiagram(){};
                 Points vertices();
                 Points sites();
-                Segements finiteEdges();
+                Segments finiteEdges();
                 Lines infiniteEdges();
                 std::pair<Point2,bool> cellIncludePoint(Point2 p);
                 std::pair<Segement,bool> edgeIncludePoint(Point2 p);
@@ -67,9 +66,9 @@ namespace geovi{
                 CoordinateSystemConverter converter;                
             };
 
-        } // namespace voronoi_dragram
+        } // namespace voronoi_diagram
         
-    } // namesapce algorithm
+    } // namespace algorithm
 }
 
 #endif

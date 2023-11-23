@@ -4,15 +4,68 @@
 #include "reader.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/geometry/index/rtree.hpp>
-#include <boost/polygon/voronoi.hpp>
-#include "algorithm.h"
 #include <vector>
 #include <string>
+#include "convert.h"
 #include <map>
 
+namespace boost{
+    enum vertex_semantic_sensitivity_t{
+        vertex_semantic_sensitivity = 2042
+    };
+    BOOST_INSTALL_PROPERTY(vertex,semantic_sensitivity);
 
+    enum vertex_location_t{
+        vertex_location = 1111
+    };
+    BOOST_INSTALL_PROPERTY(vertex,location);
+
+}
 namespace geovi
 {
+    namespace algorithm{
+        using namespace boost;
+
+        using VertexDescriptor = adjacency_list_traits<vecS,vecS,undirectedS>::vertex_descriptor;
+        using EdgeDescriptor = adjacency_list_traits<vecS,vecS,undirectedS>::edge_descriptor;
+
+
+        using VertexProperties = property<vertex_name_t,std::string,
+                        property<vertex_index_t,int64_t,
+                        property<vertex_semantic_sensitivity_t,double,
+                        property<vertex_location_t,Point2,
+                        property<vertex_predecessor_t, VertexDescriptor,
+                        property<vertex_distance_t, double>>>>>>;
+
+        using EdgeProperties =  property<edge_name_t,std::string,
+                                property<edge_index_t,int64_t,
+                                property<edge_weight_t,double>>>;
+
+        using Graph = adjacency_list<vecS,vecS,undirectedS,VertexProperties,EdgeProperties>;
+
+
+
+        using VertexNameMap = property_map<Graph,vertex_name_t>::type ;
+        using ConstVertexNameMap = property_map<Graph,vertex_name_t>::const_type ;  
+        using VertexIndexMap = property_map<Graph,vertex_index_t>::type ;
+        using ConstVertexIndexMap = property_map<Graph,vertex_index_t>::const_type ;
+        using VertexSemanticSensitivityMap = property_map<Graph,vertex_semantic_sensitivity_t>::type;
+        using ConstVertexSemanticSensitivityMap = property_map<Graph,vertex_semantic_sensitivity_t>::const_type;
+        using VertexLocationMap = property_map<Graph,vertex_location_t>::type;
+        using ConstVertexLocationMap = property_map<Graph,vertex_location_t>::const_type;
+        using VertexDistanceMap = property_map<Graph,vertex_distance_t>::type;
+        using ConstVertexDistanceMap = property_map<Graph,vertex_distance_t>::const_type;
+        using VertexPredecessorMap = property_map<Graph,vertex_predecessor_t>::type;
+        using ConstVertexPredecessorMap = property_map<Graph,vertex_predecessor_t>::const_type;
+
+
+        using EdgeNameMap = property_map<Graph,edge_name_t>::type ;
+        using ConstEdgeNameMap = property_map<Graph,edge_name_t>::const_type ;
+        using EdgeIndexMap = property_map<Graph,edge_index_t>::type;
+        using ConstEdgeIndexMap = property_map<Graph,edge_index_t>::const_type;
+        using EdgeWeightMap = property_map<Graph,edge_weight_t>::type;
+        using ConstEdgeWeightMap = property_map<Graph,edge_weight_t>::const_type;
+    }
     namespace geo
     {
         namespace map{
@@ -100,7 +153,7 @@ namespace geovi
                 typedef struct {
                     std::string name;
                     map_object_id_type id;
-                    int index = -1;
+                    int64_t index = -1;
                     double semantic_sensitivity = -1;
                     Location loc;
                     std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
@@ -111,10 +164,16 @@ namespace geovi
                     const GeoNode& target;
                     map_object_id_type id;
                     double capacity = 0;
-                    int index = -1;
+                    int64_t index = -1;
                     std::string name;
                     std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
                 } GeoWay;
+
+                typedef struct{
+                    std::vector<GeoNode> nodes;
+                    std::vector<GeoWay> ways;
+                    int64_t index = -1;
+                } GeoRegion;
 
                 typedef std::map<map_object_id_type,GeoNode> NodeMap;
                 GeoMapShapeType shape_type;
@@ -152,15 +211,7 @@ namespace geovi
                 void addWayToGraph(GeoWay& way);
             };   
 
-            
-
-            class GeoVoronoiMap{
-            public:
-                using VoronoiDiagram = boost::polygon::voronoi_diagram<double>;
-            private:
-                VoronoiDiagram vd;
-                
-            };
+        
             
         }   // namespace map
     } // namespace geo

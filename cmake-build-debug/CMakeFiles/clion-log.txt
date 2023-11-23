@@ -1,4 +1,4 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/wuwei/C++/GeoVI -B /Users/wuwei/C++/GeoVI/cmake-build-debug
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/wuwei/workspace/GeoVI -B /Users/wuwei/workspace/GeoVI/cmake-build-debug
 -- The C compiler identification is AppleClang 14.0.3.14030022
 -- The CXX compiler identification is AppleClang 14.0.3.14030022
 -- Detecting C compiler ABI info
@@ -27,4 +27,4 @@
 -- Found CURL: /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libcurl.tbd (found version "7.87.0")  
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/wuwei/C++/GeoVI/cmake-build-debug
+-- Build files have been written to: /Users/wuwei/workspace/GeoVI/cmake-build-debug

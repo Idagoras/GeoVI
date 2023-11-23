@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "/Users/wuwei/C++/GeoVI/lib/libgeovi.a"
+  "/Users/wuwei/workspace/GeoVI/lib/libgeovi.a"
 )

@@ -6,6 +6,7 @@
 #include <string>
 #include <chrono>
 #include <cmath>
+#include <memory>
 
 using namespace NS_PROJ::crs;
 using namespace NS_PROJ::io;
@@ -136,10 +137,10 @@ struct Point2 {
     Point2(double a,double b):x(a),y(b){}
 };
 
-struct Segement{
+struct Segment{
     Point2 p0;
     Point2 p1;
-    Segement(double x1,double y1,double x2,double y2):p0(x1,y1),p1(x2,y2){}
+    Segment(double x1,double y1,double x2,double y2):p0(x1,y1),p1(x2,y2){}
 };
 
 struct Line {
@@ -152,7 +153,7 @@ struct CheckInData {
     int64_t user_id;
     std::chrono::system_clock::time_point timePoint;
     double latitude;
-    double longtitude;
+    double longitude;
     int64_t location_id;
 };
 
@@ -160,11 +161,25 @@ struct CheckInData {
 
 struct TrajectoryPoint {
     double latitude;
-    double longtitude;
-    double feild;
+    double longitude;
+    double field;
     double altitude;
     double days_f;
     std::chrono::system_clock::time_point timePoint;
+};
+
+
+using TransportationMode = enum Mv {
+    walk,
+    bike,
+    bus,
+    car,
+    subway,
+    train,
+    airplane,
+    boat,
+    run,
+    motorcycle
 };
 
 using TransportationModeLabel = struct TransportationModeLabel {
@@ -180,18 +195,6 @@ struct Trajectory{
     std::vector<TrajectoryPoint> tj_points;
 };
 
-using TransportationMode = enum Mv {
-    walk,
-    bike,
-    bus,
-    car,
-    subway,
-    train,
-    airplane,
-    boat,
-    run,
-    motorcycle
-};
 
 class CoordinateSystemConverter{
 public:
@@ -208,7 +211,7 @@ private:
     
 };
 
-class DistanceCaculator{
+class DistanceCalculator{
 public:
     inline static double euclidDistance2D(const Point2& p1,const Point2& p2){
         return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2));

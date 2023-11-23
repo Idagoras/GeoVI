@@ -82,15 +82,15 @@ VoronoiDiagram::Points VoronoiDiagram::sites(){
     return points;
 }
 
-VoronoiDiagram::Segements VoronoiDiagram::finiteEdges(){
-    VoronoiDiagram::Segements segements;
+VoronoiDiagram::Segments VoronoiDiagram::finiteEdges(){
+    VoronoiDiagram::Segments segments;
     for(auto it = vd.edges().begin(); it != vd.edges().end(); it ++ ){
         if( it->is_finite()){
-            Segement segement = Segement(it->vertex0()->x(),it->vertex0()->y(),it->vertex1()->x(),it->vertex1()->y());
-            segements.push_back(segement);
+            Segment segment = Segment(it->vertex0()->x(),it->vertex0()->y(),it->vertex1()->x(),it->vertex1()->y());
+            segments.push_back(segment);
         }  
     }
-    return segements;
+    return segments;
 }
 
 VoronoiDiagram::Lines VoronoiDiagram::infiniteEdges(){

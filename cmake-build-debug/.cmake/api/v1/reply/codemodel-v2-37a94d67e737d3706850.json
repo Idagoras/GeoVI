@@ -41,14 +41,14 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Test::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Test-Debug-84b74240ee0fca098521.json",
+					"jsonFile" : "target-Test-Debug-2547a80af2057d01442e.json",
 					"name" : "Test",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "geovi::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-geovi-Debug-e8944acd52f3fc9b14f4.json",
+					"jsonFile" : "target-geovi-Debug-321a743b9e2a6815d342.json",
 					"name" : "geovi",
 					"projectIndex" : 0
 				}
@@ -58,8 +58,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/Users/wuwei/C++/GeoVI/cmake-build-debug",
-		"source" : "/Users/wuwei/C++/GeoVI"
+		"build" : "/Users/wuwei/workspace/GeoVI/cmake-build-debug",
+		"source" : "/Users/wuwei/workspace/GeoVI"
 	},
 	"version" : 
 	{

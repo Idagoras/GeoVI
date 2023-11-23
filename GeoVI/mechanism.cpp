@@ -1,22 +1,24 @@
 #include "GeoVI/mechanism.h"
 #include "GeoVI/algorithm.h"
 
+
 namespace gam  = geovi::algorithm::mechanism;
 namespace ggm  = geovi::geo::map;
 namespace gad  = geovi::algorithm::distance;
 
+using namespace geovi::algorithm::sample;
 
 
-void caculatePriorDistribution(ggm::GeoMap& map,gam::Mechanism::DiscreteDistribution& dist){
+void calculatePriorDistribution(ggm::GeoMap& map,gam::Mechanism::DiscreteDistribution& dist){
     
 }
 
 gam::GEM::GEM(geovi::geo::map::GeoMap& map):geomap(map){
-    caculatePriorDistribution(map,prior);
+    calculatePriorDistribution(map,prior);
 }
 
 void gam::GEM::buildDistribution(float _epsilon){
-    // gad::ShortestPathCaculator().caculateShortestPath();
+    // gad::ShortestPathCalculator().calculateShortestPath();
     dist = std::vector<double>(prior.capacity());
     int64_t index = 0 ;
     double mass_sum = 0;
@@ -32,5 +34,7 @@ void gam::GEM::buildDistribution(float _epsilon){
 }
 
 geovi::CheckInData gam::GEM::computer(const geovi::CheckInData& check_in_data){
-
+    // 扰动到一个维诺区域
+    int sample_result = DiscreteDistributionSampler::SampleFromDiscreteDistribution(dist);
+    // 从扰动后的维诺区域中选择一个满足语义的点
 }

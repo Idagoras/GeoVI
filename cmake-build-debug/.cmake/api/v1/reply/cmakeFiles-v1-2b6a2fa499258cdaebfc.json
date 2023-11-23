@@ -1396,8 +1396,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/Users/wuwei/C++/GeoVI/cmake-build-debug",
-		"source" : "/Users/wuwei/C++/GeoVI"
+		"build" : "/Users/wuwei/workspace/GeoVI/cmake-build-debug",
+		"source" : "/Users/wuwei/workspace/GeoVI"
 	},
 	"version" : 
 	{

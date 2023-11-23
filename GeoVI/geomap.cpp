@@ -12,6 +12,7 @@
 #include <utility>
 #include <tuple>
 #include "language.h"
+#include "convert.h"
 
 
 
@@ -239,10 +240,10 @@ const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
 }
 void GeoMap::addNodeToGraph(GeoNode& node){
     VertexDescriptor v = add_vertex(graph);
-    VertexNameMap name_map = get(vertex_name,graph);
+    auto name_map = get(vertex_name,graph);
     name_map[v] = node.name;
 
-    VertexLocationMap location_map = get(vertex_location,graph);
+    auto location_map = get(vertex_location,graph);
     location_map[v] = Point2{node.loc.latitude,node.loc.longitude};
 
 }
@@ -253,8 +254,8 @@ void GeoMap::addWayToGraph(GeoWay& way){
     auto sr_vertex_descriptor = vertex(sr_index,graph);
     auto tg_vertex_descriptor = vertex(tg_index,graph);
     EdgeDescriptor e = add_edge(sr_vertex_descriptor,tg_vertex_descriptor,graph).first;
-    EdgeWeightMap weight_map = get(edge_weight,graph);
+    auto weight_map = get(edge_weight,graph);
     weight_map[e] = way.capacity;
-    EdgeNameMap name_map = get(edge_name,graph);
+    auto name_map = get(edge_name,graph);
     name_map[e] = way.name;
 }

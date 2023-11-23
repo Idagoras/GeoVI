@@ -36,7 +36,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /Users/wuwei/C++/GeoVI/cmake-build-debug/
+cmake_ninja_workdir = /Users/wuwei/workspace/GeoVI/cmake-build-debug/
 # =============================================================================
 # Object build statements for STATIC_LIBRARY target geovi
 
@@ -46,61 +46,61 @@ cmake_ninja_workdir = /Users/wuwei/C++/GeoVI/cmake-build-debug/
 
 build cmake_object_order_depends_target_geovi: phony || CMakeFiles/geovi.dir
 
-build CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/C++/GeoVI/GeoVI/algorithm.cpp || cmake_object_order_depends_target_geovi
+build CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/algorithm.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+  INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
   TARGET_COMPILE_PDB = CMakeFiles/geovi.dir/geovi.pdb
   TARGET_PDB = ../lib/libgeovi.pdb
 
-build CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/C++/GeoVI/GeoVI/convert.cpp || cmake_object_order_depends_target_geovi
+build CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/convert.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/convert.cpp.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+  INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
   TARGET_COMPILE_PDB = CMakeFiles/geovi.dir/geovi.pdb
   TARGET_PDB = ../lib/libgeovi.pdb
 
-build CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/C++/GeoVI/GeoVI/geomap.cpp || cmake_object_order_depends_target_geovi
+build CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/geomap.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+  INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
   TARGET_COMPILE_PDB = CMakeFiles/geovi.dir/geovi.pdb
   TARGET_PDB = ../lib/libgeovi.pdb
 
-build CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/C++/GeoVI/GeoVI/mechanism.cpp || cmake_object_order_depends_target_geovi
+build CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/mechanism.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+  INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
   TARGET_COMPILE_PDB = CMakeFiles/geovi.dir/geovi.pdb
   TARGET_PDB = ../lib/libgeovi.pdb
 
-build CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/C++/GeoVI/GeoVI/reader.cpp || cmake_object_order_depends_target_geovi
+build CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/reader.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/reader.cpp.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+  INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
   TARGET_COMPILE_PDB = CMakeFiles/geovi.dir/geovi.pdb
   TARGET_PDB = ../lib/libgeovi.pdb
 
-build CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/C++/GeoVI/GeoVI/voronoi.cpp || cmake_object_order_depends_target_geovi
+build CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/voronoi.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+  INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
   TARGET_COMPILE_PDB = CMakeFiles/geovi.dir/geovi.pdb
@@ -133,11 +133,11 @@ build ../lib/libgeovi.a: CXX_STATIC_LIBRARY_LINKER__geovi_Debug CMakeFiles/geovi
 
 build cmake_object_order_depends_target_Test: phony || cmake_object_order_depends_target_geovi
 
-build CMakeFiles/Test.dir/test/test.cc.o: CXX_COMPILER__Test_Debug /Users/wuwei/C++/GeoVI/test/test.cc || cmake_object_order_depends_target_Test
+build CMakeFiles/Test.dir/test/test.cc.o: CXX_COMPILER__Test_Debug /Users/wuwei/workspace/GeoVI/test/test.cc || cmake_object_order_depends_target_Test
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/Test.dir/test/test.cc.o.d
   FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/Users/wuwei/C++/GeoVI -isystem /usr/local/include
+  INCLUDES = -I/Users/wuwei/workspace/GeoVI -isystem /usr/local/include
   OBJECT_DIR = CMakeFiles/Test.dir
   OBJECT_FILE_DIR = CMakeFiles/Test.dir/test
   TARGET_COMPILE_PDB = CMakeFiles/Test.dir/
@@ -166,7 +166,7 @@ build ../bin/Test: CXX_EXECUTABLE_LINKER__Test_Debug CMakeFiles/Test.dir/test/te
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/wuwei/C++/GeoVI/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /Users/wuwei/workspace/GeoVI/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -177,7 +177,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /Users/wuwei/C++/GeoVI/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/wuwei/C++/GeoVI -B/Users/wuwei/C++/GeoVI/cmake-build-debug
+  COMMAND = cd /Users/wuwei/workspace/GeoVI/cmake-build-debug && /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S/Users/wuwei/workspace/GeoVI -B/Users/wuwei/workspace/GeoVI/cmake-build-debug
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -199,7 +199,7 @@ build libgeovi.a: phony ../lib/libgeovi.a
 # =============================================================================
 
 #############################################
-# Folder: /Users/wuwei/C++/GeoVI/cmake-build-debug
+# Folder: /Users/wuwei/workspace/GeoVI/cmake-build-debug
 
 build all: phony ../lib/libgeovi.a ../bin/Test
 

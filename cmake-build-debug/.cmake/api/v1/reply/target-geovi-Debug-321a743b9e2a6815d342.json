@@ -3,7 +3,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/Users/wuwei/C++/GeoVI/lib/libgeovi.a"
+			"path" : "/Users/wuwei/workspace/GeoVI/lib/libgeovi.a"
 		}
 	],
 	"backtrace" : 1,
@@ -84,7 +84,7 @@
 				},
 				{
 					"backtrace" : 5,
-					"path" : "/Users/wuwei/C++/GeoVI"
+					"path" : "/Users/wuwei/workspace/GeoVI"
 				}
 			],
 			"language" : "CXX",

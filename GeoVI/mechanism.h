@@ -12,7 +12,7 @@ namespace geovi {
         namespace mechanism {
             enum Attack {
                 Optimal,
-                Beyans
+                Bayesian
             };
 
             enum DistanceMeasurement {

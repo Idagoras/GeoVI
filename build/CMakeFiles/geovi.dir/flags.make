@@ -4,7 +4,7 @@
 # compile CXX with /Library/Developer/CommandLineTools/usr/bin/c++
 CXX_DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
 
-CXX_INCLUDES = -I/usr/local/include -I/Users/wuwei/C++/GeoVI
+CXX_INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
 
 CXX_FLAGS =  -std=c++11 -std=c++14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
 

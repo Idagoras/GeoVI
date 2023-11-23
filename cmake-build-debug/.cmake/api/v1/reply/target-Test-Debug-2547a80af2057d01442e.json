@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/Users/wuwei/C++/GeoVI/bin/Test"
+			"path" : "/Users/wuwei/workspace/GeoVI/bin/Test"
 		}
 	],
 	"backtrace" : 1,
@@ -86,7 +86,7 @@
 			[
 				{
 					"backtrace" : 6,
-					"path" : "/Users/wuwei/C++/GeoVI"
+					"path" : "/Users/wuwei/workspace/GeoVI"
 				},
 				{
 					"backtrace" : 6,

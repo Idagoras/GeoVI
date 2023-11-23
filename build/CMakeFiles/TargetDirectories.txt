@@ -1,4 +1,4 @@
-/Users/wuwei/C++/GeoVI/build/CMakeFiles/geovi.dir
-/Users/wuwei/C++/GeoVI/build/CMakeFiles/Test.dir
-/Users/wuwei/C++/GeoVI/build/CMakeFiles/edit_cache.dir
-/Users/wuwei/C++/GeoVI/build/CMakeFiles/rebuild_cache.dir
+/Users/wuwei/workspace/GeoVI/build/CMakeFiles/geovi.dir
+/Users/wuwei/workspace/GeoVI/build/CMakeFiles/Test.dir
+/Users/wuwei/workspace/GeoVI/build/CMakeFiles/edit_cache.dir
+/Users/wuwei/workspace/GeoVI/build/CMakeFiles/rebuild_cache.dir
