@@ -31,26 +31,28 @@ namespace geovi{
                 using coordinate_type = double;
                 using VD =  bp::voronoi_diagram<coordinate_type>;
                 using Points = std::vector<Point2>;
-                using Segments = std::vector<Segement>;
+                using Segments = std::vector<Segment>;
                 using Lines = std::vector<Line>;
                 using Matrix = boost::numeric::ublas::matrix<matrix_element_type>;
+                using CellIndex = int64_t;
                 friend class VoronoiDiagramBuilder;
                 VoronoiDiagram(){};
+                inline int64_t sites_num(){return m_points.capacity();};
                 Points vertices();
                 Points sites();
+                std::vector<CellIndex> neighbors(CellIndex index);
                 Segments finiteEdges();
                 Lines infiniteEdges();
-                std::pair<Point2,bool> cellIncludePoint(Point2 p);
-                std::pair<Segement,bool> edgeIncludePoint(Point2 p);
+                std::pair<Point2,CellIndex> cellIncludePoint(Point2 p);
                 Matrix shortestPathBetweenCells();
 
                 
                 
                 
             private:
-                VD vd;
-                Points points;
-                Matrix spaths;
+                VD m_vd;
+                Points m_points;
+                Matrix m_shortest_paths;
             };
 
             class VoronoiDiagramBuilder{

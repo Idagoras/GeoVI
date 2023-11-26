@@ -87,7 +87,7 @@ namespace geovi
                     Landuse, // This is used to describe the purpose for which an area of land is being used. 
                     Leisure, // This is used to tag leisure and sports facilities.
                     Man_made, // A tag for identifying man made (artificial) structures that are added to the landscape.
-                    Millitary, // This is used for facilities and on land used by the military.
+                    Military, // This is used for facilities and on land used by the military.
                     Natural, // This is used to describe natural and physical land features.
                     Office, // An office is a place of business where administrative or professional work is carried out.
                     Place, // This is used mainly to give details about settlements. 
@@ -187,8 +187,11 @@ namespace geovi
                 bool addWay(GeoWay way);
                 bool hasNode(map_object_id_type node_id);
                 const GeoNode* getNode(map_object_id_type node_id);
+                // 返回地图中所有点的WGS84坐标集合
                 std::vector<Point2> getNodes();
-                
+                // 返回地图中所有店的信息集合
+                std::vector<const GeoNode*> getGeoNodes();
+
 
 
 
@@ -198,7 +201,7 @@ namespace geovi
 
             private:
                 geovi::algorithm::Graph graph;
-                NodeMap nodemap;
+                NodeMap m_node_map;
                 int nodes_num;
                 int ways_num;
                 int relations_num;

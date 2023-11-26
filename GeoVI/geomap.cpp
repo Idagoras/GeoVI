@@ -37,7 +37,7 @@ static vector<pair<string,OSMMapFeature>> feature_with_name_string = {
     make_pair("landuse",OSMMapFeature::Landuse),
     make_pair("leisure",OSMMapFeature::Leisure),
     make_pair("man_made",OSMMapFeature::Man_made),
-    make_pair("millitary",OSMMapFeature::Millitary),
+    make_pair("military",OSMMapFeature::Military),
     make_pair("natural",OSMMapFeature::Natural),
     make_pair("office",OSMMapFeature::Office),
     make_pair("place",OSMMapFeature::Place),
@@ -207,7 +207,7 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):sh
 
 bool GeoMap::addNode(GeoNode node){
     if( !hasNode(node.id)){
-        nodemap.insert(pair<map_object_id_type,GeoNode>(node.id,node));
+        m_node_map.insert(pair<map_object_id_type,GeoNode>(node.id, node));
         addNodeToGraph(node);        
         nodes_num ++;                                                                                          
         return true;
@@ -221,7 +221,7 @@ bool GeoMap::addWay(GeoWay way){
     CoordinateSystemConverter converter(LongitudeBands::band_31);
     converter.convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,sp);
     converter.convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,tp);
-    way.capacity = DistanceCaculator::euclidDistance2D(sp,tp);
+    way.capacity = DistanceCalculator::euclidDistance2D(sp,tp);
     way.index = ways_num;
     addWayToGraph(way);
     ways_num ++;
@@ -229,12 +229,12 @@ bool GeoMap::addWay(GeoWay way){
 }
 
 bool GeoMap::hasNode(GeoMap::map_object_id_type node_id){
-    return nodemap.find(node_id) != nodemap.end();
+    return m_node_map.find(node_id) != m_node_map.end();
 }
 
 const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
     if( hasNode(node_id) ){
-        return &(nodemap.find(node_id)->second);
+        return &(m_node_map.find(node_id)->second);
     }
     return NULL;
 }
@@ -258,4 +258,21 @@ void GeoMap::addWayToGraph(GeoWay& way){
     weight_map[e] = way.capacity;
     auto name_map = get(edge_name,graph);
     name_map[e] = way.name;
+}
+
+std::vector<const GeoMap::GeoNode *> GeoMap::getGeoNodes() {
+    std::vector<const GeoNode*> nodes;
+    for(const auto& pair : m_node_map){
+        nodes.push_back(&pair.second);
+    }
+    return nodes;
+}
+
+std::vector<Point2> GeoMap::getNodes() {
+    std::vector<Point2> nodes;
+    auto geo_nodes = getGeoNodes();
+    for(auto node : geo_nodes){
+        nodes.push_back(Point2{node->loc.latitude,node->loc.longitude});
+    }
+    return nodes;
 }
