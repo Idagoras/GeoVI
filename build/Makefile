@@ -130,17 +130,30 @@ geovi/fast:
 .PHONY : geovi/fast
 
 #=============================================================================
-# Target rules for targets named Test
+# Target rules for targets named Test_Map
 
 # Build rule for target.
-Test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test
-.PHONY : Test
+Test_Map: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test_Map
+.PHONY : Test_Map
 
 # fast build rule for target.
-Test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/build
-.PHONY : Test/fast
+Test_Map/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/build
+.PHONY : Test_Map/fast
+
+#=============================================================================
+# Target rules for targets named Test_Converter
+
+# Build rule for target.
+Test_Converter: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test_Converter
+.PHONY : Test_Converter
+
+# fast build rule for target.
+Test_Converter/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/build
+.PHONY : Test_Converter/fast
 
 GeoVI/algorithm.o: GeoVI/algorithm.cpp.o
 .PHONY : GeoVI/algorithm.o
@@ -286,29 +299,53 @@ GeoVI/voronoi.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.s
 .PHONY : GeoVI/voronoi.cpp.s
 
-test/test.o: test/test.cc.o
-.PHONY : test/test.o
+test/test_converter.o: test/test_converter.cc.o
+.PHONY : test/test_converter.o
 
 # target to build an object file
-test/test.cc.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/test/test.cc.o
-.PHONY : test/test.cc.o
+test/test_converter.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.o
+.PHONY : test/test_converter.cc.o
 
-test/test.i: test/test.cc.i
-.PHONY : test/test.i
+test/test_converter.i: test/test_converter.cc.i
+.PHONY : test/test_converter.i
 
 # target to preprocess a source file
-test/test.cc.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/test/test.cc.i
-.PHONY : test/test.cc.i
+test/test_converter.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.i
+.PHONY : test/test_converter.cc.i
 
-test/test.s: test/test.cc.s
-.PHONY : test/test.s
+test/test_converter.s: test/test_converter.cc.s
+.PHONY : test/test_converter.s
 
 # target to generate assembly for a file
-test/test.cc.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/test/test.cc.s
-.PHONY : test/test.cc.s
+test/test_converter.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/test/test_converter.cc.s
+.PHONY : test/test_converter.cc.s
+
+test/test_map.o: test/test_map.cc.o
+.PHONY : test/test_map.o
+
+# target to build an object file
+test/test_map.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/test/test_map.cc.o
+.PHONY : test/test_map.cc.o
+
+test/test_map.i: test/test_map.cc.i
+.PHONY : test/test_map.i
+
+# target to preprocess a source file
+test/test_map.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/test/test_map.cc.i
+.PHONY : test/test_map.cc.i
+
+test/test_map.s: test/test_map.cc.s
+.PHONY : test/test_map.s
+
+# target to generate assembly for a file
+test/test_map.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/test/test_map.cc.s
+.PHONY : test/test_map.cc.s
 
 # Help Target
 help:
@@ -318,7 +355,8 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... Test"
+	@echo "... Test_Converter"
+	@echo "... Test_Map"
 	@echo "... geovi"
 	@echo "... GeoVI/algorithm.o"
 	@echo "... GeoVI/algorithm.i"
@@ -338,9 +376,12 @@ help:
 	@echo "... GeoVI/voronoi.o"
 	@echo "... GeoVI/voronoi.i"
 	@echo "... GeoVI/voronoi.s"
-	@echo "... test/test.o"
-	@echo "... test/test.i"
-	@echo "... test/test.s"
+	@echo "... test/test_converter.o"
+	@echo "... test/test_converter.i"
+	@echo "... test/test_converter.s"
+	@echo "... test/test_map.o"
+	@echo "... test/test_map.i"
+	@echo "... test/test_map.s"
 .PHONY : help
 
 

@@ -64,7 +64,8 @@ CMAKE_BINARY_DIR = /Users/wuwei/workspace/GeoVI/build
 
 # The main recursive "all" target.
 all: CMakeFiles/geovi.dir/all
-all: CMakeFiles/Test.dir/all
+all: CMakeFiles/Test_Map.dir/all
+all: CMakeFiles/Test_Converter.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,7 +74,8 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/geovi.dir/clean
-clean: CMakeFiles/Test.dir/clean
+clean: CMakeFiles/Test_Map.dir/clean
+clean: CMakeFiles/Test_Converter.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -83,7 +85,7 @@ clean: CMakeFiles/Test.dir/clean
 CMakeFiles/geovi.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/geovi.dir/build.make CMakeFiles/geovi.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/wuwei/workspace/GeoVI/build/CMakeFiles --progress-num=3,4,5,6,7,8,9 "Built target geovi"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/wuwei/workspace/GeoVI/build/CMakeFiles --progress-num=5,6,7,8,9,10,11 "Built target geovi"
 .PHONY : CMakeFiles/geovi.dir/all
 
 # Build rule for subdir invocation for target.
@@ -103,30 +105,56 @@ CMakeFiles/geovi.dir/clean:
 .PHONY : CMakeFiles/geovi.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/Test.dir
+# Target rules for target CMakeFiles/Test_Map.dir
 
 # All Build rule for target.
-CMakeFiles/Test.dir/all: CMakeFiles/geovi.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/wuwei/workspace/GeoVI/build/CMakeFiles --progress-num=1,2 "Built target Test"
-.PHONY : CMakeFiles/Test.dir/all
+CMakeFiles/Test_Map.dir/all: CMakeFiles/geovi.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/wuwei/workspace/GeoVI/build/CMakeFiles --progress-num=3,4 "Built target Test_Map"
+.PHONY : CMakeFiles/Test_Map.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/Test.dir/rule: cmake_check_build_system
+CMakeFiles/Test_Map.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/wuwei/workspace/GeoVI/build/CMakeFiles 9
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Test.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Test_Map.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/wuwei/workspace/GeoVI/build/CMakeFiles 0
-.PHONY : CMakeFiles/Test.dir/rule
+.PHONY : CMakeFiles/Test_Map.dir/rule
 
 # Convenience name for target.
-Test: CMakeFiles/Test.dir/rule
-.PHONY : Test
+Test_Map: CMakeFiles/Test_Map.dir/rule
+.PHONY : Test_Map
 
 # clean rule for target.
-CMakeFiles/Test.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test.dir/build.make CMakeFiles/Test.dir/clean
-.PHONY : CMakeFiles/Test.dir/clean
+CMakeFiles/Test_Map.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/clean
+.PHONY : CMakeFiles/Test_Map.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/Test_Converter.dir
+
+# All Build rule for target.
+CMakeFiles/Test_Converter.dir/all: CMakeFiles/geovi.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/wuwei/workspace/GeoVI/build/CMakeFiles --progress-num=1,2 "Built target Test_Converter"
+.PHONY : CMakeFiles/Test_Converter.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/Test_Converter.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/wuwei/workspace/GeoVI/build/CMakeFiles 9
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/Test_Converter.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/wuwei/workspace/GeoVI/build/CMakeFiles 0
+.PHONY : CMakeFiles/Test_Converter.dir/rule
+
+# Convenience name for target.
+Test_Converter: CMakeFiles/Test_Converter.dir/rule
+.PHONY : Test_Converter
+
+# clean rule for target.
+CMakeFiles/Test_Converter.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Converter.dir/build.make CMakeFiles/Test_Converter.dir/clean
+.PHONY : CMakeFiles/Test_Converter.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -198,16 +198,15 @@ struct Trajectory{
 
 class CoordinateSystemConverter{
 public:
-    CoordinateSystemConverter(){};
-    CoordinateSystemConverter(LongitudeBands bd):band(bd){};
-    bool convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point);
+    CoordinateSystemConverter();
+    CoordinateSystemConverter(LongitudeBands bd);
+    void convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point);
 
     
 private:
     LongitudeBands band;
-    DatabaseContextNNPtr dbContext = DatabaseContext::create();
-    bool convertBetweenWGS84AndUTM(Point2& point);
-    bool convertBetweenUTMAndWGS84(Point2& point);
+    void convertBetweenWGS84AndUTM(Point2& point);
+    void convertBetweenUTMAndWGS84(Point2& point);
     
 };
 

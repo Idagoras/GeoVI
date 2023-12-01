@@ -8,6 +8,8 @@
 #include <string>
 #include "convert.h"
 #include <map>
+#include <memory>
+#include <limits>
 
 namespace boost{
     enum vertex_semantic_sensitivity_t{
@@ -150,16 +152,17 @@ namespace geovi
                     Location top_left_vertex;
                 } Rectangle;
                 
-                typedef struct {
+                typedef struct GeoNode{
                     std::string name;
                     map_object_id_type id;
                     int64_t index = -1;
                     double semantic_sensitivity = -1;
                     Location loc;
+                    Point2 utm_xy;
                     std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
                 } GeoNode;
 
-                typedef struct {
+                typedef struct GeoWay{
                     const GeoNode& source;
                     const GeoNode& target;
                     map_object_id_type id;
@@ -169,19 +172,24 @@ namespace geovi
                     std::vector<std::tuple<std::string,OSMMapFeature,std::string>> features;
                 } GeoWay;
 
-                typedef struct{
-                    std::vector<GeoNode> nodes;
-                    std::vector<GeoWay> ways;
-                    int64_t index = -1;
-                } GeoRegion;
+                typedef struct GeoGrid{
+                    std::vector<const GeoNode*> nodes;
+                    std::vector<const GeoWay*> ways;
+                    Point2 index_xy ;
+                } GeoGrid;
 
                 typedef std::map<map_object_id_type,GeoNode> NodeMap;
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
 
-                inline int numOfNodes(){
+                inline int64_t numOfNodes(){
+
                     return nodes_num;
+                }
+
+                inline int64_t numOfWays(){
+                    return ways_num;
                 }
                 bool addNode(GeoNode node);
                 bool addWay(GeoWay way);
@@ -189,9 +197,9 @@ namespace geovi
                 const GeoNode* getNode(map_object_id_type node_id);
                 // 返回地图中所有点的WGS84坐标集合
                 std::vector<Point2> getNodes();
-                // 返回地图中所有店的信息集合
-                std::vector<const GeoNode*> getGeoNodes();
-
+                // 返回地图中所有顶点的信息集合
+                std::vector<GeoNode*> getGeoNodes();
+                std::vector<double> shortestPathsDistance(double latitude,double longitude);
 
 
 
@@ -202,14 +210,16 @@ namespace geovi
             private:
                 geovi::algorithm::Graph graph;
                 NodeMap m_node_map;
+                std::vector<GeoNode*> m_geo_nodes;
                 int nodes_num;
                 int ways_num;
                 int relations_num;
-                float max_lat;
-                float max_lon;
-                float min_lat;
-                float min_lon;
+                float m_max_x = std::numeric_limits<float>::min();
+                float m_max_y = std::numeric_limits<float>::min();
+                float m_min_x = std::numeric_limits<float>::max();
+                float m_min_y = std::numeric_limits<float>::max();
 
+               std::vector<std::vector<GeoGrid>> m_grids;
                 void addNodeToGraph(GeoNode& node);
                 void addWayToGraph(GeoWay& way);
             };   

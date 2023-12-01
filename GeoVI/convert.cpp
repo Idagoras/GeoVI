@@ -2,6 +2,7 @@
 #include <proj/crs.hpp>
 #include <proj/io.hpp>
 #include <proj/util.hpp>
+#include <proj.h>
 #include <vector>
 #include <cmath>
 #include <sstream>
@@ -9,74 +10,94 @@
 #include <iomanip>
 
 
+
+
+
 using namespace geovi;
 
-bool CoordinateSystemConverter::convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point){
+static PJ* P_GIS_WGS84_TO_UTM;
+static PJ* P_GIS_UTM_TO_WGS84;
+
+void init_pj(int64_t utm_epsg_num){
+    std::string epsg_str = std::string("EPSG:").append(std::to_string(utm_epsg_num));
+    P_GIS_WGS84_TO_UTM = proj_create_crs_to_crs(PJ_DEFAULT_CTX,"EPSG:4326",epsg_str.c_str(),NULL);
+    if( P_GIS_WGS84_TO_UTM == 0 ){
+        std::cout << "init converter <wgs84 to utm> failed" << std::endl;
+    }else{
+        PJ* P_for_GIS = proj_normalize_for_visualization(PJ_DEFAULT_CTX,P_GIS_WGS84_TO_UTM);
+        if(P_for_GIS == 0){
+            std::cout << "normalize converter < wgs84 to utm failed> " << std::endl;
+            proj_destroy(P_GIS_WGS84_TO_UTM);
+        }else {
+            proj_destroy(P_GIS_WGS84_TO_UTM);
+            P_GIS_WGS84_TO_UTM = P_for_GIS;
+        }
+    }
+
+    P_GIS_UTM_TO_WGS84 = proj_create_crs_to_crs(PJ_DEFAULT_CTX,epsg_str.c_str(),"EPSG:4326",NULL);
+    if(P_GIS_UTM_TO_WGS84 == 0){
+        std::cout << "init converter < utm to wgs84 > failed" << std::endl;
+    }else{
+        PJ* P_for_GIS = proj_normalize_for_visualization(PJ_DEFAULT_CTX,P_GIS_UTM_TO_WGS84);
+        if(P_for_GIS == 0){
+            std::cout << "normalize converter < utm to wgs84 failed> " << std::endl;
+            proj_destroy(P_GIS_UTM_TO_WGS84);
+        }else {
+            proj_destroy(P_GIS_UTM_TO_WGS84);
+            P_GIS_UTM_TO_WGS84 = P_for_GIS;
+        }
+    }
+
+}
+
+
+void proj_convert_wgs84_to_utm(double lat,double lon,Point2& p){
+    PJ_COORD c,c_out;
+    c.lpzt.lam = lon;
+    c.lpzt.phi = lat;
+    c.lpzt.z = 0.0;
+    c.lpzt.t = HUGE_VAL;
+    c_out = proj_trans(P_GIS_WGS84_TO_UTM,PJ_FWD,c);
+    p.x = c_out.xy.x;
+    p.y = c_out.xy.y;
+}
+
+void  proj_convert_utm_to_wgs84(double x,double y,Point2& p){
+    PJ_COORD  c,c_out;
+    c.xy.x = x;
+    c.xy.y = y;
+    c_out = proj_trans(P_GIS_UTM_TO_WGS84,PJ_FWD,c);
+    p.y = c.lp.lam;
+    p.x = c.lp.phi;
+}
+
+CoordinateSystemConverter::CoordinateSystemConverter() {
+    init_pj(LongitudeBands::band_14);
+}
+
+CoordinateSystemConverter::CoordinateSystemConverter(geovi::LongitudeBands bd):band(bd) {
+    init_pj(bd);
+}
+
+void CoordinateSystemConverter::convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point){
     if( srcCRS == CoordinateSystemType::WGS84 && targetCRS == CoordinateSystemType::UTM){
-        return convertBetweenWGS84AndUTM(point);
+        convertBetweenWGS84AndUTM(point);
     }
     if( srcCRS == CoordinateSystemType::UTM && targetCRS == CoordinateSystemType::WGS84){
-        return convertBetweenUTMAndWGS84(point);
+        convertBetweenUTMAndWGS84(point);
     }
-    return false;
 }
 
-bool CoordinateSystemConverter::convertBetweenUTMAndWGS84(Point2& point){
-    
-   // auto dbContext = DatabaseContext::create();
-    auto authFactory = AuthorityFactory::create(dbContext,std::string());
-    auto coord_op_ctxt = CoordinateOperationContext::create(authFactory,nullptr,0.0);
-    auto authFactoryEPSG = AuthorityFactory::create(dbContext,"EPSG");
-    auto sourceCRS = authFactoryEPSG->createCoordinateReferenceSystem(std::to_string(int(band)));
-    auto targetCRS = authFactoryEPSG->createCoordinateReferenceSystem("4326");
-    auto list = CoordinateOperationFactory::create()->createOperations(
-        sourceCRS, targetCRS, coord_op_ctxt);
-    if(list.empty()){
-        return false;
-    }
-    PJ_CONTEXT *ctx = proj_context_create();
-    auto transformer = list[0]->coordinateTransformer(ctx);
-    PJ_COORD c = {{
-        point.x,
-        point.y,
-        0.0,
-        HUGE_VAL
-    }};
-    c = transformer->transform(c);
-    point.x = c.v[0];
-    point.y = c.v[1];
-    proj_context_destroy(ctx);
+void CoordinateSystemConverter::convertBetweenUTMAndWGS84(Point2& point){
+    proj_convert_utm_to_wgs84(point.x,point.y,point);
 
-    return true;
+
+
 }
 
-bool CoordinateSystemConverter::convertBetweenWGS84AndUTM(Point2& point){
-    
-    //auto dbContext = DatabaseContext::create();
-    auto authFactory = AuthorityFactory::create(dbContext,std::string());
-    auto coord_op_ctxt = CoordinateOperationContext::create(authFactory,nullptr,0.0);
-    auto authFactoryEPSG = AuthorityFactory::create(dbContext,"EPSG");
-    auto sourceCRS = authFactoryEPSG->createCoordinateReferenceSystem("4326");
-    auto targetCRS = authFactoryEPSG->createCoordinateReferenceSystem(std::to_string(int(band)));
-    auto list = CoordinateOperationFactory::create()->createOperations(
-        sourceCRS, targetCRS, coord_op_ctxt);
-    if(list.empty()){
-        return false;
-    }
-    PJ_CONTEXT *ctx = proj_context_create();
-    auto transformer = list[0]->coordinateTransformer(ctx);
-    PJ_COORD c = {{
-        point.x,
-        point.y,
-        0.0,
-        HUGE_VAL
-    }};
-    c = transformer->transform(c);
-    point.x = c.v[0];
-    point.y = c.v[1];
-    proj_context_destroy(ctx);
+void CoordinateSystemConverter::convertBetweenWGS84AndUTM(Point2& point){
+    proj_convert_wgs84_to_utm(point.x,point.y,point);
 
-    return true;
 }
 
 std::chrono::system_clock::time_point StringAndTimeConverter::convertStringToTime(const std::string& timeStr,const char* fmt){
