@@ -163,8 +163,8 @@ namespace geovi
                 } GeoNode;
 
                 typedef struct GeoWay{
-                    const GeoNode& source;
-                    const GeoNode& target;
+                    const GeoNode* source;
+                    const GeoNode* target;
                     map_object_id_type id;
                     double capacity = 0;
                     int64_t index = -1;
@@ -179,6 +179,7 @@ namespace geovi
                 } GeoGrid;
 
                 typedef std::map<map_object_id_type,GeoNode> NodeMap;
+                typedef std::map<map_object_id_type,GeoWay> WayMap;
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
@@ -191,12 +192,16 @@ namespace geovi
                 inline int64_t numOfWays(){
                     return ways_num;
                 }
+
+                std::vector<const GeoNode* > find(int radius_metre,double utm_x,double utm_y);
+
                 bool addNode(GeoNode node);
                 bool addWay(GeoWay way);
                 bool hasNode(map_object_id_type node_id);
+                bool hasWay(map_object_id_type way_id);
                 const GeoNode* getNode(map_object_id_type node_id);
-                // 返回地图中所有点的WGS84坐标集合
-                std::vector<Point2> getNodes();
+                // 返回地图中所有点的utm坐标集合
+                std::vector<Point2> getUTMNodesCoordinate();
                 // 返回地图中所有顶点的信息集合
                 std::vector<GeoNode*> getGeoNodes();
                 std::vector<double> shortestPathsDistance(double latitude,double longitude);
@@ -211,6 +216,8 @@ namespace geovi
                 geovi::algorithm::Graph graph;
                 NodeMap m_node_map;
                 std::vector<GeoNode*> m_geo_nodes;
+                WayMap m_way_map;
+                std::vector<GeoWay*> m_geo_ways;
                 int nodes_num;
                 int ways_num;
                 int relations_num;

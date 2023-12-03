@@ -168,7 +168,7 @@ CellGrowingAndMergingCalculator::CellGrowingAndMergingCalculator(
     std::shared_ptr<VoronoiDiagram> share_vd_ptr = m_voronoi_diagram.lock();
     if( share_map_ptr && share_vd_ptr ){
         m_regions = std::vector<Region>(vd.lock()->sites().capacity());
-        auto points = share_map_ptr->getNodes();
+        auto points = share_map_ptr->getUTMNodesCoordinate();
         for(auto point : points){
             std::pair<Point2,VoronoiDiagram::CellIndex> site_pair = share_vd_ptr->cellIncludePoint(point);
             VoronoiDiagram::CellIndex index = site_pair.second;

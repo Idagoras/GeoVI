@@ -22,7 +22,7 @@ int main(){
     std::cout << "map has" << geo_map->numOfWays() << "ways" << std::endl << std::endl;
 /*
     // 打印所有顶点的WGS84坐标集合
-    vector<Point2> wgs84_points = geo_map->getNodes();
+    vector<Point2> wgs84_points = geo_map->getUTMNodesCoordinate();
     int64_t index = 0 ;
     for(auto& wgs84_point : wgs84_points){
         std::cout << "point " << index << " 's latitude is " << wgs84_point.x << " and it's longitude is " << wgs84_point.y << std::endl;

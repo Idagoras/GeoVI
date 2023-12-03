@@ -61,6 +61,14 @@ static vector<pair<string,OSMMapFeature>> feature_with_name_string = {
 
 static std::unique_ptr<CoordinateSystemConverter> s_coordinate_system_converter  =  std::make_unique<CoordinateSystemConverter>(LongitudeBands::band_50);
 
+using GridVertexLocation = enum GridPointLocation {
+    left_top = 0,
+    left_bottom = 1,
+    right_top = 2,
+    right_bottom = 3
+};
+
+
 Point2 getGridIndex(double max_x,double min_x,
                     double max_y,double min_y,
                     double x,double y,
@@ -68,6 +76,23 @@ Point2 getGridIndex(double max_x,double min_x,
     return Point2{
             ceil(abs(x-min_x)/grid_x),
             ceil(abs(y-min_y)/grid_y)
+    };
+}
+
+std::vector<Point2> getUTMCoordinatePoint(double max_x,double min_x,
+                             double max_y,double min_y,
+                             double x,double y,
+                             double grid_x,double grid_y){
+
+    Point2 left_top = Point2{ min_x + (x-1) * grid_x,min_y + (y-1) * grid_y };
+    Point2 left_bottom = Point2{ min_x + (x-1) * grid_x, min_y + y * grid_y };
+    Point2 right_top = Point2{ min_x + x * grid_x, min_y + (y-1) * grid_y};
+    Point2 right_bottom = Point2{min_x + x * grid_x, min_y + y * grid_y };
+    return std::vector<Point2>{
+        left_top,
+        left_bottom,
+        right_top,
+        right_bottom
     };
 }
 
@@ -107,8 +132,8 @@ void add_way_index_to_grids(
         double max_y,double min_y,
         double grid_x,double grid_y
         ){
-    auto src_node_ptr = &way_ptr ->source;
-    auto trg_node_ptr = &way_ptr -> target;
+    auto src_node_ptr = way_ptr ->source;
+    auto trg_node_ptr = way_ptr -> target;
     Point2 src_index_xy = getGridIndex(max_x,min_x,max_y,min_y,src_node_ptr->utm_xy.x,src_node_ptr->utm_xy.y,grid_width_1,grid_length_1);
     Point2 trg_index_xy = getGridIndex(max_x,min_x,max_y,min_y,trg_node_ptr->utm_xy.x,trg_node_ptr->utm_xy.y,grid_width_1,grid_length_1);
     auto src_grid_ptr = & grids[static_cast<int>(src_index_xy.y)][static_cast<int>(src_index_xy.x)];
@@ -117,6 +142,19 @@ void add_way_index_to_grids(
     trg_grid_ptr -> ways.push_back(way_ptr);
 }
 
+void fill_grids(std::vector<std::vector<GeoMap::GeoGrid>>& grids,
+                std::vector<GeoMap::GeoWay*>& way_ptrs,
+                std::vector<GeoMap::GeoNode*>& node_ptrs,
+                double max_x,double min_x,
+                double max_y,double min_y,
+                double grid_x,double grid_y){
+    for(auto way_ptr : way_ptrs){
+        add_way_index_to_grids(grids,way_ptr,max_x,min_x,max_y,min_y,grid_x,grid_y);
+    }
+    for(auto node_ptr : node_ptrs){
+        add_node_index_to_grids(grids,node_ptr,max_x,min_x,max_y,min_y,grid_x,grid_y);
+    }
+}
 
 using TagField = enum TagField {
     name = 0,
@@ -234,8 +272,8 @@ void GeoMapHandler::way(const osmium::Way& way){
         else {
             auto current = gmap.getNode(refs[i]);
             GeoMap::GeoWay gway = {
-                    *primary,
-                    *current,
+                    primary,
+                    current,
                     way.id(),
                     0,
                     -1,
@@ -279,6 +317,7 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):sh
     osmium::apply(reader.getOSMReader(),handler);
     reader.getOSMReader().close();
     init_grid(m_grids,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+    fill_grids(m_grids,m_geo_ways,m_geo_nodes,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
 
 }
 
@@ -300,18 +339,24 @@ bool GeoMap::addNode(GeoNode node){
 }
 
 bool GeoMap::addWay(GeoWay way){
-   // std::cout << "sp lat is " << sp.x << " and lon is " << sp.y << std::endl;
-   // std::cout << "tp lat is " << tp.x << " and lon is " << tp.y <<std::endl;
-    way.capacity = DistanceCalculator::euclidDistance2D(way.source.utm_xy,way.target.utm_xy);
-   // std::cout << "way capacity is " << way.capacity << std::endl;
-    way.index = ways_num;
-    addWayToGraph(way);
-    ways_num ++;
-    return true;
+    if(!hasWay(way.id)) {
+        m_way_map.insert({way.id,way});
+        m_geo_ways.push_back(&m_way_map[way.id]);
+        way.capacity = DistanceCalculator::euclidDistance2D(way.source->utm_xy, way.target->utm_xy);
+        way.index = ways_num;
+        addWayToGraph(way);
+        ways_num++;
+        return true;
+    }
+    return false;
 }
 
 bool GeoMap::hasNode(GeoMap::map_object_id_type node_id){
     return m_node_map.find(node_id) != m_node_map.end();
+}
+
+bool GeoMap::hasWay(geovi::geo::map::GeoMap::map_object_id_type way_id) {
+    return m_way_map.find(way_id) != m_way_map.end();
 }
 
 const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
@@ -320,6 +365,7 @@ const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
     }
     return NULL;
 }
+
 void GeoMap::addNodeToGraph(GeoNode& node){
     VertexDescriptor v = add_vertex(graph);
     auto name_map = get(vertex_name,graph);
@@ -331,8 +377,8 @@ void GeoMap::addNodeToGraph(GeoNode& node){
 }
 
 void GeoMap::addWayToGraph(GeoWay& way){
-    int sr_index = way.source.index;
-    int tg_index = way.target.index;
+    int sr_index = way.source->index;
+    int tg_index = way.target->index;
     auto sr_vertex_descriptor = vertex(sr_index,graph);
     auto tg_vertex_descriptor = vertex(tg_index,graph);
     EdgeDescriptor e = add_edge(sr_vertex_descriptor,tg_vertex_descriptor,graph).first;
@@ -348,11 +394,74 @@ std::vector<GeoMap::GeoNode *> GeoMap::getGeoNodes() {
    return m_geo_nodes;
 }
 
-std::vector<Point2> GeoMap::getNodes() {
+std::vector<Point2> GeoMap::getUTMNodesCoordinate() {
     std::vector<Point2> nodes;
     auto geo_nodes = getGeoNodes();
     for(auto node : geo_nodes){
         nodes.push_back(Point2{node->loc.latitude,node->loc.longitude});
     }
     return nodes;
+}
+
+std::vector<const GeoMap::GeoNode *> GeoMap::find(int radius_metre, double utm_x, double utm_y) {
+    Point2 origin = {utm_x,utm_y};
+    std::vector<const GeoMap::GeoNode *> find_node_ptrs;
+    std::vector<Point2> fill_grids,un_fill_grids;
+    auto right_grid_index = getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x + radius_metre,utm_y,grid_width_1,grid_length_1);
+    right_grid_index = utm_x + radius_metre > m_max_x ? getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,m_max_x,utm_y,grid_width_1,grid_length_1) : right_grid_index ;
+    auto left_grid_index = getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x - radius_metre,utm_y,grid_width_1,grid_length_1);
+    left_grid_index = utm_x - radius_metre < m_min_x ? getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,m_min_x,utm_y,grid_width_1,grid_length_1) : left_grid_index ;
+    auto top_grid_index = getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x ,utm_y - radius_metre,grid_width_1,grid_length_1);
+    top_grid_index = utm_y - radius_metre < m_min_y ? getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x,m_min_y,grid_width_1,grid_length_1) : top_grid_index ;
+    auto bottom_grid_index = getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x,utm_y + radius_metre,grid_width_1,grid_length_1);
+    bottom_grid_index = utm_y + radius_metre > m_max_y ? getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x,m_max_y,grid_width_1,grid_length_1) : bottom_grid_index ;
+
+    int satisfy_vertex_num = 0;
+    for( int i = left_grid_index.x ; i < right_grid_index.x ; ++ i ){
+        for ( int j = top_grid_index.y ; j < bottom_grid_index.y ; ++ j ){
+            auto vertexes = getUTMCoordinatePoint(m_max_x,m_min_x,m_max_y,m_min_y,i,j,grid_width_1,grid_length_1);
+            for(auto& vertex : vertexes){
+                double distance = DistanceCalculator::euclidDistance2D(vertex,origin);
+                if(distance <= radius_metre)
+                    ++ satisfy_vertex_num ;
+            }
+            if(satisfy_vertex_num == 4)
+                fill_grids.push_back({static_cast<double>(i),static_cast<double>(j)});
+            else{
+                if( satisfy_vertex_num > 0 ){
+                    un_fill_grids.push_back({static_cast<double>(i),static_cast<double>(j)});
+                }
+            }
+        }
+    }
+
+    for(auto grid : fill_grids){
+        auto grid_ptr = & m_grids[grid.y][grid.x];
+        find_node_ptrs.insert(find_node_ptrs.end(),grid_ptr -> nodes.begin(),grid_ptr -> nodes.end());
+    }
+    for(auto grid : un_fill_grids){
+        auto grid_ptr = & m_grids[grid.y][grid.x];
+        for( auto node : grid_ptr -> nodes){
+            if ( DistanceCalculator::euclidDistance2D(node->utm_xy,origin) <= radius_metre )
+               find_node_ptrs.push_back(node);
+        }
+    }
+    return find_node_ptrs;
+   // double right_grid_index_right_utm_x = m_min_x + static_cast<int>(right_grid_index.x) * grid_width_1;
+   // right_grid_index_right_utm_x = right_grid_index_right_utm_x > m_max_x ? m_max_x : right_grid_index_right_utm_x ;
+   // double left_grid_index_left_utm_x = m_min_x + static_cast<int>(left_grid_index.x-1) * grid_width_1;
+  //  left_grid_index_left_utm_x = left_grid_index_left_utm_x < m_min_x ? m_min_x : left_grid_index_left_utm_x ;
+   // double top_grid_index_top_utm_y = m_min_y + (static_cast<int>(top_grid_index.y) - 1)* grid_length_1;
+    //top_grid_index_top_utm_y = top_grid_index_top_utm_y < m_min_y ? m_min_y : top_grid_index_top_utm_y;
+   // double bottom_grid_index_bottom_utm_y = m_min_y + static_cast<int>(bottom_grid_index.y) * grid_length_1;
+   // bottom_grid_index_bottom_utm_y = bottom_grid_index_bottom_utm_y > m_max_y ? m_max_y : bottom_grid_index_bottom_utm_y;
+
+   // double leftest_un_fill_grid_index_utm_x = left_grid_index_left_utm_x < utm_x - radius_metre ? left_grid_index_left_utm_x + grid_width_1 : left_grid_index_left_utm_x;
+   // double rightest_un_fill_grid_index_utm_x = right_grid_index_right_utm_x > utm_x + radius_metre ? right_grid_index_right_utm_x - grid_width_1 : right_grid_index_right_utm_x;
+   // double most_top_un_fill_grid_index_utm_y = top_grid_index_top_utm_y < utm_y - radius_metre ? top_grid_index_top_utm_y + grid_length_1 : top_grid_index_top_utm_y;
+   // double most_bottom_un_fill_grid_index_utm_y = bottom_grid_index_bottom_utm_y > utm_y + radius_metre ? bottom_grid_index_bottom_utm_y - grid_length_1 : bottom_grid_index_bottom_utm_y;
+
+    //std::vector<std::vector<int>>
+
+
 }
