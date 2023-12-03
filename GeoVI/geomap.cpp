@@ -15,6 +15,9 @@
 
 
 
+
+
+
 using namespace geovi::geo::map;
 using namespace geovi::algorithm;
 using namespace geovi;
@@ -80,9 +83,9 @@ Point2 getGridIndex(double max_x,double min_x,
 }
 
 std::vector<Point2> getUTMCoordinatePoint(double max_x,double min_x,
-                             double max_y,double min_y,
-                             double x,double y,
-                             double grid_x,double grid_y){
+                            double max_y,double min_y,
+                            double x,double y,
+                            double grid_x,double grid_y){
 
     Point2 left_top = Point2{ min_x + (x-1) * grid_x,min_y + (y-1) * grid_y };
     Point2 left_bottom = Point2{ min_x + (x-1) * grid_x, min_y + y * grid_y };
@@ -97,9 +100,9 @@ std::vector<Point2> getUTMCoordinatePoint(double max_x,double min_x,
 }
 
 void init_grid(std::vector<std::vector<GeoMap::GeoGrid>>& grids,
-               double max_x,double min_x,
-               double max_y,double min_y,
-               double grid_x,double grid_y){
+                double max_x,double min_x,
+                double max_y,double min_y,
+                double grid_x,double grid_y){
     int x_num = static_cast<int>(ceil(abs(max_x-min_x)/grid_x));
     int y_num = static_cast<int>(ceil(abs(max_y-min_y)/grid_y));
     for( int i = 0; i < y_num ; ++ i ){
@@ -115,10 +118,10 @@ void init_grid(std::vector<std::vector<GeoMap::GeoGrid>>& grids,
 }
 
 void add_node_index_to_grids(std::vector<std::vector<GeoMap::GeoGrid>>& grids,
-                             GeoMap::GeoNode* node_ptr,
-                             double max_x,double min_x,
-                             double max_y,double min_y,
-                             double grid_x,double grid_y){
+                            GeoMap::GeoNode* node_ptr,
+                            double max_x,double min_x,
+                            double max_y,double min_y,
+                            double grid_x,double grid_y){
     auto index_xy = getGridIndex(max_x,min_x,max_y,min_y,node_ptr->utm_xy.x,node_ptr->utm_xy.y,grid_width_1,grid_length_1);
     auto grid_ptr = & grids[static_cast<int>(index_xy.y)][static_cast<int>(index_xy.x)];
     grid_ptr -> nodes.push_back(node_ptr);
@@ -207,6 +210,7 @@ public:
         osmium::handler::Handler();
 
     };
+    GeoMapHandler(geovi::geo::map::GeoMap& map,std::weak_ptr<MapFeatureFilter> filter):gmap(map),m_filter(filter){};
     void way(const osmium::Way& way);
     void node(const osmium::Node& node);
     void relation(const osmium::Relation& relation);
@@ -216,6 +220,7 @@ public:
 
 private:
     geovi::geo::map::GeoMap& gmap;
+    std::weak_ptr<MapFeatureFilter> m_filter;
 
 
 };
@@ -289,10 +294,13 @@ void GeoMapHandler::way(const osmium::Way& way){
 void GeoMapHandler::node(const osmium::Node& node){
    // std::cout << "node id " << node.id() << "latitude = "<< node.location().lat() << " " << "longitude =" << node.location().lon() << std::endl;
    // gmap.addNode("",node.id());
+
+    
     if ( !gmap.hasNode(node.id())){
         GeoMap::GeoNode gnode;
         getGeoNode(node,gnode);
         gmap.addNode(gnode);
+    
     }
 
   // std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
@@ -321,6 +329,17 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):sh
 
 }
 
+GeoMap::GeoMap(geovi::io::OSMReader& reader,std::weak_ptr<MapFeatureFilter> filter):m_filter(filter){
+    graph = Graph(0);
+    nodes_num = 0;
+    ways_num = 0;
+    GeoMapHandler handler(*this,filter);
+    osmium::apply(reader.getOSMReader(),handler);
+    reader.getOSMReader().close();
+    init_grid(m_grids,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+    fill_grids(m_grids,m_geo_ways,m_geo_nodes,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+}
+
 bool GeoMap::addNode(GeoNode node){
     if( !hasNode(node.id)){
         m_node_map.insert(pair<map_object_id_type,GeoNode>(node.id, node));
@@ -333,6 +352,12 @@ bool GeoMap::addNode(GeoNode node){
         m_max_y = node.utm_xy.y > m_max_y ? node.utm_xy.y : m_max_y;
         m_min_x = node.utm_xy.x < m_min_x ? node.utm_xy.x : m_min_x;
         m_min_y = node.utm_xy.y < m_min_y ? node.utm_xy.y : m_min_y;
+        if( !m_filter.expired() ){
+            auto filter = m_filter.lock();
+            filter -> node_filter(get<TagField::map_feature>(m_geo_nodes[node.id]->features.front()),
+            get<TagField::feature_value>(m_geo_nodes[node.id]->features.front()).c_str(),
+            m_geo_nodes[node.id]);
+        }
         return true;
     }
     return false;
@@ -346,6 +371,12 @@ bool GeoMap::addWay(GeoWay way){
         way.index = ways_num;
         addWayToGraph(way);
         ways_num++;
+        if( !m_filter.expired() ){
+            auto filter = m_filter.lock();
+            filter -> way_filter(get<TagField::map_feature>(m_geo_ways[way.id]->features.front()),
+            get<TagField::feature_value>(m_geo_ways[way.id]->features.front()).c_str(),
+            m_geo_ways[way.id]);
+        }
         return true;
     }
     return false;
@@ -391,7 +422,7 @@ void GeoMap::addWayToGraph(GeoWay& way){
 }
 
 std::vector<GeoMap::GeoNode *> GeoMap::getGeoNodes() {
-   return m_geo_nodes;
+    return m_geo_nodes;
 }
 
 std::vector<Point2> GeoMap::getUTMNodesCoordinate() {
@@ -443,7 +474,7 @@ std::vector<const GeoMap::GeoNode *> GeoMap::find(int radius_metre, double utm_x
         auto grid_ptr = & m_grids[grid.y][grid.x];
         for( auto node : grid_ptr -> nodes){
             if ( DistanceCalculator::euclidDistance2D(node->utm_xy,origin) <= radius_metre )
-               find_node_ptrs.push_back(node);
+                find_node_ptrs.push_back(node);
         }
     }
     return find_node_ptrs;
@@ -464,4 +495,82 @@ std::vector<const GeoMap::GeoNode *> GeoMap::find(int radius_metre, double utm_x
     //std::vector<std::vector<int>>
 
 
+}
+
+using Highway_value = enum highway_value {
+    bus_stop = 0,
+    crossing ,
+    cyclist_waiting_aid ,
+    elevator ,
+    emergency_bay,
+    emergency_access_point,
+    give_way,
+    phone,
+    ladder,
+    milestone,
+    mini_roundabout,
+    motorway_junction,
+    passing_place,
+    platform,
+    rest_area,
+    services,
+    speed_camera,
+    stop,
+    street_lamp,
+    toll_gantry,
+    traffic_signals,
+    traffic_mirror,
+    trailhead,
+    turning_circle,
+    turning_loop
+
+};
+
+#define FEATURE_VALUE_PAIR(VALUE) {"VALUE",Highway_value::VALUE}
+
+static std::map<std::string,Highway_value> highway_feature_value_string_to_highway_value_enum_map{
+    FEATURE_VALUE_PAIR(bus_stop),
+    FEATURE_VALUE_PAIR(crossing),
+    FEATURE_VALUE_PAIR(cyclist_waiting_aid),
+    FEATURE_VALUE_PAIR(elevator),
+    FEATURE_VALUE_PAIR(emergency_bay),
+    FEATURE_VALUE_PAIR(emergency_access_point),
+    FEATURE_VALUE_PAIR(give_way),
+    FEATURE_VALUE_PAIR(phone),
+    FEATURE_VALUE_PAIR(ladder),
+    FEATURE_VALUE_PAIR(milestone),
+    FEATURE_VALUE_PAIR(mini_roundabout),
+    FEATURE_VALUE_PAIR(motorway_junction),
+    FEATURE_VALUE_PAIR(passing_place),
+    FEATURE_VALUE_PAIR(platform),
+    FEATURE_VALUE_PAIR(rest_area),
+    FEATURE_VALUE_PAIR(services),
+    FEATURE_VALUE_PAIR(speed_camera),
+    FEATURE_VALUE_PAIR(stop),
+    FEATURE_VALUE_PAIR(street_lamp),
+    FEATURE_VALUE_PAIR(toll_gantry),
+    FEATURE_VALUE_PAIR(traffic_signals),
+    FEATURE_VALUE_PAIR(traffic_mirror),
+    FEATURE_VALUE_PAIR(trailhead),
+    FEATURE_VALUE_PAIR(turning_circle),
+    FEATURE_VALUE_PAIR(turning_loop)
+};
+
+void CrossingFilter::node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node){
+    std::vector<int64_t> feature_value_nums; 
+    if( feature == OSMMapFeature::Highway ){
+        int64_t index = highway_feature_value_string_to_highway_value_enum_map[std::string(feature_value)];
+        ++ feature_value_nums[index] ;
+        if( feature_value == "crossing"){
+            m_crossing_nodes.push_back(node);
+        }
+    }
+}
+
+std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
+    std::vector<Point2> utm_xy_points ;
+    for(auto node_ptr : m_crossing_nodes){
+        utm_xy_points.push_back({node_ptr->utm_xy.x,node_ptr->utm_xy.y});
+    }
+    return utm_xy_points ;
 }

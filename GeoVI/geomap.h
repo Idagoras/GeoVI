@@ -107,6 +107,8 @@ namespace geovi
                     
                 } OSMMapFeature; // Standard OSM Map Features
 
+            class MapFeatureFilter;
+
             class GeoMap{
             public:
                 
@@ -183,6 +185,7 @@ namespace geovi
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
+                GeoMap(geovi::io::OSMReader& reader,std::weak_ptr<MapFeatureFilter> filter);
 
                 inline int64_t numOfNodes(){
 
@@ -225,14 +228,30 @@ namespace geovi
                 float m_max_y = std::numeric_limits<float>::min();
                 float m_min_x = std::numeric_limits<float>::max();
                 float m_min_y = std::numeric_limits<float>::max();
-
-               std::vector<std::vector<GeoGrid>> m_grids;
+                std::weak_ptr<MapFeatureFilter> m_filter;
+                std::vector<std::vector<GeoGrid>> m_grids;
                 void addNodeToGraph(GeoNode& node);
                 void addWayToGraph(GeoWay& way);
             };   
 
-        
-            
+        class  MapFeatureFilter {
+        public:
+            virtual void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node){}
+            virtual void way_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoWay* node){}
+        };
+
+        class CrossingFilter : public MapFeatureFilter {
+        public:
+            void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node) override;
+            std::vector<Point2> crossing_utm_xy_points();
+            inline std::vector<const GeoMap::GeoNode*> crossing_geo_nodes(){
+                return m_crossing_nodes;
+            }
+        private:
+            std::vector<const GeoMap::GeoNode*> m_crossing_nodes; 
+
+        };
+
         }   // namespace map
     } // namespace geo
     
