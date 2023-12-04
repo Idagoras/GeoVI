@@ -30,7 +30,7 @@ using NumericalAccuracy = enum NumericalAccuracy{
     millimeter = 1000,
 };
 
-using LongtitudeBands= enum LongitudeBands{
+using LongitudeBands= enum LongitudeBands{
     band_1 = 32601,
     band_2,
     band_3,
@@ -200,6 +200,7 @@ class CoordinateSystemConverter{
 public:
     CoordinateSystemConverter();
     CoordinateSystemConverter(LongitudeBands bd);
+    LongitudeBands utm_identity(double longitude,double latitude);
     void convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point);
 
     

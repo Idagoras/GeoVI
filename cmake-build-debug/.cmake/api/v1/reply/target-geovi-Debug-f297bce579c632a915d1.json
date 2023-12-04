@@ -29,13 +29,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 45,
+				"line" : 47,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 14,
+				"line" : 16,
 				"parent" : 0
 			},
 			{
@@ -51,7 +51,7 @@
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 37,
+				"line" : 39,
 				"parent" : 0
 			}
 		]
@@ -62,7 +62,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : " -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk"
+					"fragment" : "-g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk"
 				}
 			],
 			"defines" : 

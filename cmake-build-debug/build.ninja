@@ -49,7 +49,7 @@ build cmake_object_order_depends_target_geovi: phony || CMakeFiles/geovi.dir
 build CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/algorithm.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
@@ -57,7 +57,7 @@ build CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o: CXX_COMPILER__geovi_Debug /Use
 build CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/convert.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/convert.cpp.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
@@ -65,7 +65,7 @@ build CMakeFiles/geovi.dir/GeoVI/convert.cpp.o: CXX_COMPILER__geovi_Debug /Users
 build CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/geomap.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
@@ -73,7 +73,7 @@ build CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: CXX_COMPILER__geovi_Debug /Users/
 build CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/mechanism.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
@@ -81,7 +81,7 @@ build CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o: CXX_COMPILER__geovi_Debug /Use
 build CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/reader.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/reader.cpp.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
@@ -89,7 +89,7 @@ build CMakeFiles/geovi.dir/GeoVI/reader.cpp.o: CXX_COMPILER__geovi_Debug /Users/
 build CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: CXX_COMPILER__geovi_Debug /Users/wuwei/workspace/GeoVI/GeoVI/voronoi.cpp || cmake_object_order_depends_target_geovi
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/usr/local/include -I/Users/wuwei/workspace/GeoVI
   OBJECT_DIR = CMakeFiles/geovi.dir
   OBJECT_FILE_DIR = CMakeFiles/geovi.dir/GeoVI
@@ -104,7 +104,7 @@ build CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: CXX_COMPILER__geovi_Debug /Users
 
 build ../lib/libgeovi.a: CXX_STATIC_LIBRARY_LINKER__geovi_Debug CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o CMakeFiles/geovi.dir/GeoVI/convert.cpp.o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o CMakeFiles/geovi.dir/GeoVI/reader.cpp.o CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o
   ARCH_FLAGS = -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  LANGUAGE_COMPILE_FLAGS = -std=c++11 -std=c++14 -g
+  LANGUAGE_COMPILE_FLAGS = -g -std=c++11 -std=c++14 -g
   OBJECT_DIR = CMakeFiles/geovi.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -123,7 +123,7 @@ build cmake_object_order_depends_target_Test_Map: phony || cmake_object_order_de
 build CMakeFiles/Test_Map.dir/test/test_map.cc.o: CXX_COMPILER__Test_Map_Debug /Users/wuwei/workspace/GeoVI/test/test_map.cc || cmake_object_order_depends_target_Test_Map
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/Test_Map.dir/test/test_map.cc.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/Users/wuwei/workspace/GeoVI -isystem /usr/local/include
   OBJECT_DIR = CMakeFiles/Test_Map.dir
   OBJECT_FILE_DIR = CMakeFiles/Test_Map.dir/test
@@ -137,7 +137,7 @@ build CMakeFiles/Test_Map.dir/test/test_map.cc.o: CXX_COMPILER__Test_Map_Debug /
 # Link the executable ../bin/Test_Map
 
 build ../bin/Test_Map: CXX_EXECUTABLE_LINKER__Test_Map_Debug CMakeFiles/Test_Map.dir/test/test_map.cc.o | ../lib/libgeovi.a /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libexpat.tbd /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libbz2.tbd /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libz.tbd /usr/local/lib/libproj.25.9.4.0.dylib || ../lib/libgeovi.a
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  ../lib/libgeovi.a  /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libexpat.tbd  /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libbz2.tbd  /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/lib/libz.tbd  /usr/local/lib/libproj.25.9.4.0.dylib
   OBJECT_DIR = CMakeFiles/Test_Map.dir
   POST_BUILD = :
@@ -157,7 +157,7 @@ build cmake_object_order_depends_target_Test_Converter: phony || cmake_object_or
 build CMakeFiles/Test_Converter.dir/test/test_converter.cc.o: CXX_COMPILER__Test_Converter_Debug /Users/wuwei/workspace/GeoVI/test/test_converter.cc || cmake_object_order_depends_target_Test_Converter
   DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
   DEP_FILE = CMakeFiles/Test_Converter.dir/test/test_converter.cc.o.d
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   INCLUDES = -I/Users/wuwei/workspace/GeoVI -isystem /usr/local/include
   OBJECT_DIR = CMakeFiles/Test_Converter.dir
   OBJECT_FILE_DIR = CMakeFiles/Test_Converter.dir/test
@@ -171,7 +171,7 @@ build CMakeFiles/Test_Converter.dir/test/test_converter.cc.o: CXX_COMPILER__Test
 # Link the executable ../bin/Test_Converter
 
 build ../bin/Test_Converter: CXX_EXECUTABLE_LINKER__Test_Converter_Debug CMakeFiles/Test_Converter.dir/test/test_converter.cc.o | /usr/local/lib/libproj.25.9.4.0.dylib ../lib/libgeovi.a || ../lib/libgeovi.a
-  FLAGS = -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  /usr/local/lib/libproj.25.9.4.0.dylib  ../lib/libgeovi.a
   OBJECT_DIR = CMakeFiles/Test_Converter.dir
   POST_BUILD = :

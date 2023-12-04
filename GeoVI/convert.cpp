@@ -17,6 +17,11 @@ using namespace geovi;
 
 static PJ* P_GIS_WGS84_TO_UTM;
 static PJ* P_GIS_UTM_TO_WGS84;
+static PJ* P_J;
+
+int utm_num(double latitude,double longitude){
+    return floor(floor(longitude)/6) + 31;
+}
 
 void init_pj(int64_t utm_epsg_num){
     std::string epsg_str = std::string("EPSG:").append(std::to_string(utm_epsg_num));
@@ -98,6 +103,10 @@ void CoordinateSystemConverter::convertBetweenUTMAndWGS84(Point2& point){
 void CoordinateSystemConverter::convertBetweenWGS84AndUTM(Point2& point){
     proj_convert_wgs84_to_utm(point.x,point.y,point);
 
+}
+
+LongitudeBands CoordinateSystemConverter::utm_identity(double longitude, double latitude) {
+    return LongitudeBands(utm_num(latitude,longitude));
 }
 
 std::chrono::system_clock::time_point StringAndTimeConverter::convertStringToTime(const std::string& timeStr,const char* fmt){

@@ -5566,37 +5566,6 @@ CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/geom
   /usr/local/include/proj/util.hpp \
   /usr/local/include/proj/nn.hpp \
   /usr/local/include/proj/metadata.hpp \
-  /usr/local/include/osmium/io/any_input.hpp \
-  /usr/local/include/osmium/io/any_compression.hpp \
-  /usr/local/include/osmium/io/bzip2_compression.hpp \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/bzlib.h \
-  /usr/local/include/osmium/io/gzip_compression.hpp \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/zlib.h \
-  /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/zconf.h \
-  /usr/local/include/osmium/io/o5m_input.hpp \
-  /usr/local/include/osmium/io/detail/o5m_input_format.hpp \
-  /usr/local/include/osmium/util/delta.hpp \
-  /usr/local/include/protozero/exception.hpp \
-  /usr/local/include/protozero/varint.hpp \
-  /usr/local/include/protozero/buffer_tmpl.hpp \
-  /usr/local/include/osmium/io/opl_input.hpp \
-  /usr/local/include/osmium/io/detail/opl_input_format.hpp \
-  /usr/local/include/osmium/io/detail/opl_parser_functions.hpp \
-  /usr/local/include/osmium/io/detail/string_util.hpp \
-  /usr/local/include/osmium/io/pbf_input.hpp \
-  /usr/local/include/osmium/io/detail/pbf_input_format.hpp \
-  /usr/local/include/osmium/io/detail/pbf.hpp \
-  /usr/local/include/osmium/io/detail/pbf_decoder.hpp \
-  /usr/local/include/osmium/io/detail/protobuf_tags.hpp \
-  /usr/local/include/protozero/types.hpp \
-  /usr/local/include/protozero/config.hpp \
-  /usr/local/include/osmium/io/detail/zlib.hpp \
-  /usr/local/include/protozero/version.hpp \
-  /usr/local/include/protozero/data_view.hpp \
-  /usr/local/include/protozero/iterators.hpp \
-  /usr/local/include/protozero/pbf_message.hpp \
-  /usr/local/include/protozero/pbf_reader.hpp \
-  /usr/local/include/osmium/io/pbf.hpp \
   /usr/local/include/osmium/visitor.hpp \
   /usr/local/include/osmium/fwd.hpp \
   /usr/local/include/osmium/io/reader_iterator.hpp \
@@ -11741,6 +11710,8 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/geometry/core/radian_access.hpp:
 
+/usr/local/include/boost/geometry/geometry.hpp:
+
 /usr/local/include/boost/geometry.hpp:
 
 /Users/wuwei/workspace/GeoVI/GeoVI/reader.cpp:
@@ -11754,30 +11725,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /usr/local/include/osmium/io/reader_iterator.hpp:
 
 /usr/local/include/osmium/visitor.hpp:
-
-/usr/local/include/osmium/io/pbf.hpp:
-
-/usr/local/include/protozero/version.hpp:
-
-/usr/local/include/osmium/io/detail/protobuf_tags.hpp:
-
-/usr/local/include/osmium/io/detail/pbf_decoder.hpp:
-
-/usr/local/include/osmium/io/detail/pbf_input_format.hpp:
-
-/usr/local/include/boost/geometry/geometry.hpp:
-
-/usr/local/include/osmium/io/detail/string_util.hpp:
-
-/usr/local/include/osmium/io/o5m_input.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/zconf.h:
-
-/usr/local/include/osmium/io/gzip_compression.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/bzlib.h:
-
-/usr/local/include/osmium/io/bzip2_compression.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/iomanip:
 
@@ -11928,8 +11875,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /usr/local/include/boost/preprocessor/selection.hpp:
 
 /usr/local/include/boost/preprocessor/repetition/enum_trailing.hpp:
-
-/usr/local/include/protozero/buffer_tmpl.hpp:
 
 /usr/local/include/boost/preprocessor/repetition/enum_shifted_binary_params.hpp:
 
@@ -12167,8 +12112,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/geometry/srs/sphere.hpp:
 
-/usr/local/include/osmium/io/detail/opl_parser_functions.hpp:
-
 /usr/local/include/boost/geometry/formulas/vincenty_inverse.hpp:
 
 /usr/local/include/boost/geometry/formulas/result_direct.hpp:
@@ -12232,8 +12175,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /usr/local/include/boost/geometry/index/detail/varray.hpp:
 
 /usr/local/include/boost/move/algo/detail/is_sorted.hpp:
-
-/usr/local/include/protozero/data_view.hpp:
 
 /usr/local/include/boost/move/algo/predicate.hpp:
 
@@ -12673,15 +12614,11 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/geometry/core/coordinate_system.hpp:
 
-/usr/local/include/protozero/varint.hpp:
-
 /usr/local/include/boost/geometry/geometries/concepts/point_concept.hpp:
 
 /usr/local/include/boost/geometry/strategies/cartesian/centroid_bashein_detmer.hpp:
 
 /usr/local/include/boost/geometry/core/mutable_range.hpp:
-
-/usr/local/include/protozero/types.hpp:
 
 /usr/local/include/boost/geometry/core/coordinate_dimension.hpp:
 
@@ -12696,8 +12633,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /usr/local/include/boost/geometry/core/access.hpp:
 
 /usr/local/include/boost/geometry/geometries/concepts/box_concept.hpp:
-
-/usr/local/include/osmium/io/detail/opl_input_format.hpp:
 
 /usr/local/include/boost/preprocessor/seq/fold_right.hpp:
 
@@ -12923,8 +12858,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/graph/graph_concepts.hpp:
 
-/usr/local/include/protozero/config.hpp:
-
 /usr/local/include/boost/range/detail/safe_bool.hpp:
 
 /usr/local/include/boost/geometry/strategies/concepts/convex_hull_concept.hpp:
@@ -13110,8 +13043,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /usr/local/include/boost/multi_index/detail/copy_map.hpp:
 
 /usr/local/include/boost/multi_index/detail/index_base.hpp:
-
-/usr/local/include/protozero/exception.hpp:
 
 /usr/local/include/boost/mpl/size.hpp:
 
@@ -13640,8 +13571,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /usr/local/include/boost/mpl/has_key.hpp:
 
 /usr/local/include/boost/type_traits/make_unsigned.hpp:
-
-/usr/local/include/osmium/io/any_compression.hpp:
 
 /usr/local/include/boost/type_traits/is_virtual_base_of.hpp:
 
@@ -14503,8 +14432,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/mpl/vector/vector0.hpp:
 
-/usr/local/include/osmium/io/any_input.hpp:
-
 /usr/local/include/boost/unordered/detail/fwd.hpp:
 
 /usr/local/include/boost/type_traits/declval.hpp:
@@ -15147,8 +15074,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/ranges_unique_copy.h:
 
-/usr/local/include/osmium/io/opl_input.hpp:
-
 /usr/local/include/boost/predef/architecture/sparc.h:
 
 /usr/local/include/boost/geometry/strategies/cartesian/line_interpolate.hpp:
@@ -15629,8 +15554,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/predef/library/c/vms.h:
 
-/usr/local/include/osmium/io/detail/pbf.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/ranges_copy.h:
 
 /usr/local/include/boost/predef/language/objc.h:
@@ -15778,8 +15701,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/_types/_wctrans_t.h:
 
 /usr/local/include/boost/algorithm/string/constants.hpp:
-
-/usr/local/include/osmium/io/detail/zlib.hpp:
 
 /usr/local/include/boost/mpl/void_fwd.hpp:
 
@@ -16017,8 +15938,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/geometry/algorithms/unique.hpp:
 
-/usr/local/include/osmium/util/delta.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_fsblkcnt_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/memory:
@@ -16234,8 +16153,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/stdexcept:
 
 /usr/local/include/boost/multi_index/member.hpp:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/zlib.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__algorithm/max.h:
 
@@ -16841,8 +16758,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__iterator/ostreambuf_iterator.h:
 
-/usr/local/include/osmium/io/pbf_input.hpp:
-
 /usr/local/include/boost/type_traits/has_logical_or.hpp:
 
 /usr/local/include/boost/qvm/gen/mat_assign4.hpp:
@@ -16995,8 +16910,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/__type_traits/is_bounded_array.h:
 
-/usr/local/include/protozero/pbf_reader.hpp:
-
 /usr/local/include/boost/config/detail/select_platform_config.hpp:
 
 /usr/local/include/boost/variant/detail/backup_holder.hpp:
@@ -17133,8 +17046,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 
 /usr/local/include/boost/preprocessor/logical/bool.hpp:
 
-/usr/local/include/protozero/iterators.hpp:
-
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_int16_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_u_int8_t.h:
@@ -17222,8 +17133,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/ctime:
 
 /usr/local/include/boost/mpl/aux_/inserter_algorithm.hpp:
-
-/usr/local/include/protozero/pbf_message.hpp:
 
 /usr/local/include/boost/preprocessor/arithmetic/dec.hpp:
 
@@ -17416,8 +17325,6 @@ CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o: /Users/wuwei/workspace/GeoVI/GeoVI/vor
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/sys/_types/_fd_setsize.h:
 
 /usr/local/include/boost/geometry/util/order_as_direction.hpp:
-
-/usr/local/include/osmium/io/detail/o5m_input_format.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk/usr/include/c++/v1/wctype.h:
 

@@ -11,6 +11,7 @@
 #include <memory>
 #include <limits>
 
+
 namespace boost{
     enum vertex_semantic_sensitivity_t{
         vertex_semantic_sensitivity = 2042
@@ -185,14 +186,14 @@ namespace geovi
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
-                GeoMap(geovi::io::OSMReader& reader,std::weak_ptr<MapFeatureFilter> filter);
+                GeoMap(geovi::io::OSMReader& reader,std::shared_ptr<MapFeatureFilter> filter);
 
-                inline int64_t numOfNodes(){
+                inline int64_t numOfNodes() const{
 
                     return nodes_num;
                 }
 
-                inline int64_t numOfWays(){
+                inline int64_t numOfWays() const{
                     return ways_num;
                 }
 
@@ -207,7 +208,7 @@ namespace geovi
                 std::vector<Point2> getUTMNodesCoordinate();
                 // 返回地图中所有顶点的信息集合
                 std::vector<GeoNode*> getGeoNodes();
-                std::vector<double> shortestPathsDistance(double latitude,double longitude);
+                //std::vector<double> shortestPathsDistance(double utm_x,double utm_y);
 
 
 
@@ -228,6 +229,10 @@ namespace geovi
                 float m_max_y = std::numeric_limits<float>::min();
                 float m_min_x = std::numeric_limits<float>::max();
                 float m_min_y = std::numeric_limits<float>::max();
+                float m_max_lat = std::numeric_limits<float>::min();
+                float m_max_lon = std::numeric_limits<float>::min();
+                float m_min_lat = std::numeric_limits<float>::max();
+                float m_min_lon = std::numeric_limits<float>::max();
                 std::weak_ptr<MapFeatureFilter> m_filter;
                 std::vector<std::vector<GeoGrid>> m_grids;
                 void addNodeToGraph(GeoNode& node);
@@ -236,8 +241,8 @@ namespace geovi
 
         class  MapFeatureFilter {
         public:
-            virtual void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node){}
-            virtual void way_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoWay* node){}
+            virtual void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node);
+            virtual void way_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoWay* node);
         };
 
         class CrossingFilter : public MapFeatureFilter {
