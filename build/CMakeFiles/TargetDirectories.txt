@@ -1,5 +1,4 @@
 /Users/wuwei/workspace/GeoVI/build/CMakeFiles/geovi.dir
 /Users/wuwei/workspace/GeoVI/build/CMakeFiles/Test_Map.dir
-/Users/wuwei/workspace/GeoVI/build/CMakeFiles/Test_Converter.dir
 /Users/wuwei/workspace/GeoVI/build/CMakeFiles/edit_cache.dir
 /Users/wuwei/workspace/GeoVI/build/CMakeFiles/rebuild_cache.dir

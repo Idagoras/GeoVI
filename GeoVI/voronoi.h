@@ -37,14 +37,16 @@ namespace geovi{
                 using CellIndex = int64_t;
                 friend class VoronoiDiagramBuilder;
                 VoronoiDiagram(){};
-                inline int64_t sites_num(){return m_points.capacity();};
+                inline int64_t sites_num(){return m_points.size();};
                 Points vertices();
                 Points sites();
                 std::vector<CellIndex> neighbors(CellIndex index);
                 Segments finiteEdges();
                 Lines infiniteEdges();
                 std::pair<Point2,CellIndex> cellIncludePoint(Point2 p);
+                std::vector<Point2> cellPolygon(CellIndex index;
                 Matrix shortestPathBetweenCells();
+
 
                 
                 

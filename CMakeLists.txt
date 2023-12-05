@@ -52,9 +52,9 @@ link_libraries(
 
 #add_executable(Test test/test.cc)
 add_executable(Test_Map test/test_map.cc)
-add_executable(Test_Converter test/test_converter.cc)
+#add_executable(Test_Converter test/test_converter.cc)
 #add_executable(Test_Voronoi test/test_voronoi.cc)
 #target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES} PROJ::proj)
-target_link_libraries(Test_Converter PROJ::proj geovi)
+#target_link_libraries(Test_Converter PROJ::proj geovi)
 #target_link_libraries(Test_Voronoi geovi PROJ::proj)
 target_link_libraries(Test_Map geovi ${OSMIUM_XML_LIBRARIES} PROJ::proj)

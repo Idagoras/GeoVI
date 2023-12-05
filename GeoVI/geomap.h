@@ -208,7 +208,7 @@ namespace geovi
                 std::vector<Point2> getUTMNodesCoordinate();
                 // 返回地图中所有顶点的信息集合
                 std::vector<GeoNode*> getGeoNodes();
-                //std::vector<double> shortestPathsDistance(double utm_x,double utm_y);
+                std::vector<double> shortestPathsDistance(double utm_x,double utm_y);
 
 
 

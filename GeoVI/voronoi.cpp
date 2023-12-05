@@ -158,3 +158,19 @@ std::vector<VoronoiDiagram::CellIndex> VoronoiDiagram::neighbors(VoronoiDiagram:
     }
     return neighbors_indexes;
 }
+
+std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index) {
+    std::vector<Point2> polygon;
+    auto cells = m_vd.cells();
+    auto cell = cells.at(index);
+    auto begin = cell.incident_edge();
+    auto e = begin;
+    do{
+        if(e->is_finite()){
+
+        }else{
+
+        }
+    }while(e != begin);
+    return polygon;
+}

@@ -68,18 +68,22 @@ int main(){
         ++ index;
     }
     */
-    vector<GeoMap::GeoNode*> geo_nodes_ptrs = geo_map->getGeoNodes();
-    for(auto geo_node_ptr : geo_nodes_ptrs){
+        vector<GeoMap::GeoNode*> geo_nodes_ptrs = geo_map->getGeoNodes();
+        auto origin_ptr = geo_nodes_ptrs[100];
+        auto distances = geo_map->shortestPathsDistance(origin_ptr->utm_xy.x,origin_ptr->utm_xy.y);
+        /*
+        int index = 0;
+        for(auto distance : distances){
+            std::cout << "origin " << origin_ptr->loc.latitude << "," << origin_ptr->loc.longitude << " to " << "vertex " << geo_nodes_ptrs[index]->loc.latitude << ","
+            << geo_nodes_ptrs[index]->loc.longitude << " distance is " << distance << std::endl;
+            index ++ ;
+        }
+         */
 
-         auto nodes_ptr = geo_map->find(50000,geo_node_ptr->utm_xy.x,geo_node_ptr->utm_xy.y);
-         if(!nodes_ptr.empty()){
-             std::cout << "node id " <<geo_node_ptr->id << " have neighbors" << std::endl;
-         }
-        for(auto node : nodes_ptr)
-            print_node(node);
 
 
-    }
+
+
 
 
 

@@ -145,40 +145,6 @@ build ../bin/Test_Map: CXX_EXECUTABLE_LINKER__Test_Map_Debug CMakeFiles/Test_Map
   TARGET_FILE = ../bin/Test_Map
   TARGET_PDB = Test_Map.dbg
 
-# =============================================================================
-# Object build statements for EXECUTABLE target Test_Converter
-
-
-#############################################
-# Order-only phony target for Test_Converter
-
-build cmake_object_order_depends_target_Test_Converter: phony || cmake_object_order_depends_target_geovi
-
-build CMakeFiles/Test_Converter.dir/test/test_converter.cc.o: CXX_COMPILER__Test_Converter_Debug /Users/wuwei/workspace/GeoVI/test/test_converter.cc || cmake_object_order_depends_target_Test_Converter
-  DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
-  DEP_FILE = CMakeFiles/Test_Converter.dir/test/test_converter.cc.o.d
-  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  INCLUDES = -I/Users/wuwei/workspace/GeoVI -isystem /usr/local/include
-  OBJECT_DIR = CMakeFiles/Test_Converter.dir
-  OBJECT_FILE_DIR = CMakeFiles/Test_Converter.dir/test
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target Test_Converter
-
-
-#############################################
-# Link the executable ../bin/Test_Converter
-
-build ../bin/Test_Converter: CXX_EXECUTABLE_LINKER__Test_Converter_Debug CMakeFiles/Test_Converter.dir/test/test_converter.cc.o | /usr/local/lib/libproj.25.9.4.0.dylib ../lib/libgeovi.a || ../lib/libgeovi.a
-  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
-  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  /usr/local/lib/libproj.25.9.4.0.dylib  ../lib/libgeovi.a
-  OBJECT_DIR = CMakeFiles/Test_Converter.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = ../bin/Test_Converter
-  TARGET_PDB = Test_Converter.dbg
-
 
 #############################################
 # Utility command for edit_cache
@@ -205,8 +171,6 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build Test_Converter: phony ../bin/Test_Converter
-
 build Test_Map: phony ../bin/Test_Map
 
 build geovi: phony ../lib/libgeovi.a
@@ -221,7 +185,7 @@ build libgeovi.a: phony ../lib/libgeovi.a
 #############################################
 # Folder: /Users/wuwei/workspace/GeoVI/cmake-build-debug
 
-build all: phony ../lib/libgeovi.a ../bin/Test_Map ../bin/Test_Converter
+build all: phony ../lib/libgeovi.a ../bin/Test_Map
 
 # =============================================================================
 # Unknown Build Time Dependencies.

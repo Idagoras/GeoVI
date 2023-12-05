@@ -12,7 +12,11 @@
 #include <cmath>
 #include "language.h"
 #include "convert.h"
-
+#include <boost/geometry.hpp>
+#include <boost/geometry/geometries/point_xy.hpp>
+#include <boost/geometry/geometries/multi_polygon.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <deque>
 
 
 
@@ -71,10 +75,8 @@ using GridVertexLocation = enum GridPointLocation {
     right_bottom = 3
 };
 
-std::pair<LongitudeBands,LongitudeBands> get_UTM_longitude_bands_range(double max_lon,double min_lon,double min_lat,double max_lat){
-    return {s_coordinate_system_converter->utm_identity(min_lon,max_lat),
-            s_coordinate_system_converter->utm_identity(max_lon,max_lat)};
-}
+using namespace boost::geometry::strategy::buffer;
+using namespace boost::geometry::model;
 
 Point2 getGridIndex(double max_x,double min_x,
                     double max_y,double min_y,
@@ -88,21 +90,135 @@ Point2 getGridIndex(double max_x,double min_x,
 }
 
 std::vector<Point2> getUTMCoordinatePoint(double max_x,double min_x,
-                            double max_y,double min_y,
-                            double x,double y,
-                            double grid_x,double grid_y){
+                                          double max_y,double min_y,
+                                          double x,double y,
+                                          double grid_x,double grid_y){
 
-    Point2 left_top = Point2{ min_x + (x-1) * grid_x,min_y + (y-1) * grid_y };
-    Point2 left_bottom = Point2{ min_x + (x-1) * grid_x, min_y + y * grid_y };
-    Point2 right_top = Point2{ min_x + x * grid_x, min_y + (y-1) * grid_y};
-    Point2 right_bottom = Point2{min_x + x * grid_x, min_y + y * grid_y };
+    Point2 left_top = Point2{ min_x + y * grid_x,min_y + (x+1) * grid_y };
+    Point2 left_bottom = Point2{ min_x + y * grid_x, min_y + x * grid_y };
+    Point2 right_top = Point2{ min_x + (y+1) * grid_x, min_y + (x+1) * grid_y};
+    Point2 right_bottom = Point2{min_x + (y+1) * grid_x, min_y + x * grid_y };
     return std::vector<Point2>{
-        left_top,
-        left_bottom,
-        right_top,
-        right_bottom
+            left_top,
+            right_top,
+            right_bottom,
+            left_bottom
     };
 }
+
+std::pair<bool,bool> is_within_s_between_c(double grid_index_x,double grid_index_y,double radius,double origin_x,double origin_y,double max_x,double min_x,
+                           double max_y,double min_y,double grid_x,double grid_y){
+    typedef boost::geometry::model::d2::point_xy<double> point_xy;
+    typedef boost::geometry::model::polygon<point_xy> polygon;
+
+    const double buffer_distance = radius == 0 ? 0.2 : radius ;
+    const int points_per_circle = 36;
+    distance_symmetric<double> distance_strategy(buffer_distance);
+    join_round join_strategy(points_per_circle);
+    end_round end_strategy(points_per_circle);
+    point_circle circle_strategy(points_per_circle);
+    side_straight side_strategy;
+
+    multi_polygon<polygon> result;
+    point_xy origin(origin_x,origin_y);
+
+    boost::geometry::buffer(origin,result,distance_strategy,side_strategy,join_strategy,end_strategy,circle_strategy);
+
+    std::vector<Point2> grid_vertexes = getUTMCoordinatePoint(max_x,min_x,max_y,min_y,grid_index_x,grid_index_y,grid_x,grid_y);
+    polygon grid_rect;
+    for(auto v : grid_vertexes){
+        boost::geometry::append(grid_rect,point_xy(v.x,v.y));
+    }
+
+    boost::geometry::append(grid_rect,point_xy(grid_vertexes[0].x,grid_vertexes[0].y));
+    return {boost::geometry::within(grid_rect,result.front()) , boost::geometry::within(result.front(),grid_rect)};
+}
+
+std::pair<bool,bool> is_within_s_between_p(double grid_index_x,double grid_index_y,double max_x,double min_x,
+                           double max_y,double min_y,double grid_x,double grid_y,std::vector<Point2>& polygon_vertexes)
+{
+    typedef boost::geometry::model::d2::point_xy<double> point_xy;
+    typedef boost::geometry::model::polygon<point_xy> polygon;
+
+    polygon m_polygon;
+    for(auto v : polygon_vertexes){
+        boost::geometry::append(m_polygon,point_xy(v.x,v.y));
+    }
+    boost::geometry::append(m_polygon,point_xy(polygon_vertexes[0].x,polygon_vertexes[0].y));
+
+    std::vector<Point2> grid_vertexes = getUTMCoordinatePoint(max_x,min_x,max_y,min_y,grid_index_x,grid_index_y,grid_x,grid_y);
+    polygon grid_rect;
+    for(auto v : grid_vertexes){
+        boost::geometry::append(grid_rect,point_xy(v.x,v.y));
+    }
+    boost::geometry::append(grid_rect,point_xy(grid_vertexes[0].x,grid_vertexes[0].y));
+    return {boost::geometry::within(grid_rect,m_polygon),boost::geometry::within(m_polygon,grid_rect)};
+}
+
+bool is_intersection_s_between_c(double grid_index_x,double grid_index_y,double radius,double origin_x,double origin_y,double max_x,double min_x,
+                     double max_y,double min_y,double grid_x,double grid_y){
+    typedef boost::geometry::model::d2::point_xy<double> point_xy;
+    typedef boost::geometry::model::polygon<point_xy> polygon;
+
+    const double buffer_distance = radius == 0 ? 0.2 : radius;
+    const int points_per_circle = 36;
+    distance_symmetric<double> distance_strategy(buffer_distance);
+    join_round join_strategy(points_per_circle);
+    end_round end_strategy(points_per_circle);
+    point_circle circle_strategy(points_per_circle);
+    side_straight side_strategy;
+
+    multi_polygon<polygon> result;
+    point_xy origin(origin_x,origin_y);
+    boost::geometry::buffer(origin,result,distance_strategy,side_strategy,join_strategy,end_strategy,circle_strategy);
+
+    std::vector<Point2> grid_vertexes = getUTMCoordinatePoint(max_x,min_x,max_y,min_y,grid_index_x,grid_index_y,grid_x,grid_y);
+    polygon grid_rect;
+    for(auto v : grid_vertexes){
+        boost::geometry::append(grid_rect,point_xy(v.x,v.y));
+    }
+    boost::geometry::append(grid_rect,point_xy(grid_vertexes[0].x,grid_vertexes[0].y));
+    std::deque<polygon> intersection_geometries;
+    boost::geometry::intersection(grid_rect,result.front(),intersection_geometries);
+    if(intersection_geometries.size() == 1){
+        return true;
+    }
+    return false;
+}
+
+bool is_interaction_s_between_p(double grid_index_x,double grid_index_y,double max_x,double min_x,
+                                double max_y,double min_y,double grid_x,double grid_y,std::vector<Point2>& polygon_vertexes){
+    typedef boost::geometry::model::d2::point_xy<double> point_xy;
+    typedef boost::geometry::model::polygon<point_xy> polygon;
+
+    polygon m_polygon;
+    for(auto v : polygon_vertexes){
+        boost::geometry::append(m_polygon,point_xy(v.x,v.y));
+    }
+    boost::geometry::append(m_polygon,point_xy(polygon_vertexes[0].x,polygon_vertexes[0].y));
+
+    std::vector<Point2> grid_vertexes = getUTMCoordinatePoint(max_x,min_x,max_y,min_y,grid_index_x,grid_index_y,grid_x,grid_y);
+    polygon grid_rect;
+    for(auto v : grid_vertexes){
+        boost::geometry::append(grid_rect,point_xy(v.x,v.y));
+    }
+    boost::geometry::append(grid_rect,point_xy(grid_vertexes[0].x,grid_vertexes[0].y));
+    std::deque<polygon> intersection_geometries;
+    boost::geometry::intersection(grid_rect,m_polygon,intersection_geometries);
+    if(intersection_geometries.size() == 1){
+        return true;
+    }
+    return false;
+}
+
+
+std::pair<LongitudeBands,LongitudeBands> get_UTM_longitude_bands_range(double max_lon,double min_lon,double min_lat,double max_lat){
+    return {s_coordinate_system_converter->utm_identity(min_lon,max_lat),
+            s_coordinate_system_converter->utm_identity(max_lon,max_lat)};
+}
+
+
+
 
 void init_grid(std::vector<std::vector<GeoMap::GeoGrid>>& grids,
                 double max_x,double min_x,
@@ -340,7 +456,7 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):sh
     osmium::apply(reader.getOSMReader(),handler);
     reader.getOSMReader().close();
     init_grid(m_grids,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
-   // fill_grids(m_grids,m_geo_ways,m_geo_nodes,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+    fill_grids(m_grids,m_geo_ways,m_geo_nodes,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
 
 }
 
@@ -355,6 +471,7 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,std::shared_ptr<MapFeatureFilter> fi
     std::cout << "min bands num = " << range_pair.first << " and max bands num =" << range_pair.second << std::endl << std::endl;
     init_grid(m_grids,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
     fill_grids(m_grids,m_geo_ways,m_geo_nodes,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+    std::cout << "have filled grids in map" <<std::endl;
 }
 
 bool GeoMap::addNode(GeoNode node){
@@ -473,54 +590,69 @@ std::vector<const GeoMap::GeoNode *> GeoMap::find(int radius_metre, double utm_x
     m_top_grid_index = utm_y + radius_metre > m_max_y ? getGridIndex(m_max_x, m_min_x, m_max_y, m_min_y, utm_x, m_max_y, grid_width_1, grid_length_1) : m_top_grid_index ;
 
     int satisfy_vertex_num = 0;
-    for( int i = left_grid_index.x ; i <= right_grid_index.x ; ++ i ){
-        for (int j = m_bottom_grid_index.y ; j <= m_top_grid_index.y ; ++ j ){
-            auto vertexes = getUTMCoordinatePoint(m_max_x,m_min_x,m_max_y,m_min_y,i,j,grid_width_1,grid_length_1);
-            for(auto& vertex : vertexes){
-                double distance = DistanceCalculator::euclidDistance2D(vertex,origin);
-                if(distance <= radius_metre)
-                    ++ satisfy_vertex_num ;
-            }
-            if(satisfy_vertex_num == 4)
-                fill_grids.push_back({static_cast<double>(i),static_cast<double>(j)});
-            else{
-                if( satisfy_vertex_num > 0 ){
-                    un_fill_grids.push_back({static_cast<double>(i),static_cast<double>(j)});
+    for( int i = left_grid_index.y; i <= right_grid_index.y ; ++ i ){
+        for (int j = m_bottom_grid_index.x ; j <= m_top_grid_index.x ; ++ j ){
+            auto is_within_pair = is_within_s_between_c(j,i,radius_metre,utm_x,utm_y,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+            if( is_within_pair.second){
+                un_fill_grids.push_back({static_cast<double>(j), static_cast<double>(i)});
+                break;
+            }else{
+                if( is_within_pair.first ){
+                    fill_grids.push_back({static_cast<double>(j), static_cast<double>(i)});
+                }else{
+                    bool is_intersection = is_intersection_s_between_c(j,i,radius_metre,utm_x,utm_y,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
+                    if ( is_intersection )
+                        un_fill_grids.push_back({static_cast<double>(j), static_cast<double>(i)});
                 }
             }
+
         }
     }
 
     for(auto grid : fill_grids){
-        auto grid_ptr = & m_grids[grid.y][grid.x];
+        auto grid_ptr = & m_grids[grid.x][grid.y];
         find_node_ptrs.insert(find_node_ptrs.end(),grid_ptr -> nodes.begin(),grid_ptr -> nodes.end());
     }
     for(auto grid : un_fill_grids){
-        auto grid_ptr = & m_grids[grid.y][grid.x];
+        auto grid_ptr = & m_grids[grid.x][grid.y];
         for( auto node : grid_ptr -> nodes){
             if ( DistanceCalculator::euclidDistance2D(node->utm_xy,origin) <= radius_metre )
                 find_node_ptrs.push_back(node);
         }
     }
     return find_node_ptrs;
-   // double right_grid_index_right_utm_x = m_min_x + static_cast<int>(right_grid_index.x) * grid_width_1;
-   // right_grid_index_right_utm_x = right_grid_index_right_utm_x > m_max_x ? m_max_x : right_grid_index_right_utm_x ;
-   // double left_grid_index_left_utm_x = m_min_x + static_cast<int>(left_grid_index.x-1) * grid_width_1;
-  //  left_grid_index_left_utm_x = left_grid_index_left_utm_x < m_min_x ? m_min_x : left_grid_index_left_utm_x ;
-   // double top_grid_index_top_utm_y = m_min_y + (static_cast<int>(m_bottom_grid_index.y) - 1)* grid_length_1;
-    //top_grid_index_top_utm_y = top_grid_index_top_utm_y < m_min_y ? m_min_y : top_grid_index_top_utm_y;
-   // double bottom_grid_index_bottom_utm_y = m_min_y + static_cast<int>(m_top_grid_index.y) * grid_length_1;
-   // bottom_grid_index_bottom_utm_y = bottom_grid_index_bottom_utm_y > m_max_y ? m_max_y : bottom_grid_index_bottom_utm_y;
-
-   // double leftest_un_fill_grid_index_utm_x = left_grid_index_left_utm_x < utm_x - radius_metre ? left_grid_index_left_utm_x + grid_width_1 : left_grid_index_left_utm_x;
-   // double rightest_un_fill_grid_index_utm_x = right_grid_index_right_utm_x > utm_x + radius_metre ? right_grid_index_right_utm_x - grid_width_1 : right_grid_index_right_utm_x;
-   // double most_top_un_fill_grid_index_utm_y = top_grid_index_top_utm_y < utm_y - radius_metre ? top_grid_index_top_utm_y + grid_length_1 : top_grid_index_top_utm_y;
-   // double most_bottom_un_fill_grid_index_utm_y = bottom_grid_index_bottom_utm_y > utm_y + radius_metre ? bottom_grid_index_bottom_utm_y - grid_length_1 : bottom_grid_index_bottom_utm_y;
-
-    //std::vector<std::vector<int>>
-
 
 }
+
+std::vector<double> GeoMap::shortestPathsDistance(double utm_x, double utm_y) {
+
+    std::vector<double> results;
+
+    auto grid_index_xy = getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x,utm_y,grid_width_1,grid_length_1);
+    auto grid_ptr = &m_grids[grid_index_xy.x][grid_index_xy.y];
+    double min_distance = std::numeric_limits<double>::max();
+    int64_t index = -1;
+    for(auto node : grid_ptr->nodes){
+        double distance = DistanceCalculator::euclidDistance2D(node->utm_xy,{utm_x,utm_y});
+        if(distance < min_distance){
+            min_distance = distance ;
+            index = node -> index;
+        }
+    }
+    VertexDescriptor origin_vertex = vertex(index,graph);
+    VertexPredecessorMap p = get(vertex_predecessor,graph);
+    VertexDistanceMap d = get(vertex_distance,graph);
+    dijkstra_shortest_paths(graph,origin_vertex,predecessor_map(p).distance_map(d));
+    for(auto node_ptr : m_geo_nodes){
+        auto v = vertex(node_ptr->index,graph);
+        std::cout << "origin index " << index << " node index "<< node_ptr -> index <<" distance = " << d[v] << std::endl;
+        results.push_back(d[v]+min_distance);
+    }
+
+    return results;
+}
+
+
 
 using Highway_value = enum highway_value {
     bus_stop = 0,
@@ -612,3 +744,4 @@ std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
     }
     return utm_xy_points ;
 }
+
