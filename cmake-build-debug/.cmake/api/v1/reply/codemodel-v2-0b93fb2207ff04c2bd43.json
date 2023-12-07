@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "GeoVI",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Test_Map::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Test_Map-Debug-016ebbf4931ffcc96215.json",
+					"name" : "Test_Map",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Test_Voronoi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Test_Voronoi-Debug-bdb52a2ef6c5e81fc682.json",
+					"name" : "Test_Voronoi",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "geovi::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-geovi-Debug-f297bce579c632a915d1.json",
+					"name" : "geovi",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/wuwei/workspace/GeoVI/cmake-build-debug",
+		"source" : "/Users/wuwei/workspace/GeoVI"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

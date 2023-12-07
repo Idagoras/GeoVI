@@ -34,18 +34,21 @@ namespace geovi{
                 using Segments = std::vector<Segment>;
                 using Lines = std::vector<Line>;
                 using Matrix = boost::numeric::ublas::matrix<matrix_element_type>;
-                using CellIndex = int64_t;
+                using CellIndex = uint64_t;
+
                 friend class VoronoiDiagramBuilder;
-                VoronoiDiagram(){};
-                inline int64_t sites_num(){return m_points.size();};
-                Points vertices();
-                Points sites();
-                std::vector<CellIndex> neighbors(CellIndex index);
-                Segments finiteEdges();
-                Lines infiniteEdges();
-                std::pair<Point2,CellIndex> cellIncludePoint(Point2 p);
-                std::vector<Point2> cellPolygon(CellIndex index;
-                Matrix shortestPathBetweenCells();
+
+                VoronoiDiagram()= default;;
+                inline uint64_t sites_num(){return m_points.size();};
+                Points vertices() const;
+                Points sites() const;
+                std::vector<CellIndex> neighbors(CellIndex index) const;
+                Segments finiteEdges() const;
+                Lines infiniteEdges() const;
+                std::pair<Point2,CellIndex> cellIncludePoint(Point2 p) const;
+                std::vector<Point2> cellPolygon(CellIndex index) const;
+                Matrix shortestPathBetweenCells() const;
+                std::vector<CellIndex> cells_include_or_on_its_edge(Point2& p) const;
 
 
                 
@@ -55,19 +58,20 @@ namespace geovi{
                 VD m_vd;
                 Points m_points;
                 Matrix m_shortest_paths;
+
+                std::vector<Point2> m_boundary;
             };
 
             class VoronoiDiagramBuilder{
             public :
                 using Points = std::vector<Point2>;
                 using Origin = Point2;
-                using InputCoordinateSystemType = geovi::CoordinateSystemType;
-                VoronoiDiagramBuilder(NumericalAccuracy numericalAccuracy,Origin originPoint);
-                void build(InputCoordinateSystemType inputType,VoronoiDiagram& voronoi_dragram,Points& points);
+                VoronoiDiagramBuilder(NumericalAccuracy numericalAccuracy,const std::vector<Point2>& rect_boundary,Origin originPoint = {0,0});
+                void build(VoronoiDiagram& voronoi_diagram,Points& points);
             private :
-                int multiple = 0;  
-                Origin origin;
-                CoordinateSystemConverter converter;                
+                int m_multiple = 0;
+                Origin m_origin;
+                double m_min_x,m_max_x,m_min_y,m_max_y;
             };
 
         } // namespace voronoi_diagram

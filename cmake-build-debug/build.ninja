@@ -145,6 +145,40 @@ build ../bin/Test_Map: CXX_EXECUTABLE_LINKER__Test_Map_Debug CMakeFiles/Test_Map
   TARGET_FILE = ../bin/Test_Map
   TARGET_PDB = Test_Map.dbg
 
+# =============================================================================
+# Object build statements for EXECUTABLE target Test_Voronoi
+
+
+#############################################
+# Order-only phony target for Test_Voronoi
+
+build cmake_object_order_depends_target_Test_Voronoi: phony || cmake_object_order_depends_target_geovi
+
+build CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o: CXX_COMPILER__Test_Voronoi_Debug /Users/wuwei/workspace/GeoVI/test/test_voronoi.cc || cmake_object_order_depends_target_Test_Voronoi
+  DEFINES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+  DEP_FILE = CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o.d
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  INCLUDES = -I/Users/wuwei/workspace/GeoVI -isystem /usr/local/include
+  OBJECT_DIR = CMakeFiles/Test_Voronoi.dir
+  OBJECT_FILE_DIR = CMakeFiles/Test_Voronoi.dir/test
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target Test_Voronoi
+
+
+#############################################
+# Link the executable ../bin/Test_Voronoi
+
+build ../bin/Test_Voronoi: CXX_EXECUTABLE_LINKER__Test_Voronoi_Debug CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o | ../lib/libgeovi.a /usr/local/lib/libproj.25.9.4.0.dylib || ../lib/libgeovi.a
+  FLAGS = -g -std=c++11 -std=c++14 -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX13.3.sdk
+  LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  ../lib/libgeovi.a  /usr/local/lib/libproj.25.9.4.0.dylib
+  OBJECT_DIR = CMakeFiles/Test_Voronoi.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = ../bin/Test_Voronoi
+  TARGET_PDB = Test_Voronoi.dbg
+
 
 #############################################
 # Utility command for edit_cache
@@ -173,6 +207,8 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 build Test_Map: phony ../bin/Test_Map
 
+build Test_Voronoi: phony ../bin/Test_Voronoi
+
 build geovi: phony ../lib/libgeovi.a
 
 build libgeovi.a: phony ../lib/libgeovi.a
@@ -185,7 +221,7 @@ build libgeovi.a: phony ../lib/libgeovi.a
 #############################################
 # Folder: /Users/wuwei/workspace/GeoVI/cmake-build-debug
 
-build all: phony ../lib/libgeovi.a ../bin/Test_Map
+build all: phony ../lib/libgeovi.a ../bin/Test_Map ../bin/Test_Voronoi
 
 # =============================================================================
 # Unknown Build Time Dependencies.

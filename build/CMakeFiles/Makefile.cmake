@@ -78,4 +78,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/geovi.dir/DependInfo.cmake"
   "CMakeFiles/Test_Map.dir/DependInfo.cmake"
+  "CMakeFiles/Test_Voronoi.dir/DependInfo.cmake"
   )

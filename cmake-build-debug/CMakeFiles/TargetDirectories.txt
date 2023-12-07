@@ -1,4 +1,5 @@
 /Users/wuwei/workspace/GeoVI/cmake-build-debug/CMakeFiles/geovi.dir
 /Users/wuwei/workspace/GeoVI/cmake-build-debug/CMakeFiles/Test_Map.dir
+/Users/wuwei/workspace/GeoVI/cmake-build-debug/CMakeFiles/Test_Voronoi.dir
 /Users/wuwei/workspace/GeoVI/cmake-build-debug/CMakeFiles/edit_cache.dir
 /Users/wuwei/workspace/GeoVI/cmake-build-debug/CMakeFiles/rebuild_cache.dir

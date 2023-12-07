@@ -142,6 +142,19 @@ Test_Map/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/build
 .PHONY : Test_Map/fast
 
+#=============================================================================
+# Target rules for targets named Test_Voronoi
+
+# Build rule for target.
+Test_Voronoi: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 Test_Voronoi
+.PHONY : Test_Voronoi
+
+# fast build rule for target.
+Test_Voronoi/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/build
+.PHONY : Test_Voronoi/fast
+
 GeoVI/algorithm.o: GeoVI/algorithm.cpp.o
 .PHONY : GeoVI/algorithm.o
 
@@ -310,6 +323,30 @@ test/test_map.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Map.dir/build.make CMakeFiles/Test_Map.dir/test/test_map.cc.s
 .PHONY : test/test_map.cc.s
 
+test/test_voronoi.o: test/test_voronoi.cc.o
+.PHONY : test/test_voronoi.o
+
+# target to build an object file
+test/test_voronoi.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.o
+.PHONY : test/test_voronoi.cc.o
+
+test/test_voronoi.i: test/test_voronoi.cc.i
+.PHONY : test/test_voronoi.i
+
+# target to preprocess a source file
+test/test_voronoi.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.i
+.PHONY : test/test_voronoi.cc.i
+
+test/test_voronoi.s: test/test_voronoi.cc.s
+.PHONY : test/test_voronoi.s
+
+# target to generate assembly for a file
+test/test_voronoi.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Test_Voronoi.dir/build.make CMakeFiles/Test_Voronoi.dir/test/test_voronoi.cc.s
+.PHONY : test/test_voronoi.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -319,6 +356,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Test_Map"
+	@echo "... Test_Voronoi"
 	@echo "... geovi"
 	@echo "... GeoVI/algorithm.o"
 	@echo "... GeoVI/algorithm.i"
@@ -341,6 +379,9 @@ help:
 	@echo "... test/test_map.o"
 	@echo "... test/test_map.i"
 	@echo "... test/test_map.s"
+	@echo "... test/test_voronoi.o"
+	@echo "... test/test_voronoi.i"
+	@echo "... test/test_voronoi.s"
 .PHONY : help
 
 

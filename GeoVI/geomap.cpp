@@ -316,7 +316,7 @@ TagProcessor::FeatureTupleArray TagProcessor::getMapFeature(const osmium::TagLis
         bool exist = false;
         for(auto it_f = feature_with_name_string.begin() ; it_f != feature_with_name_string.end(); it_f ++){
             string name = it_f->first;
-            if( name.compare(string(key)) == 0 ){
+            if( name == string(key) ){
                 string value = it -> value();
                 arr.push_back(make_tuple(it_f->first,it_f->second,value));
                 break;
@@ -331,21 +331,19 @@ string TagProcessor::getName(const osmium::TagList& tag_list,Language language){
     if( tag_list.has_key("name") ){
         return tag_list["name"];
     }
-    return string("nameless");
+    return {"nameless"};
 }
 
 class GeoMapHandler : public osmium::handler::Handler{
 public:
                 
 
-    GeoMapHandler(geovi::geo::map::GeoMap& map):gmap(map){
-        osmium::handler::Handler();
-
+    explicit GeoMapHandler(geovi::geo::map::GeoMap& map):gmap(map){
     };
     void way(const osmium::Way& way);
     void node(const osmium::Node& node);
     void relation(const osmium::Relation& relation);
-    void getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode);
+    void getGeoNode(const osmium::Node& node,GeoMap::GeoNode& g_node);
 
 
 
@@ -358,20 +356,14 @@ private:
 
 // class GeoMapHandler
 
-void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& gnode){
+void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& g_node){
     TagProcessor tp;
     auto features = tp.getMapFeature(node.tags());
-    if( tp.getName(node.tags(),TagProcessor::Language::zh).compare("nameless") != 0){
-       // std::cout << "node id " << node.id() << " node name is " << tp.getName(node.tags(),TagProcessor::Language::zh) << std::endl;
-        for(auto feature : features){
-       // std::cout << "node's mapfeature is " << get<TagFeild::map_feature>(feature) << " value is " << get<TagFeild::feature_value>(feature) << std::endl;
-        }
-    }
-    gnode.index = gmap.numOfNodes();
-    gnode.name = tp.getName(node.tags(),TagProcessor::Language::zh);
-    gnode.features = tp.getMapFeature(node.tags());
-    gnode.id = node.id();
-    gnode.loc = GeoMap::Location{node.location().lon(),node.location().lat()};
+    g_node.index = gmap.numOfNodes();
+    g_node.name = tp.getName(node.tags(),TagProcessor::Language::zh);
+    g_node.features = tp.getMapFeature(node.tags());
+    g_node.id = node.id();
+    g_node.loc = GeoMap::Location{node.location().lon(),node.location().lat()};
     
 }
 
@@ -393,10 +385,6 @@ void GeoMapHandler::way(const osmium::Way& way){
         }
         refs[index] = node.ref();
         ++ index;
-        //std::cout << "node ref in way id " << way.id() << "ref id is " << node.ref() << std::endl;
-        //auto geo_node = gmap.getNode(node.ref());
-       // std::cout << "node name is " << geo_node -> name << std::endl;
-        //std::cout << "latitude is " << geo_node -> loc.latitude << " longitude is " << geo_node -> loc.longitude << std::endl;
 
     }
 
@@ -448,9 +436,10 @@ void GeoMapHandler::relation(const osmium::Relation& relation){
 // class GeoMap
 
 GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):shape_type(type),mshape(shape){
-    graph = Graph(0);
-    nodes_num = 0;
-    ways_num = 0;
+    m_graph = Graph(0);
+    m_nodes_num = 0;
+    m_ways_num = 0;
+    m_relations_num = 0;
 
     GeoMapHandler handler(*this);
     osmium::apply(reader.getOSMReader(),handler);
@@ -460,10 +449,11 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):sh
 
 }
 
-GeoMap::GeoMap(geovi::io::OSMReader& reader,std::shared_ptr<MapFeatureFilter> filter):m_filter(filter){
-    graph = Graph(0);
-    nodes_num = 0;
-    ways_num = 0;
+GeoMap::GeoMap(geovi::io::OSMReader& reader,const std::shared_ptr<MapFeatureFilter>& filter):m_filter(filter){
+    m_graph = Graph(0);
+    m_nodes_num = 0;
+    m_ways_num = 0;
+    m_relations_num = 0;
     GeoMapHandler handler(*this);
     osmium::apply(reader.getOSMReader(),handler);
     reader.getOSMReader().close();
@@ -476,11 +466,11 @@ GeoMap::GeoMap(geovi::io::OSMReader& reader,std::shared_ptr<MapFeatureFilter> fi
 
 bool GeoMap::addNode(GeoNode node){
     if( !hasNode(node.id)){
-        //std::cout << "add node id = " << node.id <<std::endl;
+
         m_node_map.insert(pair<map_object_id_type,GeoNode>(node.id, node));
         m_geo_nodes.push_back(&m_node_map[node.id]);
-        addNodeToGraph(node);        
-        nodes_num ++;
+        m_add_node_to_graph(node);
+        m_nodes_num ++;
         m_node_map[node.id].utm_xy = Point2{ node.loc.latitude,node.loc.longitude};
         s_coordinate_system_converter->convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,m_node_map[node.id].utm_xy);
         m_max_x = m_node_map[node.id].utm_xy.x > m_max_x ? m_node_map[node.id].utm_xy.x : m_max_x;
@@ -509,9 +499,9 @@ bool GeoMap::addWay(GeoWay way){
         m_way_map.insert({way.id,way});
         m_geo_ways.push_back(&m_way_map[way.id]);
         way.capacity = DistanceCalculator::euclidDistance2D(way.source->utm_xy, way.target->utm_xy);
-        way.index = ways_num;
-        addWayToGraph(way);
-        ways_num++;
+        way.index = m_ways_num;
+        m_add_way_to_graph(way);
+        m_ways_num++;
 
         if( !m_filter.expired() ){
             auto filter = m_filter.lock();
@@ -536,31 +526,30 @@ const GeoMap::GeoNode* GeoMap::getNode(GeoMap::map_object_id_type node_id){
     if( hasNode(node_id) ){
         return &(m_node_map.find(node_id)->second);
     }
-    return NULL;
+    return nullptr;
 }
 
-void GeoMap::addNodeToGraph(GeoNode& node){
-    VertexDescriptor v = add_vertex(graph);
-    auto name_map = get(vertex_name,graph);
+void GeoMap::m_add_node_to_graph(GeoNode& node){
+    VertexDescriptor v = add_vertex(m_graph);
+    auto name_map = get(vertex_name, m_graph);
     name_map[v] = node.name;
 
-    auto location_map = get(vertex_location,graph);
+    auto location_map = get(vertex_location, m_graph);
     location_map[v] = Point2{node.loc.latitude,node.loc.longitude};
-  //  std::cout << "boost graph has " <<graph.m_vertices.size() << " nodes " << std::endl;
+
 }
 
-void GeoMap::addWayToGraph(GeoWay& way){
-    int sr_index = way.source->index;
-    int tg_index = way.target->index;
-    auto sr_vertex_descriptor = vertex(sr_index,graph);
-    auto tg_vertex_descriptor = vertex(tg_index,graph);
-    EdgeDescriptor e = add_edge(sr_vertex_descriptor,tg_vertex_descriptor,graph).first;
-    auto weight_map = get(edge_weight,graph);
+void GeoMap::m_add_way_to_graph(GeoWay& way){
+    auto sr_index = way.source->index;
+    auto tg_index = way.target->index;
+    auto sr_vertex_descriptor = vertex(sr_index, m_graph);
+    auto tg_vertex_descriptor = vertex(tg_index, m_graph);
+    EdgeDescriptor e = add_edge(sr_vertex_descriptor, tg_vertex_descriptor, m_graph).first;
+    auto weight_map = get(edge_weight, m_graph);
     weight_map[e] = way.capacity;
-    auto name_map = get(edge_name,graph);
+    auto name_map = get(edge_name, m_graph);
     name_map[e] = way.name;
 
-   //std::cout << "boost graph has " <<graph.m_edges.size() << " ways " << std::endl;
 }
 
 std::vector<GeoMap::GeoNode *> GeoMap::getGeoNodes() {
@@ -571,7 +560,7 @@ std::vector<Point2> GeoMap::getUTMNodesCoordinate() {
     std::vector<Point2> nodes;
     auto geo_nodes = getGeoNodes();
     for(auto node : geo_nodes){
-        nodes.push_back(Point2{node->loc.latitude,node->loc.longitude});
+        nodes.emplace_back(node->loc.latitude,node->loc.longitude);
     }
     return nodes;
 }
@@ -589,20 +578,20 @@ std::vector<const GeoMap::GeoNode *> GeoMap::find(int radius_metre, double utm_x
     auto m_top_grid_index = getGridIndex(m_max_x, m_min_x, m_max_y, m_min_y, utm_x, utm_y + radius_metre, grid_width_1, grid_length_1);
     m_top_grid_index = utm_y + radius_metre > m_max_y ? getGridIndex(m_max_x, m_min_x, m_max_y, m_min_y, utm_x, m_max_y, grid_width_1, grid_length_1) : m_top_grid_index ;
 
-    int satisfy_vertex_num = 0;
-    for( int i = left_grid_index.y; i <= right_grid_index.y ; ++ i ){
-        for (int j = m_bottom_grid_index.x ; j <= m_top_grid_index.x ; ++ j ){
+
+    for( int i = static_cast<int>(left_grid_index.y); i <= static_cast<int>(right_grid_index.y) ; ++ i ){
+        for (int j = static_cast<int>(m_bottom_grid_index.x) ; j <= static_cast<int>(m_top_grid_index.x) ; ++ j ){
             auto is_within_pair = is_within_s_between_c(j,i,radius_metre,utm_x,utm_y,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
             if( is_within_pair.second){
-                un_fill_grids.push_back({static_cast<double>(j), static_cast<double>(i)});
+                un_fill_grids.emplace_back(static_cast<double>(j), static_cast<double>(i));
                 break;
             }else{
                 if( is_within_pair.first ){
-                    fill_grids.push_back({static_cast<double>(j), static_cast<double>(i)});
+                    fill_grids.emplace_back(static_cast<double>(j), static_cast<double>(i));
                 }else{
                     bool is_intersection = is_intersection_s_between_c(j,i,radius_metre,utm_x,utm_y,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
                     if ( is_intersection )
-                        un_fill_grids.push_back({static_cast<double>(j), static_cast<double>(i)});
+                        un_fill_grids.emplace_back(static_cast<double>(j), static_cast<double>(i));
                 }
             }
 
@@ -610,11 +599,11 @@ std::vector<const GeoMap::GeoNode *> GeoMap::find(int radius_metre, double utm_x
     }
 
     for(auto grid : fill_grids){
-        auto grid_ptr = & m_grids[grid.x][grid.y];
+        auto grid_ptr = & m_grids[static_cast<int>(grid.x)][static_cast<int>(grid.y)];
         find_node_ptrs.insert(find_node_ptrs.end(),grid_ptr -> nodes.begin(),grid_ptr -> nodes.end());
     }
     for(auto grid : un_fill_grids){
-        auto grid_ptr = & m_grids[grid.x][grid.y];
+        auto grid_ptr = & m_grids[static_cast<int>(grid.x)][static_cast<int>(grid.y)];
         for( auto node : grid_ptr -> nodes){
             if ( DistanceCalculator::euclidDistance2D(node->utm_xy,origin) <= radius_metre )
                 find_node_ptrs.push_back(node);
@@ -629,7 +618,7 @@ std::vector<double> GeoMap::shortestPathsDistance(double utm_x, double utm_y) {
     std::vector<double> results;
 
     auto grid_index_xy = getGridIndex(m_max_x,m_min_x,m_max_y,m_min_y,utm_x,utm_y,grid_width_1,grid_length_1);
-    auto grid_ptr = &m_grids[grid_index_xy.x][grid_index_xy.y];
+    auto grid_ptr = &m_grids[static_cast<int>(grid_index_xy.x)][static_cast<int>(grid_index_xy.y)];
     double min_distance = std::numeric_limits<double>::max();
     int64_t index = -1;
     for(auto node : grid_ptr->nodes){
@@ -639,12 +628,12 @@ std::vector<double> GeoMap::shortestPathsDistance(double utm_x, double utm_y) {
             index = node -> index;
         }
     }
-    VertexDescriptor origin_vertex = vertex(index,graph);
-    VertexPredecessorMap p = get(vertex_predecessor,graph);
-    VertexDistanceMap d = get(vertex_distance,graph);
-    dijkstra_shortest_paths(graph,origin_vertex,predecessor_map(p).distance_map(d));
+    VertexDescriptor origin_vertex = vertex(index, m_graph);
+    VertexPredecessorMap p = get(vertex_predecessor, m_graph);
+    VertexDistanceMap d = get(vertex_distance, m_graph);
+    dijkstra_shortest_paths(m_graph, origin_vertex, predecessor_map(p).distance_map(d));
     for(auto node_ptr : m_geo_nodes){
-        auto v = vertex(node_ptr->index,graph);
+        auto v = vertex(node_ptr->index, m_graph);
         std::cout << "origin index " << index << " node index "<< node_ptr -> index <<" distance = " << d[v] << std::endl;
         results.push_back(d[v]+min_distance);
     }
@@ -740,7 +729,7 @@ void CrossingFilter::node_filter(OSMMapFeature feature,const char * feature_valu
 std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
     std::vector<Point2> utm_xy_points ;
     for(auto node_ptr : m_crossing_nodes){
-        utm_xy_points.push_back({node_ptr->utm_xy.x,node_ptr->utm_xy.y});
+        utm_xy_points.emplace_back(node_ptr->utm_xy.x,node_ptr->utm_xy.y);
     }
     return utm_xy_points ;
 }

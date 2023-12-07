@@ -1,22 +1,41 @@
 #include "GeoVI/voronoi.h"
 #include <iostream>
 #include <vector>
-using namespace geovi::algorithm::voronoi_diagram;
+#include <limits>
+
 
 int main(){
-    VoronoiDiagramBuilder builder(geovi::NumericalAccuracy::meter,geovi::Point2{0,0});
-    VoronoiDiagram vd;
-    std::vector<geovi::Point2> points;
-    points.push_back(geovi::Point2{1,0});
-    points.push_back(geovi::Point2{1,6});
-    points.push_back(geovi::Point2{10,4});
-    points.push_back(geovi::Point2{7,5});
-    points.push_back(geovi::Point2{2,9});
-    builder.build(VoronoiDiagramBuilder::InputCoordinateSystemType::UTM,vd,points);
-    VoronoiDiagram::Points ps  = vd.vertices();
-    for (auto p : ps){
-        std::cout << "vertex coordinate x = " << p.x << " vertex coordinate y " << p.y << std::endl;
-    }
+    using namespace geovi::algorithm::voronoi_diagram;
+    using namespace geovi;
+    std::vector<Point2> rect_boundary;
+    std::vector<Point2> sites;
+    rect_boundary.emplace_back(0,0);
+    rect_boundary.emplace_back(0,10);
+    rect_boundary.emplace_back(10,10);
+    rect_boundary.emplace_back(10,0);
+
+    sites.emplace_back(3,4);
+    sites.emplace_back(6,2);
+    sites.emplace_back(6,6);
+    sites.emplace_back(4,8);
+    sites.emplace_back(9,6);
+
+
+
+    VoronoiDiagramBuilder builder(NumericalAccuracy::meter,rect_boundary);
+    VoronoiDiagram voronoi_diagram;
+    builder.build(voronoi_diagram,sites);
+
+   for(int i = 0; i < sites.size() ; ++ i ){
+       std::cout << "cell index " << i << " site x = " << sites[i].x << " y = " << sites[i].y << std::endl;
+       auto cell_polygon = voronoi_diagram.cellPolygon(i);
+
+       std::cout << "polygon:" << std::endl;
+       for(auto p : cell_polygon){
+           std::cout << "vertex p.x = " << p.x << " p.y = " << p.y <<std::endl;
+       }
+       std::cout << std::endl;
+   }
     
     return 0;
 }

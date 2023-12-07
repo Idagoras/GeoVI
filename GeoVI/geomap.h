@@ -186,15 +186,15 @@ namespace geovi
                 GeoMapShapeType shape_type;
                 Shape mshape;
                 GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
-                GeoMap(geovi::io::OSMReader& reader,std::shared_ptr<MapFeatureFilter> filter);
+                GeoMap(geovi::io::OSMReader& reader,const std::shared_ptr<MapFeatureFilter>& filter);
 
                 inline int64_t numOfNodes() const{
 
-                    return nodes_num;
+                    return m_nodes_num;
                 }
 
                 inline int64_t numOfWays() const{
-                    return ways_num;
+                    return m_ways_num;
                 }
 
                 std::vector<const GeoNode* > find(int radius_metre,double utm_x,double utm_y);
@@ -217,26 +217,26 @@ namespace geovi
 
 
             private:
-                geovi::algorithm::Graph graph;
+                geovi::algorithm::Graph m_graph;
                 NodeMap m_node_map;
                 std::vector<GeoNode*> m_geo_nodes;
                 WayMap m_way_map;
                 std::vector<GeoWay*> m_geo_ways;
-                int nodes_num;
-                int ways_num;
-                int relations_num;
-                float m_max_x = std::numeric_limits<float>::min();
-                float m_max_y = std::numeric_limits<float>::min();
-                float m_min_x = std::numeric_limits<float>::max();
-                float m_min_y = std::numeric_limits<float>::max();
-                float m_max_lat = std::numeric_limits<float>::min();
-                float m_max_lon = std::numeric_limits<float>::min();
-                float m_min_lat = std::numeric_limits<float>::max();
-                float m_min_lon = std::numeric_limits<float>::max();
+                int m_nodes_num;
+                int m_ways_num;
+                int m_relations_num;
+                double m_max_x = std::numeric_limits<double>::min();
+                double m_max_y = std::numeric_limits<double>::min();
+                double m_min_x = std::numeric_limits<double>::max();
+                double m_min_y = std::numeric_limits<double>::max();
+                double m_max_lat = std::numeric_limits<double>::min();
+                double m_max_lon = std::numeric_limits<double>::min();
+                double m_min_lat = std::numeric_limits<double>::max();
+                double m_min_lon = std::numeric_limits<double>::max();
                 std::weak_ptr<MapFeatureFilter> m_filter;
                 std::vector<std::vector<GeoGrid>> m_grids;
-                void addNodeToGraph(GeoNode& node);
-                void addWayToGraph(GeoWay& way);
+                void m_add_node_to_graph(GeoNode& node);
+                void m_add_way_to_graph(GeoWay& way);
             };   
 
         class  MapFeatureFilter {
