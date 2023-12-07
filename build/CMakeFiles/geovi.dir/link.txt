@@ -1,2 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/ar qc /Users/wuwei/workspace/GeoVI/lib/libgeovi.a CMakeFiles/geovi.dir/GeoVI/algorithm.cpp.o CMakeFiles/geovi.dir/GeoVI/convert.cpp.o CMakeFiles/geovi.dir/GeoVI/geomap.cpp.o CMakeFiles/geovi.dir/GeoVI/mechanism.cpp.o CMakeFiles/geovi.dir/GeoVI/reader.cpp.o CMakeFiles/geovi.dir/GeoVI/voronoi.cpp.o
-/Library/Developer/CommandLineTools/usr/bin/ranlib /Users/wuwei/workspace/GeoVI/lib/libgeovi.a
