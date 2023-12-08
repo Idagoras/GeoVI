@@ -58,12 +58,12 @@ m_min_y(std::numeric_limits<double>::max()),
 m_max_x(std::numeric_limits<double>::min()),
 m_max_y(std::numeric_limits<double>::min())
 {
-   for(auto vertex : rect_boundary){
-       m_min_x = vertex.x < m_min_x ? vertex.x : m_min_x;
-       m_min_y = vertex.y < m_min_y ? vertex.y : m_min_y;
-       m_max_x = vertex.x > m_max_x ? vertex.x : m_max_x;
-       m_max_y = vertex.y > m_max_y ? vertex.y : m_max_y;
-   }
+    for(auto vertex : rect_boundary){
+        m_min_x = vertex.x < m_min_x ? vertex.x : m_min_x;
+        m_min_y = vertex.y < m_min_y ? vertex.y : m_min_y;
+        m_max_x = vertex.x > m_max_x ? vertex.x : m_max_x;
+        m_max_y = vertex.y > m_max_y ? vertex.y : m_max_y;
+    }
 }
 
 void VoronoiDiagramBuilder::build(VoronoiDiagram& voronoi_diagram,Points& points){
@@ -243,13 +243,16 @@ void intersection_polygon(const std::vector<Point2>& rect,const std::vector<Poin
     for(auto& v : rect){
         boost::geometry::append(b_rect,point_xy{v.x,v.y});
     }
+
     for(auto& v : polygon){
         boost::geometry::append(b_po,point_xy{v.x,v.y});
     }
+
     std::deque<b_polygon> b_out;
     boost::geometry::intersection(b_rect,b_po,b_out);
-    auto out_polygon = b_out.front();
-    for(auto v : out_polygon.outer()){
+    std::cout << boost::geometry::wkt(b_out[0]) << std::endl;
+    out.clear();
+    for(auto v : b_out[0].outer()){
         out.emplace_back(v.x(),v.y());
     }
 }
@@ -261,30 +264,30 @@ std::vector<VoronoiDiagram::CellIndex> VoronoiDiagram::cells_include_or_on_its_e
     double min_distance = std::numeric_limits<double>::max();
     uint64_t index = 0;
     for(auto site : m_points){
-        double distance = pow(p.x-site.x,2)+pow(p.y-site.y,2);
-        std::cout << "distance to " << index << " site  is " << distance <<std::endl;
-        if(min_distance > distance){
-            std::cout << "min distance = " << min_distance << " distance = " << distance << std::endl;
+        double distance = DistanceCalculator::euclidDistance2D(p,site);
+        std::cout << "site " << index <<" to point distance = " << distance <<std::endl;
+        if(DistanceCalculator::double_distance_equal(min_distance,distance) > 0){
             results.clear();
             results.push_back(index);
             min_distance = distance;
-        }else if( min_distance == distance)
+        }
+        else if( DistanceCalculator::double_distance_equal(min_distance,distance) == 0)
             results.push_back(index);
         ++ index;
     }
-
+    for( auto r : results){
+        std::cout << "include index = " << r << std::endl;
+    }
     return results;
 }
 
 boost::polygon::voronoi_cell<double>* get_cell_obj(uint64_t index,const boost::polygon::voronoi_diagram<double>& vd){
     auto cells = vd.cells();
     for(auto& cell : cells){
-        std::cout << "source index = " << cell.source_index() << std::endl;
         if( cell.source_index() == index){
             return &cell;
         }
     }
-    std::cout << "null" <<std::endl;
     return nullptr;
 }
 
@@ -295,7 +298,7 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
     boost::polygon::voronoi_cell<double>* cell;
     for(auto& c : cells){
         if( c.source_index() == index){
-           cell = &c;
+            cell = &c;
         }
     }
     auto cell_point = m_points[index];
@@ -310,30 +313,23 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
         auto find_result = std::find(results.begin(),results.end(),index);
         if(find_result != results.end()){
             boundary_vertexes_in_cell.push_back(b_vertex);
-            std::cout << "contain boundary vertex x = " << b_vertex.x << " y = " << b_vertex.y <<std::endl;
         }
 
     }
     do{
         if(e->is_finite()){
-            std::cout << "finite edge "<< std::endl;
-            std::cout << "v0 x = " << e->vertex0()->x() << " y = " << e->vertex0()->y()<<std::endl;
-            std::cout << "v1 x = " << e->vertex1()->x() << " y = " << e->vertex1()->y()<<std::endl;
+
             polygon_points.emplace_back(e->vertex0()->x(),e->vertex0()->y());
             polygon_points.emplace_back(e->vertex1()->x(),e->vertex1()->y());
         }else{
-            std::cout << "infinite edge" << std::endl;
             // 求存在的一个端点
             auto v = e->vertex0() == nullptr ? e->vertex1() : e->vertex0();
             // 求相邻的生成点指针
             auto neighbor = e->twin()->cell();
             // 求相邻的生成点坐标
             auto neighbor_point = m_points[neighbor->source_index()];
-            std::cout << "neighbor point x = " << neighbor_point.x << " y = " << neighbor_point.y << std::endl;
-            std::cout << "cell point x = " << cell_point.x  << " y = " << cell_point.y << std::endl;
             // 求相邻生成点坐标和生成点坐标的中点，该点位于这条无限边上
             Point2 mid_point = {(cell_point.x+neighbor_point.x)/2,(cell_point.y+neighbor_point.y)/2};
-            std::cout << "mid_point x = " << mid_point.x << " y = " << mid_point.y << std::endl;
             // 求该条无限边的斜率
             double slope = cell_point.y - neighbor_point.y == 0 ? std::numeric_limits<double>::infinity() : -(cell_point.x-neighbor_point.x)/(cell_point.y-neighbor_point.y);
             // 求无线长的边和边界框的两个交点，返回值的首个元素相比第二个元素位置更左，也有可能有相等的x坐标
@@ -341,24 +337,22 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
             intersection_between_line_and_rectangle(mid_point,slope,intersection_points,m_boundary);
             std::vector<Point2> intersection_point_in_cell;
             for(auto inter_p : intersection_points){
-                std::cout << "intersection point x = " << inter_p.x << " y = " << inter_p.y <<std::endl;
+                std::cout << "intersection" << std::endl<<std::endl; 
                 auto results = cells_include_or_on_its_edge(inter_p);
-                for(auto r : results){
-                    std::cout << "include cell index = " << r << std::endl;
-                }
+
                 auto find_result = std::find(results.begin(),results.end(),index);
                 if(find_result != results.end()) {
                     intersection_point_in_cell.push_back(inter_p);
-                    std::cout << "contain intersection point x = " << inter_p.x << " y = " << inter_p.y <<std::endl;
+    
                 }
             }
-            std::cout << "check complete" << std::endl;
+
             if( v == nullptr){
                 return generate_polygon_with_rect_vertexes_and_line(boundary_vertexes_in_cell,intersection_point_in_cell);
             }else{
                 Direction direction = e->vertex0() == nullptr ? Direction::in : Direction::out;
-                std::cout << "direction = " <<direction << std::endl;
-                if(!intersection_point_in_cell.empty()){
+
+               // if(!intersection_point_in_cell.empty()){
                     if( direction == Direction::out){
                         polygon_points.emplace_back(v->x(),v->y());
 
@@ -368,15 +362,7 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
 
                         polygon_points.emplace_back(v->x(),v->y());
                     }
-                }
-
-                /*
-                std::cout << "infinite edge "<< std::endl;
-                std::cout << "y_min = " << y_min << " y_max = " << y_max << " x_max = "<< x_max << " x_min = " << x_min  << std::endl;
-                std::cout << "v x = " << v->x() << " y = " << v->y()<<std::endl;
-                std::cout << "direction = " << direction <<  std::endl;
-                std::cout << "slope = " << slope << std::endl;*/
-
+               // }
             }
 
 
@@ -384,12 +370,9 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
         }
         e = e->next();
     }while(e != begin);
-    for(auto a : polygon_points){
-        std::cout << "polygon_points  point x = " << a.x << " y = " << a.y <<std::endl;
-    }
 
     auto result = generate_polygon_with_rect_vertexes_and_line(boundary_vertexes_in_cell,polygon_points);
     intersection_polygon(m_boundary,result,polygon_points);
 
-    return result;
+    return polygon_points;
 }

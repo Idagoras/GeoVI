@@ -217,6 +217,20 @@ public:
     inline static double euclidDistance2D(const Point2& p1,const Point2& p2){
         return sqrt(pow((p1.x-p2.x),2)+pow((p1.y-p2.y),2));
     } 
+    inline static int double_distance_equal(double distance_1,double distance_2){
+        const double epsilon = 1e-4;
+        double offset = distance_1-distance_2;
+        double offset_abs = std::abs(offset);
+        if(offset_abs < epsilon){
+            return 0;
+        }else{
+            if( offset > 0)
+                return 1;
+            else
+                return -1;
+        }
+    }
+    
 };
 
 class StringAndTimeConverter{
