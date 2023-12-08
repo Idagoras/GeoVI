@@ -4,6 +4,7 @@
 #include "reader.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/geometry/index/rtree.hpp>
+#include <boost/polygon/voronoi.hpp>
 #include <vector>
 #include <string>
 #include "convert.h"
@@ -210,6 +211,8 @@ namespace geovi
                 std::vector<GeoNode*> getGeoNodes();
                 std::vector<double> shortestPathsDistance(double utm_x,double utm_y);
 
+                std::vector<Point2> utm_boundary();
+
 
 
                // GeoMap POISOfAnAreaWithCenter(Location loc);
@@ -254,6 +257,27 @@ namespace geovi
             }
         private:
             std::vector<const GeoMap::GeoNode*> m_crossing_nodes; 
+
+        };
+
+
+        class GeoMapVoronoiDiagramAdaptor {
+        public:
+            using voronoi_diagram = boost::polygon::voronoi_diagram<double>;
+            using voronoi_cell_container_type = boost::polygon::voronoi_diagram<double>::cell_container_type;
+            GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::GeoNode*> geo_nodes,std::vector<const GeoMap::GeoNode*> sites);
+            inline uint64_t get_nodes_in_cell_num(uint64_t cell_index) const { return m_cells_map.at(cell_index).size();}
+            const std::vector<const GeoMap::GeoNode*>* get_nodes_in_cell(uint64_t cell_index) const;
+            const std::vector<const GeoMap::GeoNode*> get_nodes_has_osm_tag_in_cell(uint64_t cell_index) const;
+            const std::vector<const GeoMap::GeoNode*> get_nodes_has_specified_osm_tag_in_cell(uint64_t cell_index,OSMMapFeature map_feature) const;
+            uint64_t get_nodes_has_specified_osm_tag_in_cell_num(uint64_t cell_index,OSMMapFeature map_feature) const;
+
+            void graph_adapt(const voronoi_cell_container_type& cells);
+            void shortest_path_distance_to_cells(uint64_t cell_index,std::vector<double>& results) ;
+        private:
+            std::map<uint64_t,std::vector<const GeoMap::GeoNode*>> m_cells_map;
+            algorithm::Graph m_cell_graph;
+            uint64_t m_sites_num;
 
         };
 

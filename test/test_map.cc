@@ -3,6 +3,7 @@
 //
 #include "GeoVI/geomap.h"
 #include "GeoVI/reader.h"
+#include "GeoVI/voronoi.h"
 #include <iostream>
 #include <memory>
 
@@ -10,6 +11,7 @@ using namespace std;
 using namespace geovi;
 using namespace geovi::io;
 using namespace geovi::geo::map;
+using namespace geovi::algorithm::voronoi_diagram;
 
 
 void print_node(const GeoMap::GeoNode* geo_node_ptr){
@@ -69,8 +71,21 @@ int main(){
     }
     */
         vector<GeoMap::GeoNode*> geo_nodes_ptrs = geo_map->getGeoNodes();
-        auto origin_ptr = geo_nodes_ptrs[100];
-        auto distances = geo_map->shortestPathsDistance(origin_ptr->utm_xy.x,origin_ptr->utm_xy.y);
+        auto sites = filter ->crossing_geo_nodes();
+        shared_ptr<GeoMapVoronoiDiagramAdaptor> geomap_voronoi_adaptor = make_shared<GeoMapVoronoiDiagramAdaptor>(geo_nodes_ptrs,sites);
+        VoronoiDiagram vd;
+        VoronoiDiagramBuilder builder(NumericalAccuracy::meter,geo_map->utm_boundary());
+        auto sites_utm_points = filter->crossing_utm_xy_points();
+        builder.build(vd,sites_utm_points);
+        geomap_voronoi_adaptor->graph_adapt(vd.cells());
+        std::vector<double> shortest_paths;
+        geomap_voronoi_adaptor->shortest_path_distance_to_cells(2,shortest_paths);
+        uint64_t cell_index = 0;
+        for(auto distance : shortest_paths){
+            std::cout << " cell 2 to cell " << cell_index << " shortest path distance = " << distance <<std::endl;
+            ++ cell_index;
+        }
+
         /*
         int index = 0;
         for(auto distance : distances){

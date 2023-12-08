@@ -352,7 +352,7 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
             }else{
                 Direction direction = e->vertex0() == nullptr ? Direction::in : Direction::out;
 
-               // if(!intersection_point_in_cell.empty()){
+                if(!intersection_point_in_cell.empty()){
                     if( direction == Direction::out){
                         polygon_points.emplace_back(v->x(),v->y());
 
@@ -362,7 +362,7 @@ std::vector<Point2> VoronoiDiagram::cellPolygon(VoronoiDiagram::CellIndex index)
 
                         polygon_points.emplace_back(v->x(),v->y());
                     }
-               // }
+                }
             }
 
 

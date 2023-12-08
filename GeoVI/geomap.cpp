@@ -641,7 +641,14 @@ std::vector<double> GeoMap::shortestPathsDistance(double utm_x, double utm_y) {
     return results;
 }
 
-
+std::vector<Point2> GeoMap::utm_boundary(){
+    return std::vector<Point2>{
+            {m_min_x,m_min_y},
+            {m_min_x,m_max_y},
+            {m_max_x,m_max_y},
+            {m_max_x,m_min_y}
+    };
+}
 
 using Highway_value = enum highway_value {
     bus_stop = 0,
@@ -734,3 +741,73 @@ std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
     return utm_xy_points ;
 }
 
+GeoMapVoronoiDiagramAdaptor::GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::GeoNode*> geo_nodes,std::vector<const GeoMap::GeoNode*> sites){
+    m_sites_num = sites.size();
+    for(uint64_t i = 0; i< sites.size(); ++i){
+        m_cells_map[i] = std::vector<const GeoMap::GeoNode*>();
+    }
+    for(auto geo_node : geo_nodes){
+        std::vector<uint64_t> nearest_cell_indexes;
+        double min_distance = std::numeric_limits<double>::max();
+        uint64_t site_index = 0;
+        for(auto site : sites){
+            double distance = DistanceCalculator::euclidDistance2D(geo_node->utm_xy,site->utm_xy);
+            if(DistanceCalculator::double_distance_equal(distance,min_distance) == 0){
+                nearest_cell_indexes.push_back(site_index);
+            }else if(DistanceCalculator::double_distance_equal(distance,min_distance) < 0){
+                min_distance = distance;
+                nearest_cell_indexes.clear();
+                nearest_cell_indexes.push_back(site_index);
+            }
+            ++ site_index;
+        }
+        for(auto c_index : nearest_cell_indexes){
+            m_cells_map[c_index].push_back(geo_node);
+        }
+    }
+}
+
+const std::vector<const GeoMap::GeoNode *>* GeoMapVoronoiDiagramAdaptor::get_nodes_in_cell(uint64_t cell_index) const{
+    return &(m_cells_map.at(cell_index));
+}
+
+void GeoMapVoronoiDiagramAdaptor::graph_adapt(
+        const geovi::geo::map::GeoMapVoronoiDiagramAdaptor::voronoi_cell_container_type &cells) {
+    for(auto cell : cells){
+        auto cell_g_vertex_descriptor = add_vertex(m_cell_graph);
+    }
+
+    bool visited[cells.size()];
+    for(uint64_t i = 0; i< cells.size(); ++i){
+        visited[i] = false;
+    }
+
+    for(auto cell : cells){
+        auto e = cell.incident_edge();
+        auto cell_g_vertex_descriptor = vertex(cell.source_index(),m_cell_graph);
+        do{
+            auto neighbor_cell = e->twin()->cell();
+           // if(! visited[neighbor_cell->source_index()]){
+                auto neighbor_cell_g_vertex_descriptor = vertex(neighbor_cell->source_index(),m_cell_graph);
+                auto edge = add_edge(cell_g_vertex_descriptor,neighbor_cell_g_vertex_descriptor,m_cell_graph).first;
+                auto weight_map = get(edge_weight,m_cell_graph);
+                weight_map[edge] = 1;
+            //}
+
+        }while( e != cell.incident_edge());
+       // visited[cell.source_index()] = true;
+    }
+
+}
+
+void GeoMapVoronoiDiagramAdaptor::shortest_path_distance_to_cells(uint64_t cell_index,std::vector<double>& results) {
+    results.resize(m_sites_num);
+    auto src_cell_descriptor = vertex(cell_index,m_cell_graph);
+    auto m_predecessor_map = get(vertex_predecessor, m_cell_graph);
+    auto m_distance_map = get(vertex_distance, m_cell_graph);
+    dijkstra_shortest_paths(m_cell_graph,src_cell_descriptor,predecessor_map(m_predecessor_map).distance_map(m_distance_map));
+    for(uint64_t i = 0; i< m_sites_num; ++i){
+        auto target_cell_descriptor = vertex(i,m_cell_graph);
+        results[i] = m_distance_map[target_cell_descriptor];
+    }
+}

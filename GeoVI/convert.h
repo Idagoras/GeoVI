@@ -196,6 +196,29 @@ struct Trajectory{
     std::vector<TrajectoryPoint> tj_points;
 };
 
+template<typename T>
+struct OSMMapNode{
+    typedef T osm_map_node_value_type;
+    OSMMapNode<osm_map_node_value_type>* next;
+    osm_map_node_value_type* node;
+
+};
+
+template<typename T>
+struct OSMTagNode{
+    typedef T osm_map_node_type;
+    OSMTagNode<osm_map_node_type>* next;
+    std::vector<OSMTagNode<osm_map_node_type>> map_nodes;
+
+};
+
+template<typename T>
+struct OSMMapRegion{
+    typedef T osm_tag_node_type;
+    OSMMapRegion<osm_tag_node_type>* next;
+    std::vector<OSMTagNode<osm_tag_node_type>> tag_nodes;
+};
+
 
 class CoordinateSystemConverter{
 public:

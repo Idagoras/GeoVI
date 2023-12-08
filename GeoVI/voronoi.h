@@ -50,7 +50,9 @@ namespace geovi{
                 Matrix shortestPathBetweenCells() const;
                 std::vector<CellIndex> cells_include_or_on_its_edge(Point2& p) const;
 
-
+                inline const VD::cell_container_type& cells(){
+                    return m_vd.cells();
+                }
                 
                 
                 
