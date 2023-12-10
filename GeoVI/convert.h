@@ -199,23 +199,29 @@ struct Trajectory{
 template<typename T>
 struct OSMMapNode{
     typedef T osm_map_node_value_type;
-    OSMMapNode<osm_map_node_value_type>* next;
-    osm_map_node_value_type* node;
+    OSMMapNode<osm_map_node_value_type>* next  = nullptr;
+    bool is_link = false;
+    OSMMapNode<osm_map_node_value_type>* link;
+    osm_map_node_value_type node;
 
 };
 
 template<typename T>
 struct OSMTagNode{
+    int map_feature;
+    uint64_t map_node_num = 0 ;
     typedef T osm_map_node_type;
-    OSMTagNode<osm_map_node_type>* next;
-    std::vector<OSMTagNode<osm_map_node_type>> map_nodes;
+    OSMTagNode<osm_map_node_type>* next = nullptr;
+    std::vector<OSMMapNode<osm_map_node_type>> map_nodes;
 
 };
 
 template<typename T>
 struct OSMMapRegion{
+    uint64_t  map_node_num = 0;
     typedef T osm_tag_node_type;
-    OSMMapRegion<osm_tag_node_type>* next;
+    OSMMapRegion<osm_tag_node_type>* next = nullptr;
+    OSMMapNode<T>* first_node;
     std::vector<OSMTagNode<osm_tag_node_type>> tag_nodes;
 };
 

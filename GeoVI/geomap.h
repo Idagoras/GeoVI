@@ -265,9 +265,9 @@ namespace geovi
         public:
             using voronoi_diagram = boost::polygon::voronoi_diagram<double>;
             using voronoi_cell_container_type = boost::polygon::voronoi_diagram<double>::cell_container_type;
-            GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::GeoNode*> geo_nodes,std::vector<const GeoMap::GeoNode*> sites);
-            inline uint64_t get_nodes_in_cell_num(uint64_t cell_index) const { return m_cells_map.at(cell_index).size();}
-            const std::vector<const GeoMap::GeoNode*>* get_nodes_in_cell(uint64_t cell_index) const;
+            GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::GeoNode*>& geo_nodes,std::vector<const GeoMap::GeoNode*>& sites);
+            uint64_t get_nodes_in_cell_num(uint64_t cell_index) const;
+            std::vector<const GeoMap::GeoNode*> get_nodes_in_cell(uint64_t cell_index) const;
             const std::vector<const GeoMap::GeoNode*> get_nodes_has_osm_tag_in_cell(uint64_t cell_index) const;
             const std::vector<const GeoMap::GeoNode*> get_nodes_has_specified_osm_tag_in_cell(uint64_t cell_index,OSMMapFeature map_feature) const;
             uint64_t get_nodes_has_specified_osm_tag_in_cell_num(uint64_t cell_index,OSMMapFeature map_feature) const;
@@ -275,9 +275,9 @@ namespace geovi
             void graph_adapt(const voronoi_cell_container_type& cells);
             void shortest_path_distance_to_cells(uint64_t cell_index,std::vector<double>& results) ;
         private:
-            std::map<uint64_t,std::vector<const GeoMap::GeoNode*>> m_cells_map;
             algorithm::Graph m_cell_graph;
             uint64_t m_sites_num;
+            std::vector<OSMMapRegion<const GeoMap::GeoNode*>> m_cell_regions;
 
         };
 

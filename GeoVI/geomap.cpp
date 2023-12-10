@@ -741,12 +741,34 @@ std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
     return utm_xy_points ;
 }
 
-GeoMapVoronoiDiagramAdaptor::GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::GeoNode*> geo_nodes,std::vector<const GeoMap::GeoNode*> sites){
-    m_sites_num = sites.size();
-    for(uint64_t i = 0; i< sites.size(); ++i){
-        m_cells_map[i] = std::vector<const GeoMap::GeoNode*>();
+void build_osm_map_regions(std::vector<GeoMap::GeoNode*>& geo_nodes,std::vector<const GeoMap::GeoNode*>& sites,
+                           std::vector<OSMMapRegion<const GeoMap::GeoNode*>>& cell_regions){
+    cell_regions.clear();
+    uint64_t sites_num = sites.size();
+    for( uint64_t i = 0 ; i < sites_num ; ++ i ){
+        cell_regions.emplace_back();
+        cell_regions[i].tag_nodes = std::vector<OSMTagNode<const GeoMap::GeoNode*>>(29);
+        int map_feature = 0;
+        for(auto& tag_node : cell_regions[i].tag_nodes)
+        {
+            tag_node.map_feature = map_feature;
+            map_feature ++ ;
+        }
     }
+    for( uint64_t i = 0 ; i < sites_num ; ++ i ) {
+        if( i != sites_num - 1 ){
+            cell_regions[i].next = &cell_regions[i+1];
+            for( int j = 0 ; j < cell_regions[i].tag_nodes.size() ; ++ j){
+                cell_regions[i].tag_nodes[j].next = &(cell_regions[i+1].tag_nodes[j]);
+            }
+        }
+    }
+
     for(auto geo_node : geo_nodes){
+
+        OSMMapNode<const GeoMap::GeoNode*> map_node;
+        map_node.node = geo_node;
+
         std::vector<uint64_t> nearest_cell_indexes;
         double min_distance = std::numeric_limits<double>::max();
         uint64_t site_index = 0;
@@ -761,14 +783,92 @@ GeoMapVoronoiDiagramAdaptor::GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::Geo
             }
             ++ site_index;
         }
-        for(auto c_index : nearest_cell_indexes){
-            m_cells_map[c_index].push_back(geo_node);
+        std::vector<int> map_features;
+        for(auto feature_tuple : geo_node->features ){
+            auto map_feature = get<TagField::map_feature>(feature_tuple);
+            map_features.push_back(map_feature);
+
+        }
+
+        bool exist = false;
+        OSMMapNode<const GeoMap::GeoNode*>* exist_node;
+        for(auto cell_index : nearest_cell_indexes){
+            for(auto map_feature : map_features){
+                if( !exist ){
+                    auto& osm_tag_node = cell_regions[cell_index].tag_nodes[map_feature];
+                    auto& map_nodes = osm_tag_node.map_nodes;
+                    map_nodes.push_back(map_node);
+                    exist_node = &map_nodes.back();
+                    exist = true;
+                }else{
+                    map_node.is_link = true;
+                    auto& osm_tag_node = cell_regions[cell_index].tag_nodes[map_feature];
+                    auto& map_nodes = osm_tag_node.map_nodes;
+                    map_nodes.push_back(map_node);
+                    map_nodes.back().link = exist_node;
+
+                }
+                ++ cell_regions[cell_index].tag_nodes[map_feature].map_node_num;
+            }
+            ++ cell_regions[cell_index].map_node_num;
+
+        }
+
+    }
+
+
+    for(auto& cell_region : cell_regions){
+        OSMMapNode<const GeoMap::GeoNode*>* prev = nullptr;
+        for(auto& tag_node : cell_region.tag_nodes ){
+            for(auto& map_node : tag_node.map_nodes){
+                cell_region.first_node = cell_region.first_node == nullptr ? &map_node : cell_region.first_node;
+                if( prev != nullptr){
+                    prev->next = &map_node;
+                    prev = prev->next;
+                }else
+                    prev = &map_node;
+            }
+        }
+    }
+
+}
+
+
+GeoMapVoronoiDiagramAdaptor::GeoMapVoronoiDiagramAdaptor(std::vector<GeoMap::GeoNode*>& geo_nodes,std::vector<const GeoMap::GeoNode*>& sites){
+    m_sites_num = sites.size();
+    build_osm_map_regions(geo_nodes,sites,m_cell_regions);
+
+    int index = 0;
+    for(auto& cell_region : m_cell_regions){
+        std::cout << "cell region "<< index << " : " << std::endl;
+        auto node_ptr = cell_region.first_node;
+        while(node_ptr != nullptr){
+            if(node_ptr->node != nullptr && !node_ptr->is_link){
+                std::cout << "node : " << node_ptr->node->index << std::endl;
+            }
+            node_ptr = node_ptr -> next;
+        }
+        std::cout << std::endl;
+
+        ++ index;
+
+        for(auto& tag_node : cell_region.tag_nodes){
+
+                std::cout << " tag node's map feature " <<  tag_node.map_feature  <<" map node num = " << tag_node.map_node_num << std::endl;
+
         }
     }
 }
 
-const std::vector<const GeoMap::GeoNode *>* GeoMapVoronoiDiagramAdaptor::get_nodes_in_cell(uint64_t cell_index) const{
-    return &(m_cells_map.at(cell_index));
+std::vector<const GeoMap::GeoNode *> GeoMapVoronoiDiagramAdaptor::get_nodes_in_cell(uint64_t cell_index) const{
+    auto cell_region = m_cell_regions[cell_index];
+    std::vector<const GeoMap::GeoNode *> result;
+    auto node_ptr = cell_region.first_node;
+    while(node_ptr != nullptr){
+        result.push_back(node_ptr->node);
+        node_ptr = node_ptr->next;
+    }
+    return result;
 }
 
 void GeoMapVoronoiDiagramAdaptor::graph_adapt(

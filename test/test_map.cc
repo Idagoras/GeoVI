@@ -6,6 +6,7 @@
 #include "GeoVI/voronoi.h"
 #include <iostream>
 #include <memory>
+#include <random>
 
 using namespace std;
 using namespace geovi;
@@ -35,6 +36,7 @@ void print_wgs84_point(const Point2& wgs84_point){
 }
 
 int main(){
+
     std::shared_ptr<CrossingFilter> filter = make_shared<CrossingFilter>();
     unique_ptr<OSMReader> reader = make_unique<OSMReader>("../OSM/nanjing.xml");
     shared_ptr<GeoMap> geo_map = make_shared<GeoMap>(*reader,filter);
@@ -44,6 +46,7 @@ int main(){
 
     // 打印边的数量
     std::cout << "map has " << geo_map->numOfWays() << " ways" << std::endl << std::endl;
+
     /*
     // 打印所有顶点的WGS84坐标集合
     vector<Point2> wgs84_points = geo_map->getUTMNodesCoordinate();
@@ -70,6 +73,7 @@ int main(){
         ++ index;
     }
     */
+
         vector<GeoMap::GeoNode*> geo_nodes_ptrs = geo_map->getGeoNodes();
         auto sites = filter ->crossing_geo_nodes();
         shared_ptr<GeoMapVoronoiDiagramAdaptor> geomap_voronoi_adaptor = make_shared<GeoMapVoronoiDiagramAdaptor>(geo_nodes_ptrs,sites);
@@ -86,6 +90,45 @@ int main(){
             ++ cell_index;
         }
 
+    /*
+        std::default_random_engine e;
+        std::uniform_int_distribution<int> u(0,10000);
+        std::uniform_int_distribution<int> u_1(0,27);
+        std::uniform_int_distribution<int> u_2(0,3);
+        e.seed(std::time(0));
+        std::vector<GeoMap::GeoNode> nodes;
+        std::vector<GeoMap::GeoNode*> nodes_ptr;
+        std::vector<const GeoMap::GeoNode*> sites;
+        for(int i = 0; i < 100 ; i++ ){
+            GeoMap::GeoNode node;
+            node.index = i;
+            node.utm_xy.x = u(e);
+            node.utm_xy.y = u(e);
+           // std::cout << "x = " << node.utm_xy.x <<  " y = " << node.utm_xy.y << std::endl;
+
+            for(int j = 0; j <= u_2(e) ; ++ j){
+                node.features.push_back({"",OSMMapFeature(u_1(e)),""});
+            }
+            nodes.push_back(node);
+
+
+        }
+
+        int index = 0;
+        for(auto& node : nodes){
+            nodes_ptr.push_back(&node);
+            if(index%10 == 0){
+                sites.push_back(&node);
+            }
+            index ++ ;
+        }
+
+        for(auto ptr : nodes_ptr){
+            std::cout << "x = " << ptr->utm_xy.x <<  " y = " << ptr->utm_xy.y << std::endl;
+        }
+
+        shared_ptr<GeoMapVoronoiDiagramAdaptor> geomap_voronoi_adaptor = make_shared<GeoMapVoronoiDiagramAdaptor>(nodes_ptr,sites);
+*/
         /*
         int index = 0;
         for(auto distance : distances){
