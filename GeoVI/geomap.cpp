@@ -742,7 +742,7 @@ std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
 }
 
 void build_osm_map_regions(std::vector<GeoMap::GeoNode*>& geo_nodes,std::vector<const GeoMap::GeoNode*>& sites,
-                           std::vector<OSMMapRegion<const GeoMap::GeoNode*>>& cell_regions){
+                        std::vector<OSMMapRegion<const GeoMap::GeoNode*>>& cell_regions){
     cell_regions.clear();
     uint64_t sites_num = sites.size();
     for( uint64_t i = 0 ; i < sites_num ; ++ i ){
@@ -810,7 +810,8 @@ void build_osm_map_regions(std::vector<GeoMap::GeoNode*>& geo_nodes,std::vector<
                 }
                 ++ cell_regions[cell_index].tag_nodes[map_feature].map_node_num;
             }
-            ++ cell_regions[cell_index].map_node_num;
+            if( !map_features.empty())
+                ++ cell_regions[cell_index].map_node_num;
 
         }
 
@@ -910,4 +911,33 @@ void GeoMapVoronoiDiagramAdaptor::shortest_path_distance_to_cells(uint64_t cell_
         auto target_cell_descriptor = vertex(i,m_cell_graph);
         results[i] = m_distance_map[target_cell_descriptor];
     }
+}
+
+const std::vector<const GeoMap::GeoNode*> GeoMapVoronoiDiagramAdaptor::get_nodes_has_osm_tag_in_cell(uint64_t cell_index) const{
+    std::vector<const GeoMap::GeoNode*> result;
+    auto cell_region = m_cell_regions[cell_index];
+    std::vector<const GeoMap::GeoNode *> result;
+    auto node_ptr = cell_region.first_node;
+    while(node_ptr != nullptr){
+        result.push_back(node_ptr->node);
+        node_ptr = node_ptr->next;
+    }
+    return result;
+}
+
+const std::vector<const GeoMap::GeoNode*>GeoMapVoronoiDiagramAdaptor::get_nodes_has_specified_osm_tag_in_cell(uint64_t cell_index,OSMMapFeature map_feature) const{
+    std::vector<const GeoMap::GeoNode*> result;
+    for(auto& map_node : m_cell_regions[cell_index].tag_nodes[map_feature].map_nodes){
+        if(map_node.node != nullptr )
+            result.push_back(map_node.node);
+    }
+    return result;
+}
+
+uint64_t GeoMapVoronoiDiagramAdaptor::get_nodes_has_specified_osm_tag_in_cell_num(uint64_t cell_index,OSMMapFeature map_feature) const{
+    return m_cell_regions[cell_index].tag_nodes[map_feature].map_node_num;
+}
+
+uint64_t GeoMapVoronoiDiagramAdaptor::get_nodes_in_cell_num(uint64_t cell_index) const{
+    return m_cell_regions[cell_index].map_node_num;
 }
