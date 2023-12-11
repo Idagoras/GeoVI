@@ -271,7 +271,8 @@ namespace geovi
             const std::vector<const GeoMap::GeoNode*> get_nodes_has_osm_tag_in_cell(uint64_t cell_index) const;
             const std::vector<const GeoMap::GeoNode*> get_nodes_has_specified_osm_tag_in_cell(uint64_t cell_index,OSMMapFeature map_feature) const;
             uint64_t get_nodes_has_specified_osm_tag_in_cell_num(uint64_t cell_index,OSMMapFeature map_feature) const;
-
+            std::vector<uint64_t> get_cell_indexes_in_circle_domain(double radius,Point2 loc_utm_xy) const;
+            std::vector<uint64_t> get_cell_indexes_which_loc_in(Point2 loc_utm_xy) const;
             void graph_adapt(const voronoi_cell_container_type& cells);
             void shortest_path_distance_to_cells(uint64_t cell_index,std::vector<double>& results) ;
         private:

@@ -218,6 +218,7 @@ struct OSMTagNode{
 
 template<typename T>
 struct OSMMapRegion{
+    Point2 site_utm_xy;
     uint64_t  map_node_num = 0;
     typedef T osm_tag_node_type;
     OSMMapRegion<osm_tag_node_type>* next = nullptr;

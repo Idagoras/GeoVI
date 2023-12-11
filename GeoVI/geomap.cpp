@@ -747,6 +747,7 @@ void build_osm_map_regions(std::vector<GeoMap::GeoNode*>& geo_nodes,std::vector<
     uint64_t sites_num = sites.size();
     for( uint64_t i = 0 ; i < sites_num ; ++ i ){
         cell_regions.emplace_back();
+        cell_regions[i].site_utm_xy = {sites[i]->utm_xy.x,sites[i]->utm_xy.y};
         cell_regions[i].tag_nodes = std::vector<OSMTagNode<const GeoMap::GeoNode*>>(29);
         int map_feature = 0;
         for(auto& tag_node : cell_regions[i].tag_nodes)
@@ -916,7 +917,6 @@ void GeoMapVoronoiDiagramAdaptor::shortest_path_distance_to_cells(uint64_t cell_
 const std::vector<const GeoMap::GeoNode*> GeoMapVoronoiDiagramAdaptor::get_nodes_has_osm_tag_in_cell(uint64_t cell_index) const{
     std::vector<const GeoMap::GeoNode*> result;
     auto cell_region = m_cell_regions[cell_index];
-    std::vector<const GeoMap::GeoNode *> result;
     auto node_ptr = cell_region.first_node;
     while(node_ptr != nullptr){
         result.push_back(node_ptr->node);
@@ -940,4 +940,36 @@ uint64_t GeoMapVoronoiDiagramAdaptor::get_nodes_has_specified_osm_tag_in_cell_nu
 
 uint64_t GeoMapVoronoiDiagramAdaptor::get_nodes_in_cell_num(uint64_t cell_index) const{
     return m_cell_regions[cell_index].map_node_num;
+}
+
+std::vector<uint64_t> GeoMapVoronoiDiagramAdaptor::get_cell_indexes_in_circle_domain(double radius,Point2 loc_utm_xy) const {
+    std::vector<uint64_t> results;
+    uint64_t cell_index = 0;
+    for(auto cell_region : m_cell_regions){
+        double distance = DistanceCalculator::euclidDistance2D(cell_region.site_utm_xy,loc_utm_xy);
+        if(DistanceCalculator::double_distance_equal(distance,radius) <= 0 ){
+            results.push_back(cell_index);
+        }
+        ++ cell_index;
+    }
+    return results;
+}
+
+std::vector<uint64_t> GeoMapVoronoiDiagramAdaptor::get_cell_indexes_which_loc_in(Point2 loc_utm_xy) const{
+    std::vector<uint64_t> results;
+    uint64_t cell_index = 0;
+    double min_distance = std::numeric_limits<double>::max();
+    for(auto cell_region : m_cell_regions){
+        double distance = DistanceCalculator::euclidDistance2D(cell_region.site_utm_xy,loc_utm_xy);
+        if(DistanceCalculator::double_distance_equal(distance,min_distance) == 0 ){
+            results.push_back(cell_index);
+        }else if(DistanceCalculator::double_distance_equal(distance,min_distance) < 0){
+            results.clear();
+            results.push_back(cell_index);
+            min_distance = distance;
+        }
+
+        ++ cell_index;
+    }
+    return results;
 }

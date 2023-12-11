@@ -47,7 +47,9 @@ namespace geovi{
                 using POIS = std::vector<const geovi::geo::map::GeoMap::GeoNode*>;
                 class SemanticCategoryCalculator{
                 public:
-                    static double semantic_category_frequency_inverse_domain_frequency(geovi::geo::map::GeoMapVoronoiDiagramAdaptor& adaptor,Point2 loc);
+                    static std::vector<geovi::geo::map::OSMMapFeature> semantic_category_frequency_inverse_domain_frequency(geovi::geo::map::GeoMapVoronoiDiagramAdaptor& adaptor,
+                                                                                                                            Point2 loc,double r_small,double r_large,
+                                                                                                                            std::vector<double>& score_out);
 
                 private:
 
@@ -73,17 +75,11 @@ namespace geovi{
                         double value = 0.0;
                         int64_t index = -1;
                     };
-                    CellGrowingAndMergingCalculator(std::weak_ptr<geovi::algorithm::voronoi_diagram::VoronoiDiagram> vd,std::weak_ptr<geovi::geo::map::GeoMap> gmap,double merge_threshold,double grow_threshold);
+                    CellGrowingAndMergingCalculator(double merge_threshold,double grow_threshold);
 
 
                 private:
-                    std::vector<Region> m_regions;
-                    std::vector<double> m_semantics;
-                    double m_merge_threshold;
-                    double m_grow_threshold;
-                    PrivacySensitivityCalculator m_psc;
-                    std::weak_ptr<geovi::geo::map::GeoMap> m_gmap;
-                    std::weak_ptr<geovi::algorithm::voronoi_diagram::VoronoiDiagram> m_voronoi_diagram;
+
                 };
         }
 
