@@ -124,3 +124,9 @@ std::string StringAndTimeConverter::formatTime(const std::chrono::system_clock::
     oss << std::put_time(tm,fmt);
     return oss.str();
 }
+
+unsigned long long TimeUtilHelper::get_current_millis() {
+    auto now = std::chrono::system_clock::now();
+    auto duration = now.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+}

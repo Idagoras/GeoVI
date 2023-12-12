@@ -275,6 +275,7 @@ namespace geovi
             std::vector<uint64_t> get_cell_indexes_which_loc_in(Point2 loc_utm_xy) const;
             void graph_adapt(const voronoi_cell_container_type& cells);
             void shortest_path_distance_to_cells(uint64_t cell_index,std::vector<double>& results) ;
+            inline uint64_t sites_num(){ return m_sites_num;}
         private:
             algorithm::Graph m_cell_graph;
             uint64_t m_sites_num;

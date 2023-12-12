@@ -270,5 +270,11 @@ public:
 
 };
 
+class TimeUtilHelper{
+public:
+    static unsigned long long get_current_millis();
+};
+
+
 }
 #endif
