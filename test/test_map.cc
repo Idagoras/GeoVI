@@ -39,6 +39,11 @@ void print_wgs84_point(const Point2& wgs84_point){
 
 int main(){
     SemanticManager sm;
+    std::string bar("bar"),college("college"),ditch("ditch"),anchor("anchor"),bakery("bakery");
+    std::cout << "bar-collage : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Amenity,college) <<std::endl;
+    std::cout << "bar-ditch : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Barrier,ditch) <<std::endl;
+    std::cout << "bar-anchor : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Historic,anchor) <<std::endl;
+    std::cout << "bar-bakery : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Shop,bakery) <<std::endl;
     //sm.iterate();
     /*
     std::shared_ptr<CrossingFilter> filter = make_shared<CrossingFilter>();

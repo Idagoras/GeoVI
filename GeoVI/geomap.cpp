@@ -40,7 +40,7 @@ static const double grid_length_2 = 25.0;
 static vector<pair<string,OSMMapFeature>> feature_with_name_string = {
     make_pair("amenity",OSMMapFeature::Amenity),
     make_pair("aeroway",OSMMapFeature::Aeroway),
-    make_pair("barriers",OSMMapFeature::Barriers),
+    make_pair("barrier",OSMMapFeature::Barrier),
     make_pair("boundary",OSMMapFeature::Boundary),
     make_pair("building",OSMMapFeature::Building),
     make_pair("craft",OSMMapFeature::Craft),

@@ -144,9 +144,19 @@ std::vector<geovi::geo::map::OSMMapFeature> SemanticCategoryCalculator::semantic
 
 using namespace boost::property_tree;
 
+void get_path(std::string& path_str,std::vector<std::string>& path){
+    int index = 0;
+    path_str.clear();
+    for(auto p : path){
+        path_str.append(p);
+        if( index != path.size() - 1)
+            path_str.append(":");
+    }
+}
+
 void build_tree(const ptree& p_tr,std::vector<std::string>& path,
                 std::map<std::string,std::vector<std::string>>& result,
-                std::map<geovi::geo::map::OSMMapFeature,int>& distance){
+                std::map<std::string,int>& distance){
     std::string name;
     int d = std::numeric_limits<int>::min();
     BOOST_FOREACH(const ptree::value_type & node, p_tr){
@@ -161,16 +171,25 @@ void build_tree(const ptree& p_tr,std::vector<std::string>& path,
                     if(distance_str == "infinity"){
                         d = std::numeric_limits<int>::max();
                     }else
-                        d = std::stoi(std::string(attr.second.data()));
+                        try{
+                            d = std::stoi(std::string(attr.second.data()));
+                        }catch(std::out_of_range& e_1){
+                            std::cout << "Error : distance string : " << attr.second.data() << " convert to int fail >> " << e_1.what();
+                            d = std::numeric_limits<int>::min();
+                        }catch(std::invalid_argument& ia){
+                            std::cout << "Error : distance string : " << attr.second.data() << " convert to int fail >> " << ia.what();
+                            d = std::numeric_limits<int>::min();
+                        }
                 }
             }
 
         }
     }
+    std::string path_str;
+    get_path(path_str,path);
     if( d != std::numeric_limits<int>::min()){
-        distance.insert({MapFeatureStringConverter::get(name),d});
+        distance.insert({path_str,d});
     }
-    std::cout << std::endl;
     bool is_leaf = true;
     BOOST_FOREACH(const ptree::value_type & node, p_tr){
         if(node.first != GEOVI_XML_ATTR_STR){
@@ -196,12 +215,8 @@ SemanticManager::SemanticManager() {
             build_tree(s_pt.get_child("semantic-tree.root",s_pt),
                        path,m_value_to_path,m_distance);
 
-            for(auto& pair : m_value_to_path){
-                std::cout << pair.first << " : " ;
-                for(auto& p : pair.second){
-                    std::cout << p << " . " ;
-                }
-                std::cout << std::endl;
+            for(auto pair : m_distance){
+                std::cout << " key: " << pair.first << ":distance = " << pair.second << std::endl;
             }
         }catch(const ptree_error& e){
             std::cout << "Error: " << e.what() << std::endl;
@@ -211,10 +226,43 @@ SemanticManager::SemanticManager() {
 
 int SemanticManager::semantic_distance(geovi::geo::map::OSMMapFeature feature_1, std::string &feature_1_value,
                                        geovi::geo::map::OSMMapFeature feature_2, std::string &feature_2_value) {
+    std::string key_1 = MapFeatureStringConverter::get(feature_1) + ":" +  feature_1_value;
+    std::string key_2 = MapFeatureStringConverter::get(feature_2) + ":" + feature_2_value;
+    std::string key_distance_1 = "root:" + MapFeatureStringConverter::get(feature_1) + ":";
+    std::string key_distance_2 = "root:" + MapFeatureStringConverter::get(feature_2) + ":";
+    int distance_1 = 0,distance_2 = 0;
+    try{
+        distance_1 = m_distance.at(key_distance_1);
+        distance_2 = m_distance.at(key_distance_2);
+        auto& path_1 = m_value_to_path.at(key_1);
+        auto& path_2 = m_value_to_path.at(key_2);
+        std::string path_str_1,path_str_2;
+        get_path(path_str_1,path_1);
+        get_path(path_str_2,path_2);
+        if( distance_1 == std::numeric_limits<int>::max()){
+            if(m_distance.find(path_str_1) != m_distance.end())
+                distance_1 = m_distance.at(path_str_1);
+        }
+        if( distance_2 == std::numeric_limits<int>::max()){
+            if(m_distance.find(path_str_2) != m_distance.end())
+                distance_2 = m_distance.at(path_str_2);
+        }
+        if(distance_1 == std::numeric_limits<int>::max() || distance_2 == std::numeric_limits<int>::max())
+            return std::numeric_limits<int>::max();
 
+        int min_len = std::min(path_1.size(),path_2.size());
+        int common_prefix_len = 0;
+        while(common_prefix_len < min_len && path_1[common_prefix_len] == path_2[common_prefix_len]){
+            common_prefix_len ++ ;
+        }
+        if(common_prefix_len == 0)
+            return std::numeric_limits<int>::max();
+        return distance_1 * (path_1.size()-common_prefix_len) + distance_2 * (path_2.size() - common_prefix_len);
+    }catch(std::out_of_range& e){
+        std::cout  << "Error : " << "key 1 = "<<key_1 << " key 2 = " << key_2 << "key distance 1 = "<<key_distance_1 << " key distance 2 = " << key_distance_2 << " >> " << e.what() << std::endl;
+        return -1;
+    }
 }
-
-
 
 
 // CellGrowingAndMergingCalculator

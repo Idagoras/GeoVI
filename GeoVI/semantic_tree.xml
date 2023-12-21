@@ -16,19 +16,19 @@
             <leaf type="pylon"/>
             <leaf type="station"/>
         </node>
-        <node type="aeroway" has_leaf="yes" distance="infinity">
-            <leaf type="aerodrome" dis="1"/>
+        <node type="aeroway" distance="infinity">
+            <leaf type="aerodrome" distance="1"/>
             <leaf type="aircraft_crossing"/>
-            <leaf type="apron" dis="1"/>
-            <leaf type="gate" dis="1"/>
-            <leaf type="hangar" dis="1"/>
+            <leaf type="apron" distance="1"/>
+            <leaf type="gate" distance="1"/>
+            <leaf type="hangar" distance="1"/>
             <leaf type="helipad"/>
-            <leaf type="heliport" dis="1"/>
+            <leaf type="heliport" distance="1"/>
             <leaf type="navigationaid"/>
             <leaf type="runway"/>
             <leaf type="spaceport"/>
             <leaf type="taxiway"/>
-            <leaf type="terminal" dis="1"/>
+            <leaf type="terminal" distance="1"/>
             <leaf type="windsock"/>
         </node>
         <node type="amenity" distance="1">

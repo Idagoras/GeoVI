@@ -79,7 +79,7 @@ namespace geovi
                 typedef enum{
                     Amenity, // Used to map facilities used by visitors and residents.
                     Aeroway, // This is used to tag different forms of transportation for people or goods by using aerial wires. 
-                    Barriers, // These are used to describe barriers and obstacles that are usually involved by traveling.
+                    Barrier, // These are used to describe barriers and obstacles that are usually involved by traveling.
                     Boundary, // These are used to describe administrative and other boundaries.
                     Building, // This is used to identify individual buildings or groups of connected buildings.
                     Craft, // This is used as a place that produces or processes customised goods.

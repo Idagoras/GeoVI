@@ -65,7 +65,7 @@ namespace geovi{
                 private:
                     static bool is_load ;
                     std::map<std::string,std::vector<std::string>> m_value_to_path;
-                    std::map<geovi::geo::map::OSMMapFeature,int> m_distance;
+                    std::map<std::string ,int> m_distance;
                 };
 
 
