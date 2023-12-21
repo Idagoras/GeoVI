@@ -35,6 +35,8 @@ static const double grid_length_1 = 100.0;
 static const double grid_width_2 = 25.0;
 static const double grid_length_2 = 25.0;
 
+#define GEOVI_OSM_MAP_FEATURE_NUM 29;
+
 static vector<pair<string,OSMMapFeature>> feature_with_name_string = {
     make_pair("amenity",OSMMapFeature::Amenity),
     make_pair("aeroway",OSMMapFeature::Aeroway),
@@ -63,8 +65,25 @@ static vector<pair<string,OSMMapFeature>> feature_with_name_string = {
     make_pair("telecom",OSMMapFeature::Telecom),
     make_pair("tourism",OSMMapFeature::Tourism),
     make_pair("water",OSMMapFeature::Water),
-    make_pair("waterway",OSMMapFeature::Waterway)
+    make_pair("waterway",OSMMapFeature::Waterway),
+    make_pair("aerialway",OSMMapFeature::Aerialway)
 };
+
+OSMMapFeature MapFeatureStringConverter::get(std::string& feature_str) {
+    for(auto pair : feature_with_name_string){
+        if( pair.first == feature_str){
+            return pair.second;
+        }
+    }
+    return OSMMapFeature::None;
+}
+
+std::string MapFeatureStringConverter::get(geovi::geo::map::OSMMapFeature feature) {
+    if(feature != OSMMapFeature::None){
+        return feature_with_name_string[feature].first;
+    }
+    return "none";
+}
 
 static std::unique_ptr<CoordinateSystemConverter> s_coordinate_system_converter  =  std::make_unique<CoordinateSystemConverter>(LongitudeBands::band_50);
 
@@ -369,7 +388,6 @@ void GeoMapHandler::getGeoNode(const osmium::Node& node,GeoMap::GeoNode& g_node)
 
 void GeoMapHandler::way(const osmium::Way& way){
 
-    //std::cout << "way's id is " << way.id() << std::endl;
     TagProcessor tp;
     auto features = tp.getMapFeature(way.tags());
     auto name = tp.getName(way.tags(),TagProcessor::Language::zh);
@@ -435,21 +453,12 @@ void GeoMapHandler::relation(const osmium::Relation& relation){
 
 // class GeoMap
 
-GeoMap::GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape):shape_type(type),mshape(shape){
-    m_graph = Graph(0);
-    m_nodes_num = 0;
-    m_ways_num = 0;
-    m_relations_num = 0;
 
-    GeoMapHandler handler(*this);
-    osmium::apply(reader.getOSMReader(),handler);
-    reader.getOSMReader().close();
-    init_grid(m_grids,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
-    fill_grids(m_grids,m_geo_ways,m_geo_nodes,m_max_x,m_min_x,m_max_y,m_min_y,grid_width_1,grid_length_1);
-
-}
-
-GeoMap::GeoMap(geovi::io::OSMReader& reader,const std::shared_ptr<MapFeatureFilter>& filter):m_filter(filter){
+GeoMap::GeoMap(geovi::io::OSMReader &reader, const std::shared_ptr<MapFeatureFilter> &filter, double max_lat,
+               double max_lon, double min_lat, double min_lon) {
+    LongitudeBands min_lon_band = LongitudeBands(s_coordinate_system_converter->utm_identity(min_lon,max_lat));
+    LongitudeBands max_lon_band = LongitudeBands(s_coordinate_system_converter->utm_identity(max_lon,max_lat));
+    s_coordinate_system_converter->set_band(min_lon_band);
     m_graph = Graph(0);
     m_nodes_num = 0;
     m_ways_num = 0;

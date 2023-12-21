@@ -14,11 +14,11 @@ using namespace geovi;
 
 // DataStream
 
-const char *DataStream::next_line() {
+std::string DataStream::next_line() {
     std::string str_line;
     if(!m_fin.eof())
         std::getline(m_fin,str_line);
-    return str_line.c_str();
+    return str_line;
 }
 
 bool DataStream::eof() {
@@ -37,17 +37,87 @@ void DataStream::close() {
 
 // 特化的 DataParser
 
-bool DataParser<Point2>::can_parse(const char *string_data) {
+bool DataParser<Point2>::can_parse(std::string& string_data) {
+    m_parsed_results.clear();
     std::string input_string(string_data);
     std::stringstream ss(input_string);
+    std::string word;
+    while(ss >> word){
+        m_parsed_results.push_back(word);
+    }
+    if(m_parsed_results.size() == 5){
+        m_latest_input_string = input_string;
+        return true;
+    }else{
+        m_parsed_results.clear();
+        return false;
+    }
+}
 
+Point2 DataParser<Point2>::parse(std::string& string_data) {
+    if(m_parsed_results.size() == 5 && m_latest_input_string == string_data)
+        return Point2{std::stod(m_parsed_results[2]),std::stod(m_parsed_results[3])};
+    else{
+        if(can_parse(string_data))
+            return Point2{std::stod(m_parsed_results[2]),std::stod(m_parsed_results[3])};
+        else
+            return Point2{0,0};
+   }
+}
+
+// Result
+
+const std::vector<Point2> &Result::results() const {
+    return m_results;
+}
+
+const Point2& Result::the_latest_result() const {
+    if(!m_results.empty()){
+        return m_results.back();
+    }
+    return m_empty_point;
+}
+
+double Result::average_distance_Q_loss() const {
+    double q_loss = 0.0;
+    uint64_t index = 0;
+    for(auto& result : m_results){
+        double distance = DistanceCalculator::euclidDistance2D(m_input_locs[index],result);
+        q_loss += m_distribution->at(index) * m_prior_distribution->at(index)*distance;
+    }
+    return q_loss;
+}
+
+double Result::average_adversarial_distance_error_AE() const {
+    double ae = 0.0;
+    u_int64_t index = 0.0;
+    for(auto& result : m_results){
+        double distance = DistanceCalculator::euclidDistance2D(m_input_locs[index],result);
+        ae += m_prior_distribution->at(index) * m_distribution->at(index) * m_adversarial_distribution->at(index) * distance;
+    }
+    return ae;
+}
+
+double Result::performance_criterion_PC() const {
+    return (average_distance_Q_loss()+1)/(average_adversarial_distance_error_AE()+1);
+}
+
+// Mechanism
+
+Mechanism::Mechanism(){
+    m_result.m_prior_distribution = &m_prior;
+    m_result.m_distribution = &m_dist;
+    m_result.m_adversarial_distribution = &m_adversarial;
+}
+
+void Mechanism::pull_data(DataStream &stream, once_finished_call_back call_back) {
 
 }
 
-Point2 DataParser<Point2>::parse(const char *string_data) {
-
+void Mechanism::commit_result(Point2 result,Point2 input_loc) {
+    m_result.m_results.push_back(result);
+    m_result.m_input_locs.push_back(input_loc);
 }
-
 // 不考虑语义的维诺计算方法
 
 GVEM::GVEM(geovi::geo::map::GeoMapVoronoiDiagramAdaptor &adaptor,float epsilon):m_adaptor(adaptor){
@@ -61,14 +131,18 @@ void GVEM::pull_data(geovi::algorithm::mechanism::DataStream &stream,
         while (!stream.eof()) {
             if (m_execute_num == 0) {
                 m_start_time = TimeUtilHelper::get_current_millis();
-                const char* string_line = stream.next_line();
+                std::string string_line = stream.next_line();
                 if(loc_parser.can_parse(string_line)) {
                     Point2 loc = loc_parser.parse(string_line);
                     build_distribution(loc);
                     uint64_t disturbance_cell_index = DiscreteDistributionSampler::SampleFromDiscreteDistribution(
                             m_dist);
                     Point2 result;
+                    unsigned long long this_begin_time = TimeUtilHelper::get_current_millis();
                     domain_disturbance(disturbance_cell_index, result, loc);
+                    commit_result(result,loc);
+                    unsigned long long this_end_time = TimeUtilHelper::get_current_millis();
+                    (*call_back)(this_end_time-this_begin_time,m_result);
                 }
             }
         }

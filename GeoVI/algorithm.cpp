@@ -2,6 +2,15 @@
 #include <random>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/foreach.hpp>
+#include <memory>
+#include <stack>
+
+
+#define GEOVI_XML_ATTR_STR "<xmlattr>"
+
 
 using namespace geovi::algorithm::distance;
 using namespace geovi::algorithm::sample;
@@ -10,11 +19,16 @@ using namespace geovi::algorithm::voronoi_diagram;
 using namespace geovi::geo::map;
 using namespace geovi;
 
+static boost::property_tree::ptree s_pt;
+static boost::property_tree::ptree s_empty_pt;
+bool SemanticManager::is_load = false;
+
 using TagField = enum TagField {
     name = 0,
     map_feature = 1,
     feature_value = 2
 };
+
 
 std::pair<bool,OSMMapFeature> hasFeature(const GeoMap::GeoNode& node,OSMMapFeature feature){
     for(auto feature_tuple : node.features){
@@ -125,7 +139,81 @@ std::vector<geovi::geo::map::OSMMapFeature> SemanticCategoryCalculator::semantic
 }
 
 
-// PrivacySensitivityCalculator
+// SemanticManager
+
+
+using namespace boost::property_tree;
+
+void build_tree(const ptree& p_tr,std::vector<std::string>& path,
+                std::map<std::string,std::vector<std::string>>& result,
+                std::map<geovi::geo::map::OSMMapFeature,int>& distance){
+    std::string name;
+    int d = std::numeric_limits<int>::min();
+    BOOST_FOREACH(const ptree::value_type & node, p_tr){
+        if(std::string(node.first.data())== GEOVI_XML_ATTR_STR){
+            BOOST_FOREACH(const ptree::value_type & attr ,node.second){
+                if(attr.first == "type"){
+                    name = std::string(attr.second.data());
+                    path.push_back(name);
+                }
+                if(attr.first == "distance"){
+                    std::string distance_str(attr.second.data());
+                    if(distance_str == "infinity"){
+                        d = std::numeric_limits<int>::max();
+                    }else
+                        d = std::stoi(std::string(attr.second.data()));
+                }
+            }
+
+        }
+    }
+    if( d != std::numeric_limits<int>::min()){
+        distance.insert({MapFeatureStringConverter::get(name),d});
+    }
+    std::cout << std::endl;
+    bool is_leaf = true;
+    BOOST_FOREACH(const ptree::value_type & node, p_tr){
+        if(node.first != GEOVI_XML_ATTR_STR){
+            build_tree(node.second,path,result,distance);
+            is_leaf = false;
+        }
+    }
+    if(is_leaf){
+        result.insert({path[1] + ":" + name,path});
+    }
+    path.pop_back();
+}
+
+
+SemanticManager::SemanticManager() {
+
+    if(!SemanticManager::is_load){
+        try{
+            read_xml("../GeoVI/semantic_tree.xml",s_pt);
+            SemanticManager::is_load=true;
+            std::vector<std::string> path;
+            path.push_back("root");
+            build_tree(s_pt.get_child("semantic-tree.root",s_pt),
+                       path,m_value_to_path,m_distance);
+
+            for(auto& pair : m_value_to_path){
+                std::cout << pair.first << " : " ;
+                for(auto& p : pair.second){
+                    std::cout << p << " . " ;
+                }
+                std::cout << std::endl;
+            }
+        }catch(const ptree_error& e){
+            std::cout << "Error: " << e.what() << std::endl;
+        }
+    }
+}
+
+int SemanticManager::semantic_distance(geovi::geo::map::OSMMapFeature feature_1, std::string &feature_1_value,
+                                       geovi::geo::map::OSMMapFeature feature_2, std::string &feature_2_value) {
+
+}
+
 
 
 

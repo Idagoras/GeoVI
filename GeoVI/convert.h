@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cmath>
 #include <memory>
+#include <type_traits>
 
 
 using namespace NS_PROJ::crs;
@@ -15,6 +16,14 @@ using namespace NS_PROJ::operation;
 using namespace NS_PROJ::util;
 
 namespace geovi{
+
+template <typename T>
+struct geovi_trait{
+    static const bool is_int = std::is_same<T, int>::value;
+    static const bool is_float = std::is_same<T, float>::value;
+    static const bool is_double = std::is_same<T,double>::value;
+
+};
 
 
 using CoordinateSystemType = enum CoordinateSystemType {
@@ -232,6 +241,9 @@ public:
     CoordinateSystemConverter();
     CoordinateSystemConverter(LongitudeBands bd);
     LongitudeBands utm_identity(double longitude,double latitude);
+    inline void set_band(LongitudeBands bd){
+        band = bd;
+    }
     void convert(CoordinateSystemType srcCRS,CoordinateSystemType targetCRS,Point2& point);
 
     

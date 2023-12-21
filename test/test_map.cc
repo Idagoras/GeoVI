@@ -4,6 +4,7 @@
 #include "GeoVI/geomap.h"
 #include "GeoVI/reader.h"
 #include "GeoVI/voronoi.h"
+#include "GeoVI/algorithm.h"
 #include <iostream>
 #include <memory>
 #include <random>
@@ -13,6 +14,7 @@ using namespace geovi;
 using namespace geovi::io;
 using namespace geovi::geo::map;
 using namespace geovi::algorithm::voronoi_diagram;
+using namespace geovi::algorithm::semantic;
 
 
 void print_node(const GeoMap::GeoNode* geo_node_ptr){
@@ -36,7 +38,9 @@ void print_wgs84_point(const Point2& wgs84_point){
 }
 
 int main(){
-
+    SemanticManager sm;
+    //sm.iterate();
+    /*
     std::shared_ptr<CrossingFilter> filter = make_shared<CrossingFilter>();
     unique_ptr<OSMReader> reader = make_unique<OSMReader>("../OSM/nanjing.xml");
     shared_ptr<GeoMap> geo_map = make_shared<GeoMap>(*reader,filter);
@@ -73,7 +77,7 @@ int main(){
         ++ index;
     }
     */
-
+/*
         vector<GeoMap::GeoNode*> geo_nodes_ptrs = geo_map->getGeoNodes();
         auto sites = filter ->crossing_geo_nodes();
         shared_ptr<GeoMapVoronoiDiagramAdaptor> geomap_voronoi_adaptor = make_shared<GeoMapVoronoiDiagramAdaptor>(geo_nodes_ptrs,sites);
@@ -89,7 +93,7 @@ int main(){
             std::cout << " cell 2 to cell " << cell_index << " shortest path distance = " << distance <<std::endl;
             ++ cell_index;
         }
-
+*/
     /*
         std::default_random_engine e;
         std::uniform_int_distribution<int> u(0,10000);

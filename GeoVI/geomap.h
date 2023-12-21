@@ -104,10 +104,17 @@ namespace geovi
                     Telecom, // These are used to map telecommunication systems.
                     Tourism, // This is used to map places and things of specific interest to tourists.
                     Water, // This is used to describe type of water body and is only used together with natural=water.
-                    Waterway, // This is used to described different types of waterways. When mapping the way of a river, stream, drain, canal, etc. these need to be aligned in the direction of the water flow. 
+                    Waterway,// This is used to described different types of waterways. When mapping the way of a river, stream, drain, canal, etc. these need to be aligned in the direction of the water flow.
+                    Aerialway,
                     None,
                     
                 } OSMMapFeature; // Standard OSM Map Features
+
+            class MapFeatureStringConverter{
+            public:
+                static std::string get(OSMMapFeature feature);
+                static OSMMapFeature get(std::string& feature_str);
+            };
 
             class MapFeatureFilter;
 
@@ -115,12 +122,7 @@ namespace geovi
             public:
                 
                 typedef int64_t map_object_id_type ;
-            
-                typedef enum {
-                    circle,
-                    rectangle,
-                } GeoMapShapeType;
-                
+
                 typedef struct{
                     // longitude
                         double longitude;
@@ -129,32 +131,6 @@ namespace geovi
 
                 } Location;
 
-                typedef struct 
-                {
-                    // 中心点
-                    Location center;
-                } Shape;
-                
-
-                typedef struct Circle : public Shape
-                {
-                    // 半径
-                    double radius;
-                    // 中心点
-                    Location center;
-
-                } Circle;
-
-                typedef struct Rectangle : public Shape{
-                    // 长
-                    double length;
-                    // 宽
-                    double width;
-                    // 中心点
-                    Location center;
-                    // 左上角的顶点
-                    Location top_left_vertex;
-                } Rectangle;
                 
                 typedef struct GeoNode{
                     std::string name;
@@ -184,10 +160,7 @@ namespace geovi
 
                 typedef std::map<map_object_id_type,GeoNode> NodeMap;
                 typedef std::map<map_object_id_type,GeoWay> WayMap;
-                GeoMapShapeType shape_type;
-                Shape mshape;
-                GeoMap(geovi::io::OSMReader& reader,GeoMapShapeType type,Shape shape);
-                GeoMap(geovi::io::OSMReader& reader,const std::shared_ptr<MapFeatureFilter>& filter);
+                GeoMap(geovi::io::OSMReader& reader,const std::shared_ptr<MapFeatureFilter>& filter,double max_lat,double max_lon,double min_lat,double min_lon);
 
                 inline int64_t numOfNodes() const{
 

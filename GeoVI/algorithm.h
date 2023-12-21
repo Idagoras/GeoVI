@@ -56,17 +56,19 @@ namespace geovi{
 
                 };
 
-                class SemanticSimilarityCalculator {
-                    static semantic_similarity calculate(geovi::geo::map::OSMMapFeature feature_1,geovi::geo::map::OSMMapFeature feature_2);
+                class SemanticManager{
+                public:
+                    SemanticManager();
+                    int semantic_distance(geovi::geo::map::OSMMapFeature feature_1,std::string& feature_1_value,
+                                          geovi::geo::map::OSMMapFeature feature_2,std::string& feature_2_value);
+
+                private:
+                    static bool is_load ;
+                    std::map<std::string,std::vector<std::string>> m_value_to_path;
+                    std::map<geovi::geo::map::OSMMapFeature,int> m_distance;
                 };
 
-                class PrivacySensitivityCalculator {
-                public:
-                    PrivacySensitivityCalculator(std::weak_ptr<geovi::geo::map::GeoMap> gmap);
-                    double get(const Point2& p);
-                private:
-                    std::map<int64_t,double> m_ps_map;
-                };
+
 
                 class CellGrowingAndMergingCalculator{
                 public:
