@@ -130,3 +130,55 @@ unsigned long long TimeUtilHelper::get_current_millis() {
     auto duration = now.time_since_epoch();
     return std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
 }
+
+double StatisticUtilHelper::mean(const std::vector<int> &data) {
+    int sum = 0;
+    for(auto d : data){
+        sum += d;
+    }
+    return sum/data.size();
+}
+
+double StatisticUtilHelper::mean(const std::vector<double> &data) {
+    double sum = 0.0;
+    for(auto d : data){
+        sum += d;
+    }
+    return sum/data.size();
+}
+
+double StatisticUtilHelper::variance(const std::vector<int> &data) {
+    double mean = StatisticUtilHelper::mean(data);
+    double sum_squared_differences = 0.0;
+    for(auto d: data){
+        double difference = d - mean;
+        sum_squared_differences += std::pow(difference,2);
+    }
+    return sum_squared_differences/data.size();
+}
+
+double StatisticUtilHelper::variance(const std::vector<double> &data) {
+    double mean = StatisticUtilHelper::mean(data);
+    double sum_squared_differences = 0.0;
+    for(auto d: data){
+        double difference = d - mean;
+        sum_squared_differences += std::pow(difference,2);
+    }
+    return sum_squared_differences/data.size();
+}
+
+int StatisticUtilHelper::max_value(const std::vector<int> &data) {
+    int max = std::numeric_limits<int>::min();
+    for(auto d : data){
+        max = d > max ? d : max ;
+    }
+    return max;
+}
+
+double StatisticUtilHelper::max_value(const std::vector<double> &data) {
+    double max = std::numeric_limits<int>::min();
+    for(auto d : data){
+        max = d > max ? d : max ;
+    }
+    return max;
+}

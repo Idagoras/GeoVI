@@ -287,6 +287,16 @@ public:
     static unsigned long long get_current_millis();
 };
 
+class StatisticUtilHelper{
+public:
+    static double mean(const std::vector<int>& data);
+    static double mean(const std::vector<double>& data);
+    static double variance(const std::vector<int>& data);
+    static double variance(const std::vector<double>& data);
+    static int max_value(const std::vector<int>& data);
+    static double max_value(const std::vector<double>& data);
+};
+
 
 }
 #endif

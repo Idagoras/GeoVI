@@ -56,7 +56,7 @@ int main(){
     // 打印边的数量
     std::cout << "map has " << geo_map->numOfWays() << " ways" << std::endl << std::endl;
 
-    /*
+
     // 打印所有顶点的WGS84坐标集合
     vector<Point2> wgs84_points = geo_map->getUTMNodesCoordinate();
     int64_t index = 0 ;

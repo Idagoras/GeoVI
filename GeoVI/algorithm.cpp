@@ -7,6 +7,7 @@
 #include <boost/foreach.hpp>
 #include <memory>
 #include <stack>
+#include <bitset>
 
 
 #define GEOVI_XML_ATTR_STR "<xmlattr>"
@@ -265,10 +266,54 @@ int SemanticManager::semantic_distance(geovi::geo::map::OSMMapFeature feature_1,
 }
 
 
+// ClusterCalculator
+
+ClusterCalculator::ClusterCalculator(int cluster_min_size, int cluster_expected_size, int cluster_categories_num):m_cluster_min_size(cluster_min_size),
+m_cluster_expected_size(cluster_expected_size),m_cluster_categories_num(cluster_categories_num){}
+
+
+bool check_cluster_satisfy_condition(int min_size,int categories_num,int expected_size,cluster& cl){
+    static const double variance_threshold = 1;
+    if(cl.size < min_size || cl.categories_num < categories_num)
+        return false;
+    if(cl.size >= expected_size)
+        return true;
+    double variance = StatisticUtilHelper::variance(cl.elements_num_of_categories);
+    if(variance < variance_threshold)
+        return true;
+    return false;
+}
+
+bool check_element_can_be_added_to_the_set(const GeoMap::GeoNode* element,cluster& cl){
+    if( element->features.empty())
+        return false;
+    int max_category_num = StatisticUtilHelper::max_value(cl.elements_num_of_categories);
+
+}
+
+
+void ClusterCalculator::calculate(std::vector<cluster> &clusters,
+                                  const std::vector<const geo::map::GeoMap::GeoNode *> &elements,
+                                  const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
+                                  geovi::geo::map::GeoMap& g_map) {
+    std::vector<u_int8_t> elements_visited(elements.size(),0);
+    std::map<int64_t,u_int8_t> centroids_visited;
+    for(auto centroid : centroids){
+        centroids_visited.insert({centroid->index,0});
+    }
+    clusters.clear();
+    int64_t index = 0;
+    for(auto centroid : centroids){
+        if(!centroids_visited[centroid->index]){
+            cluster cl(centroid);
+
+
+        }
+    }
+}
+
+
 // CellGrowingAndMergingCalculator
-
-
-
 struct MergedRegion {
     std::vector<CellGrowingAndMergingCalculator::Region> regions;
     double value;

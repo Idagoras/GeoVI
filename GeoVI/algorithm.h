@@ -68,6 +68,27 @@ namespace geovi{
                     std::map<std::string ,int> m_distance;
                 };
 
+                struct cluster{
+                    cluster(const geo::map::GeoMap::GeoNode * ct){
+                        centroid = ct;
+                    }
+                    int categories_num;
+                    int size;
+                    const geo::map::GeoMap::GeoNode * centroid;
+                    std::vector<int> elements_num_of_categories;
+                    std::vector<std::string> categories;
+                    std::vector<const geovi::geo::map::GeoMap::GeoNode*> elements;
+                };
+
+                class ClusterCalculator{
+                public:
+                    ClusterCalculator(int cluster_min_size,int cluster_expected_size,int cluster_categories_num);
+                    void calculate(std::vector<cluster>& clusters,const std::vector<const geo::map::GeoMap::GeoNode*>& elements,const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,geovi::geo::map::GeoMap& g_map);
+                private:
+                    int m_cluster_min_size;
+                    int m_cluster_expected_size;
+                    int m_cluster_categories_num;
+                };
 
 
                 class CellGrowingAndMergingCalculator{
