@@ -8,6 +8,7 @@
 #include <memory>
 #include <stack>
 #include <bitset>
+#include <algorithm>
 
 
 #define GEOVI_XML_ATTR_STR "<xmlattr>"
@@ -273,41 +274,116 @@ m_cluster_expected_size(cluster_expected_size),m_cluster_categories_num(cluster_
 
 
 bool check_cluster_satisfy_condition(int min_size,int categories_num,int expected_size,cluster& cl){
-    static const double variance_threshold = 1;
-    if(cl.size < min_size || cl.categories_num < categories_num)
+    //static const double variance_threshold = 3;
+
+    if( cl.categories_num < categories_num)
         return false;
     if(cl.size >= expected_size)
         return true;
+    /*
     double variance = StatisticUtilHelper::variance(cl.elements_num_of_categories);
     if(variance < variance_threshold)
+        return true;
+    */
+    return false;
+}
+
+
+bool check_element_can_be_added_to_the_set(const GeoMap::GeoNode* element,cluster& cl,int cluster_categories_num,int cluster_min_size, int cluster_expected_size){
+    if( element->features.empty())
+        return false;
+    if(cl.size < cluster_min_size)
+        return true;
+    int max_category_num = std::numeric_limits<int>::min();
+    std::vector<std::string> max_num_categories;
+    int index = 0;
+    for(auto& d : cl.elements_num_of_categories){
+        if( d > max_category_num){
+            max_category_num = d;
+            max_num_categories.clear();
+            max_num_categories.push_back(cl.categories[index]);
+        }
+        if( d == max_category_num )
+            max_num_categories.push_back(cl.categories[index]);
+        index ++;
+    }
+
+
+    bool new_category = true;
+    std::string element_category = std::get<TagField::name>(element->features[0])+":"+std::get<TagField::feature_value>(element->features[0]);
+    for(auto& category : cl.categories){
+     //   std::cout << "point feature : " << element_category << " cluster category : " << category << std::endl;
+        if( category == element_category){
+            new_category = false;
+            break;
+        }
+    }
+    int cost_current,cost_other;
+    if(new_category){
+        if(cl.categories_num + 1 <= cluster_categories_num)
+            return true;
+        else{
+            cost_current = max_category_num;
+            cost_other = cluster_categories_num;
+        }
+    }else{
+        cost_current = cl.categories_num;
+        cost_other = max_category_num;
+    }
+
+    if( cost_current < cost_other )
         return true;
     return false;
 }
 
-bool check_element_can_be_added_to_the_set(const GeoMap::GeoNode* element,cluster& cl){
-    if( element->features.empty())
-        return false;
-    int max_category_num = StatisticUtilHelper::max_value(cl.elements_num_of_categories);
-
-}
-
 
 void ClusterCalculator::calculate(std::vector<cluster> &clusters,
-                                  const std::vector<const geo::map::GeoMap::GeoNode *> &elements,
+                                  const std::vector<geo::map::GeoMap::GeoNode *> &elements,
                                   const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
-                                  geovi::geo::map::GeoMap& g_map) {
+                                  geovi::geo::map::GeoMap& g_map,
+                                  std::function<bool(const geo::map::GeoMap::GeoNode*,const geo::map::GeoMap::GeoNode*)> similar_function) {
     std::vector<u_int8_t> elements_visited(elements.size(),0);
     std::map<int64_t,u_int8_t> centroids_visited;
-    for(auto centroid : centroids){
+    for(auto& centroid : centroids){
         centroids_visited.insert({centroid->index,0});
     }
     clusters.clear();
     int64_t index = 0;
-    for(auto centroid : centroids){
+    for(auto& centroid : centroids){
         if(!centroids_visited[centroid->index]){
-            cluster cl(centroid);
-
-
+            std::cout << "centroid " << index << " :" << std::endl;
+            clusters.emplace_back(centroid);
+            cluster& cl = clusters.back();
+            bool completed = false;
+            int multi = 1;
+            int radius = 100;
+            while(!completed){
+                auto point_around = g_map.find(radius*multi,centroid->utm_xy.x,centroid->utm_xy.y);
+                std::cout << "around radius : " << multi * radius << " has " << point_around.size() << " nodes " << std::endl;
+                std::sort(point_around.begin(),point_around.end(),[centroid](const GeoMap::GeoNode* v1,const GeoMap::GeoNode* v2){
+                    double distance_1 = DistanceCalculator::euclidDistance2D(v1->utm_xy,centroid->utm_xy);
+                    double distance_2 = DistanceCalculator::euclidDistance2D(v2->utm_xy,centroid->utm_xy);
+                    return DistanceCalculator::double_distance_equal(distance_1,distance_2) < 0;
+                });
+                for(auto& point : point_around){
+                    if(elements_visited[point->index] == 0){
+                        if(check_element_can_be_added_to_the_set(point,cl,m_cluster_categories_num,m_cluster_min_size,m_cluster_expected_size)){
+                            cl.add_element(point);
+                            elements_visited[point->index] = 1;
+                            if( centroids_visited.find(point->index) != centroids_visited.end())
+                                centroids_visited[point->index] = 1;
+                            completed = check_cluster_satisfy_condition(m_cluster_min_size,m_cluster_categories_num,m_cluster_expected_size,cl);
+                            if(completed)
+                                break;
+                        }
+                    }
+                }
+                completed = completed  || point_around.size() == elements.size();
+                if(completed)
+                    cl.max_radius = multi*radius;
+                multi ++ ;
+            }
+            index ++;
         }
     }
 }

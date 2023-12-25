@@ -5,6 +5,7 @@
 #include "GeoVI/reader.h"
 #include "GeoVI/voronoi.h"
 #include "GeoVI/algorithm.h"
+#include "GeoVI/writer.h"
 #include <iostream>
 #include <memory>
 #include <random>
@@ -38,17 +39,15 @@ void print_wgs84_point(const Point2& wgs84_point){
 }
 
 int main(){
-    SemanticManager sm;
-    std::string bar("bar"),college("college"),ditch("ditch"),anchor("anchor"),bakery("bakery");
-    std::cout << "bar-collage : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Amenity,college) <<std::endl;
-    std::cout << "bar-ditch : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Barrier,ditch) <<std::endl;
-    std::cout << "bar-anchor : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Historic,anchor) <<std::endl;
-    std::cout << "bar-bakery : " << sm.semantic_distance(OSMMapFeature::Amenity,bar,OSMMapFeature::Shop,bakery) <<std::endl;
+
+    //writer.write_xml("output.xml");
+
     //sm.iterate();
-    /*
+
     std::shared_ptr<CrossingFilter> filter = make_shared<CrossingFilter>();
-    unique_ptr<OSMReader> reader = make_unique<OSMReader>("../OSM/nanjing.xml");
-    shared_ptr<GeoMap> geo_map = make_shared<GeoMap>(*reader,filter);
+    unique_ptr<OSMReader> reader = make_unique<OSMReader>("Paris_test.osm");
+    // minlat="48.8594200" minlon="2.3551100" maxlat="48.8605900" maxlon="2.3568400"
+    shared_ptr<GeoMap> geo_map = std::make_shared<GeoMap>(*reader,filter,48.8605900,2.3568400,48.8594200,2.3551100);
 
     // 打印顶点数量
     std::cout << "map has " << geo_map->numOfNodes() << " nodes " << std::endl << std::endl;
@@ -56,7 +55,35 @@ int main(){
     // 打印边的数量
     std::cout << "map has " << geo_map->numOfWays() << " ways" << std::endl << std::endl;
 
+    auto sites = filter ->crossing_geo_nodes();
+    auto nodes = geo_map->getGeoNodes();
+    int feature_node_num = 0;
+    for(auto& node : nodes){
+        if(!node->features.empty())
+            feature_node_num ++ ;
+    }
+    std::cout << "map has " << sites.size() << " crossing nodes" << std::endl;
+    std::cout << "map has " << feature_node_num << " nodes which have features" << std::endl;
 
+    std::vector<cluster> clusters;
+    ClusterCalculator cal(5,10,feature_node_num/sites.size());
+    cal.calculate(clusters,nodes,sites,*geo_map,[](const GeoMap::GeoNode* node_1,const GeoMap::GeoNode* node_2)->bool {
+
+    });
+    int index = 0;
+    int size = 0;
+    for(auto cluster : clusters){
+        std::cout << "cluster " << index << " :" <<std::endl;
+        std::cout << "centroid utm x = " << cluster.centroid->utm_xy.x << " y = " << cluster.centroid->utm_xy.y;
+        std::cout << "size : " << cluster.size << "  category num : " << cluster.categories_num << std::endl;
+        index ++;
+        size += cluster.size;
+    }
+    std::cout << "num = " << size << std::endl;
+    OSMWriter writer;
+    writer.wirte_xml(clusters,"Paris_test.xml");
+
+/*
     // 打印所有顶点的WGS84坐标集合
     vector<Point2> wgs84_points = geo_map->getUTMNodesCoordinate();
     int64_t index = 0 ;

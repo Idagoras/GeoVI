@@ -4,6 +4,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <vector>
+#include <functional>
 #include "voronoi.h"
 #include "geomap.h"
 #include "convert.h"
@@ -72,8 +73,34 @@ namespace geovi{
                     cluster(const geo::map::GeoMap::GeoNode * ct){
                         centroid = ct;
                     }
-                    int categories_num;
-                    int size;
+                    void add_element(const geovi::geo::map::GeoMap::GeoNode* element){
+                        elements.push_back(element);
+                        if(!element->features.empty()){
+                            ++ size;
+                            std::string element_feature = get<0>(element->features[0])+":"+get<2>(element->features[0]);
+                            bool exist = false;
+                            int exist_index = 0;
+                            int index = 0;
+                            for(auto& category : categories){
+                                if(element_feature == category){
+                                    exist = true;
+                                    exist_index = index;
+                                    break;
+                                }
+                                ++ index;
+                            }
+                            if( exist ){
+                                elements_num_of_categories[exist_index] +=1;
+                            }else{
+                                categories.push_back(element_feature);
+                                elements_num_of_categories.push_back(1);
+                                categories_num += 1;
+                            }
+                        }
+                    }
+                    int max_radius = 0;
+                    int categories_num=0;
+                    int size =0;
                     const geo::map::GeoMap::GeoNode * centroid;
                     std::vector<int> elements_num_of_categories;
                     std::vector<std::string> categories;
@@ -83,7 +110,11 @@ namespace geovi{
                 class ClusterCalculator{
                 public:
                     ClusterCalculator(int cluster_min_size,int cluster_expected_size,int cluster_categories_num);
-                    void calculate(std::vector<cluster>& clusters,const std::vector<const geo::map::GeoMap::GeoNode*>& elements,const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,geovi::geo::map::GeoMap& g_map);
+                    void calculate(std::vector<cluster>& clusters,
+                                   const std::vector<geo::map::GeoMap::GeoNode*>& elements,
+                                   const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
+                                   geovi::geo::map::GeoMap& g_map,
+                                   std::function<bool(const geo::map::GeoMap::GeoNode*,const geo::map::GeoMap::GeoNode*)> similar_function);
                 private:
                     int m_cluster_min_size;
                     int m_cluster_expected_size;

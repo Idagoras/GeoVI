@@ -459,6 +459,7 @@ GeoMap::GeoMap(geovi::io::OSMReader &reader, const std::shared_ptr<MapFeatureFil
     LongitudeBands min_lon_band = LongitudeBands(s_coordinate_system_converter->utm_identity(min_lon,max_lat));
     LongitudeBands max_lon_band = LongitudeBands(s_coordinate_system_converter->utm_identity(max_lon,max_lat));
     s_coordinate_system_converter->set_band(min_lon_band);
+    m_filter = filter;
     m_graph = Graph(0);
     m_nodes_num = 0;
     m_ways_num = 0;
@@ -731,6 +732,7 @@ void MapFeatureFilter::way_filter(geovi::geo::map::OSMMapFeature feature, const 
 void CrossingFilter::node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node){
     std::vector<int64_t> feature_value_nums(25);
     if( feature == OSMMapFeature::Highway ){
+       // std::cout << "yes:" << feature_value << std::endl;
         if(highway_feature_value_string_to_highway_value_enum_map.find(std::string(feature_value)) != highway_feature_value_string_to_highway_value_enum_map.end()){
             int64_t index = highway_feature_value_string_to_highway_value_enum_map[std::string(feature_value)];
             ++ feature_value_nums[index] ;
