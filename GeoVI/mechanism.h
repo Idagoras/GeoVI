@@ -7,6 +7,7 @@
 #include "geomap.h"
 #include "convert.h"
 #include <fstream>
+#include "algorithm.h"
 
 namespace geovi {
 
@@ -142,6 +143,23 @@ namespace geovi {
                 double r_small;
                 double l_s;
 
+            };
+
+            class GSEM : public Mechanism{
+            public:
+                GSEM(geovi::geo::map::GeoMap& g_map,geovi::geo::map::MapFeatureFilter& filter);
+                void pull_data(DataStream& stream,once_finished_call_back call_back) override;
+            private:
+                void build_prior_distribution();
+                void build_adversarial_distribution();
+                void build_distribution(Point2& loc);
+                void domain_disturbance(uint64_t index,Point2& result,Point2& loc);
+
+                DiscreteDistribution m_crossing_distribution;
+                DiscreteDistribution m_location_distribution;
+                geovi::geo::map::GeoMap& m_g_map;
+                std::vector<geovi::algorithm::semantic::cluster> m_clusters;
+                geovi::geo::map::MapFeatureFilter& m_filter;
             };
         }
     }

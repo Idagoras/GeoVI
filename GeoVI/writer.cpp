@@ -14,6 +14,10 @@ void OSMWriter::wirte_xml(std::vector<geovi::algorithm::semantic::cluster>& clus
 
     for(auto& cl:clusters){
         boost::property_tree::ptree cl_tree;
+        boost::property_tree::ptree centroid_tree;
+        centroid_tree.put("latitude",cl.centroid->loc.latitude);
+        centroid_tree.put("longitude",cl.centroid->loc.longitude);
+        cl_tree.add_child("centroid",centroid_tree);
         for(auto& element : cl.elements){
             boost::property_tree::ptree el_tree;
             el_tree.put("latitude",element->loc.latitude);

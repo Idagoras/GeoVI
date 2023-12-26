@@ -38,6 +38,8 @@ void print_wgs84_point(const Point2& wgs84_point){
     std::cout << "point 's latitude is " << wgs84_point.x << " and it's longitude is " << wgs84_point.y << std::endl;
 }
 
+
+
 int main(){
 
     //writer.write_xml("output.xml");
@@ -67,8 +69,13 @@ int main(){
 
     std::vector<cluster> clusters;
     ClusterCalculator cal(5,10,feature_node_num/sites.size());
-    cal.calculate(clusters,nodes,sites,*geo_map,[](const GeoMap::GeoNode* node_1,const GeoMap::GeoNode* node_2)->bool {
-
+    cal.calculate(clusters,nodes,sites,*geo_map,[](std::string& feature_1,std::string& feature_value_1,
+                                                   std::string& feature_2,std::string& feature_value_2,
+                                                   SemanticManager& sm)->bool {
+        int distance = sm.semantic_distance(MapFeatureStringConverter::get(feature_1),feature_value_1,MapFeatureStringConverter::get(feature_2),feature_value_2);
+        if(distance > 2)
+            return false;
+        return true;
     });
     int index = 0;
     int size = 0;
@@ -81,7 +88,7 @@ int main(){
     }
     std::cout << "num = " << size << std::endl;
     OSMWriter writer;
-    writer.wirte_xml(clusters,"Paris_test.xml");
+    writer.wirte_xml(clusters,"Paris_test_2.xml");
 
 /*
     // 打印所有顶点的WGS84坐标集合

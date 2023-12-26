@@ -129,22 +129,22 @@ void GVEM::pull_data(geovi::algorithm::mechanism::DataStream &stream,
     DataParser<Point2> loc_parser;
     if(stream.open()) {
         while (!stream.eof()) {
-            if (m_execute_num == 0) {
+            if (m_execute_num == 0)
                 m_start_time = TimeUtilHelper::get_current_millis();
-                std::string string_line = stream.next_line();
-                if(loc_parser.can_parse(string_line)) {
-                    Point2 loc = loc_parser.parse(string_line);
-                    build_distribution(loc);
-                    uint64_t disturbance_cell_index = DiscreteDistributionSampler::SampleFromDiscreteDistribution(
-                            m_dist);
-                    Point2 result;
-                    unsigned long long this_begin_time = TimeUtilHelper::get_current_millis();
-                    domain_disturbance(disturbance_cell_index, result, loc);
-                    commit_result(result,loc);
-                    unsigned long long this_end_time = TimeUtilHelper::get_current_millis();
-                    (*call_back)(this_end_time-this_begin_time,m_result);
-                }
+            std::string string_line = stream.next_line();
+            if(loc_parser.can_parse(string_line)) {
+                Point2 loc = loc_parser.parse(string_line);
+                build_distribution(loc);
+                uint64_t disturbance_cell_index = DiscreteDistributionSampler::SampleFromDiscreteDistribution(
+                        m_dist);
+                Point2 result;
+                unsigned long long this_begin_time = TimeUtilHelper::get_current_millis();
+                domain_disturbance(disturbance_cell_index, result, loc);
+                commit_result(result,loc);
+                unsigned long long this_end_time = TimeUtilHelper::get_current_millis();
+                (*call_back)(this_end_time-this_begin_time,m_result);
             }
+
         }
         m_end_time = TimeUtilHelper::get_current_millis();
         stream.close();
@@ -196,4 +196,60 @@ void GVEM::domain_disturbance(uint64_t index,Point2& result,Point2& loc) {
     uint64_t result_index = DiscreteDistributionSampler::SampleFromDiscreteDistribution(dist);
     result.x = nodes[result_index]->utm_xy.x;
     result.y = nodes[result_index]->utm_xy.y;
+}
+
+// GSEM
+
+GSEM::GSEM(geovi::geo::map::GeoMap &g_map,geovi::geo::map::MapFeatureFilter& filter):m_g_map(g_map),m_filter(filter){
+    build_prior_distribution();
+}
+
+void GSEM::pull_data(geovi::algorithm::mechanism::DataStream &stream,
+                     geovi::algorithm::mechanism::Mechanism::once_finished_call_back call_back) {
+    DataParser<Point2> data_parser;
+    if(stream.open()){
+        while(!stream.eof()){
+            if(m_execute_num == 0){
+                m_start_time = TimeUtilHelper::get_current_millis();
+            }
+            std::string data_str = stream.next_line();
+            if(data_parser.can_parse(data_str)){
+                Point2 loc = data_parser.parse(data_str);
+                build_distribution(loc);
+            }
+        }
+    }
+}
+
+void GSEM::build_prior_distribution() {
+    using namespace geovi::algorithm::semantic;
+    using namespace geovi::geo::map;
+    auto nodes = m_g_map.getGeoNodes();
+    auto sites = m_filter.get_nodes();
+    uint64_t valid_node_num = 0;
+    for(auto node : nodes){
+        if(!node->features.empty()){
+            if(SemanticManager::getInstance()->have_semantic_mass(std::get<1>(node->features[0]),std::get<2>(node->features[0]))){
+                valid_node_num += 1;
+            }
+        }
+    }
+    ClusterCalculator cal(5,10,valid_node_num/sites.size());
+    cal.calculate(m_clusters,nodes,sites,m_g_map,[](std::string& feature_1,std::string& feature_value_1,
+                                                    std::string& feature_2,std::string& feature_value_2,
+                                                    SemanticManager& sm)->bool {
+        int distance = sm.semantic_distance(MapFeatureStringConverter::get(feature_1),feature_value_1,MapFeatureStringConverter::get(feature_2),feature_value_2);
+        if(distance > 2)
+            return false;
+        return true;
+    });
+    m_crossing_distribution.resize(m_clusters.size());
+}
+
+void GSEM::build_distribution(geovi::Point2 &loc) {
+    for(auto& cluster : m_clusters){
+
+        double distance = DistanceCalculator::euclidDistance2D(loc,cluster.centroid->utm_xy);
+
+    }
 }

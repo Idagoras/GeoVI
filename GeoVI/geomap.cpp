@@ -744,6 +744,8 @@ void CrossingFilter::node_filter(OSMMapFeature feature,const char * feature_valu
     }
 }
 
+
+
 std::vector<Point2> CrossingFilter::crossing_utm_xy_points(){
     std::vector<Point2> utm_xy_points ;
     for(auto node_ptr : m_crossing_nodes){

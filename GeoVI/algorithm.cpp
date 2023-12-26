@@ -205,6 +205,14 @@ void build_tree(const ptree& p_tr,std::vector<std::string>& path,
     path.pop_back();
 }
 
+SemanticManager *SemanticManager::getInstance() {
+    if(SemanticManager::is_load){
+        return m_instance;
+    }else{
+        m_instance=new SemanticManager();
+        return m_instance;
+    }
+}
 
 SemanticManager::SemanticManager() {
 
@@ -266,6 +274,87 @@ int SemanticManager::semantic_distance(geovi::geo::map::OSMMapFeature feature_1,
     }
 }
 
+bool SemanticManager::have_semantic_mass(geovi::geo::map::OSMMapFeature feature,std::string feature_value){
+    std::string feature_distance = "root:" + MapFeatureStringConverter::get(feature);
+    std::string key_distance = feature_distance + ":" + feature_value;
+    if(m_distance.find(key_distance) != m_distance.end()){
+        int distance = m_distance.at(key_distance);
+        return distance != std::numeric_limits<int>::max();
+    }else{
+        if(m_distance.find(feature_distance) != m_distance.end()){
+            int distance = m_distance.at(feature_distance);
+            return distance != std::numeric_limits<int>::max();
+        }
+    }
+    return false;
+}
+
+// cluster
+
+void cluster::add_element(const geovi::geo::map::GeoMap::GeoNode* element){
+    elements.push_back(element);
+    ++ size;
+    if(!element->features.empty()){
+        std::string element_feature = get<0>(element->features[0])+":"+get<2>(element->features[0]);
+        bool exist = false;
+        int exist_index = 0;
+        int index = 0;
+        for(auto& category : categories){
+            if(element_feature == category){
+                exist = true;
+                exist_index = index;
+                break;
+            }
+            ++ index;
+        }
+        if( exist ){
+            elements_num_of_categories[exist_index] +=1;
+        }else{
+            categories.push_back(element_feature);
+            elements_num_of_categories.push_back(1);
+            categories_num += 1;
+        }
+    }
+}
+
+void cluster::add_element(const geovi::geo::map::GeoMap::GeoNode* element,
+                          std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                             std::string& feature_2,std::string& feature_value_2,SemanticManager& sm)> similar_function){
+    elements.push_back(element);
+    ++ size;
+    if(!element->features.empty()){
+        std::string feature_str = get<0>(element->features[0]);
+        std::string value_str = get<2>(element->features[0]);
+        std::string element_feature_str = feature_str+":"+value_str;
+        std::string& similar_category =  element_feature_str;
+        bool new_category = true;
+        int index = 0;
+        for(auto category : categories){
+            std::istringstream iss(category);
+            std::string str;
+            std::vector<std::string> strs;
+            while(std::getline(iss,str,':')){
+                strs.push_back(str);
+            }
+            std::string& category_feature_str = strs[0];
+            std::string& category_value_str = strs[1];
+            if(similar_function(feature_str,value_str,category_feature_str,category_value_str,*(SemanticManager::getInstance()))){
+                similar_category = category;
+                new_category = false;
+                break;
+            }
+            index ++;
+        }
+        if(new_category){
+            categories_num += 1;
+            categories.push_back(element_feature_str);
+            elements_num_of_categories.push_back(1);
+        }else{
+            elements_num_of_categories[index] += 1;
+        }
+    }
+}
+
 
 // ClusterCalculator
 
@@ -290,8 +379,7 @@ bool check_cluster_satisfy_condition(int min_size,int categories_num,int expecte
 
 
 bool check_element_can_be_added_to_the_set(const GeoMap::GeoNode* element,cluster& cl,int cluster_categories_num,int cluster_min_size, int cluster_expected_size){
-    if( element->features.empty())
-        return false;
+
     if(cl.size < cluster_min_size)
         return true;
     int max_category_num = std::numeric_limits<int>::min();
@@ -312,7 +400,7 @@ bool check_element_can_be_added_to_the_set(const GeoMap::GeoNode* element,cluste
     bool new_category = true;
     std::string element_category = std::get<TagField::name>(element->features[0])+":"+std::get<TagField::feature_value>(element->features[0]);
     for(auto& category : cl.categories){
-     //   std::cout << "point feature : " << element_category << " cluster category : " << category << std::endl;
+
         if( category == element_category){
             new_category = false;
             break;
@@ -341,7 +429,9 @@ void ClusterCalculator::calculate(std::vector<cluster> &clusters,
                                   const std::vector<geo::map::GeoMap::GeoNode *> &elements,
                                   const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
                                   geovi::geo::map::GeoMap& g_map,
-                                  std::function<bool(const geo::map::GeoMap::GeoNode*,const geo::map::GeoMap::GeoNode*)> similar_function) {
+                                  std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                                     std::string& feature_2,std::string& feature_value_2,
+                                                     SemanticManager& sm)> similar_function) {
     std::vector<u_int8_t> elements_visited(elements.size(),0);
     std::map<int64_t,u_int8_t> centroids_visited;
     for(auto& centroid : centroids){
@@ -366,17 +456,25 @@ void ClusterCalculator::calculate(std::vector<cluster> &clusters,
                     return DistanceCalculator::double_distance_equal(distance_1,distance_2) < 0;
                 });
                 for(auto& point : point_around){
-                    if(elements_visited[point->index] == 0){
-                        if(check_element_can_be_added_to_the_set(point,cl,m_cluster_categories_num,m_cluster_min_size,m_cluster_expected_size)){
-                            cl.add_element(point);
+                    if(!point->features.empty()){
+                        OSMMapFeature feature = std::get<TagField::map_feature>(point->features[0]);
+                        std::string feature_value = std::get<TagField::feature_value>(point->features[0]);
+                        if(!SemanticManager::getInstance()->have_semantic_mass(feature,feature_value)){
+                            if(elements_visited[point->index] == 0){
+                                if(check_element_can_be_added_to_the_set(point,cl,m_cluster_categories_num,m_cluster_min_size,m_cluster_expected_size)){
+                                    cl.add_element(point,similar_function);
+                                    elements_visited[point->index] = 1;
+                                    if( centroids_visited.find(point->index) != centroids_visited.end())
+                                        centroids_visited[point->index] = 1;
+                                    completed = check_cluster_satisfy_condition(m_cluster_min_size,m_cluster_categories_num,m_cluster_expected_size,cl);
+                                    if(completed)
+                                        break;
+                                }
+                            }
+                        } else
                             elements_visited[point->index] = 1;
-                            if( centroids_visited.find(point->index) != centroids_visited.end())
-                                centroids_visited[point->index] = 1;
-                            completed = check_cluster_satisfy_condition(m_cluster_min_size,m_cluster_categories_num,m_cluster_expected_size,cl);
-                            if(completed)
-                                break;
-                        }
-                    }
+                    } else
+                        elements_visited[point->index] = 1;
                 }
                 completed = completed  || point_around.size() == elements.size();
                 if(completed)

@@ -8,6 +8,7 @@
 #include "voronoi.h"
 #include "geomap.h"
 #include "convert.h"
+#include <sstream>
 
 
 namespace geovi{
@@ -59,45 +60,34 @@ namespace geovi{
 
                 class SemanticManager{
                 public:
-                    SemanticManager();
+                    static SemanticManager* getInstance();
                     int semantic_distance(geovi::geo::map::OSMMapFeature feature_1,std::string& feature_1_value,
                                           geovi::geo::map::OSMMapFeature feature_2,std::string& feature_2_value);
-
+                    bool have_semantic_mass(geovi::geo::map::OSMMapFeature feature,std::string feature_value);
+                    inline void set_semantic_similar_threshold(int threshold_distance){
+                        m_threshold_distance = threshold_distance;
+                    }
                 private:
+                    static SemanticManager* m_instance;
+                    SemanticManager();
                     static bool is_load ;
                     std::map<std::string,std::vector<std::string>> m_value_to_path;
                     std::map<std::string ,int> m_distance;
+                    int m_threshold_distance = 2;
                 };
 
                 struct cluster{
                     cluster(const geo::map::GeoMap::GeoNode * ct){
                         centroid = ct;
                     }
-                    void add_element(const geovi::geo::map::GeoMap::GeoNode* element){
-                        elements.push_back(element);
-                        if(!element->features.empty()){
-                            ++ size;
-                            std::string element_feature = get<0>(element->features[0])+":"+get<2>(element->features[0]);
-                            bool exist = false;
-                            int exist_index = 0;
-                            int index = 0;
-                            for(auto& category : categories){
-                                if(element_feature == category){
-                                    exist = true;
-                                    exist_index = index;
-                                    break;
-                                }
-                                ++ index;
-                            }
-                            if( exist ){
-                                elements_num_of_categories[exist_index] +=1;
-                            }else{
-                                categories.push_back(element_feature);
-                                elements_num_of_categories.push_back(1);
-                                categories_num += 1;
-                            }
-                        }
-                    }
+                    void add_element(const geovi::geo::map::GeoMap::GeoNode* element);
+
+                    void add_element(const geovi::geo::map::GeoMap::GeoNode* element,
+                                     std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                                        std::string& feature_2,std::string& feature_value_2,
+                                                        SemanticManager& sm)> similar_function);
+
+
                     int max_radius = 0;
                     int categories_num=0;
                     int size =0;
@@ -114,7 +104,9 @@ namespace geovi{
                                    const std::vector<geo::map::GeoMap::GeoNode*>& elements,
                                    const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
                                    geovi::geo::map::GeoMap& g_map,
-                                   std::function<bool(const geo::map::GeoMap::GeoNode*,const geo::map::GeoMap::GeoNode*)> similar_function);
+                                   std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                                      std::string& feature_2,std::string& feature_value_2,
+                                                      SemanticManager& sm)> similar_function);
                 private:
                     int m_cluster_min_size;
                     int m_cluster_expected_size;

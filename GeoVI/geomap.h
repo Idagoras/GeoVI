@@ -219,11 +219,15 @@ namespace geovi
         public:
             virtual void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node);
             virtual void way_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoWay* node);
+            virtual std::vector<const GeoMap::GeoNode*> get_nodes();
         };
 
         class CrossingFilter : public MapFeatureFilter {
         public:
             void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node) override;
+            inline std::vector<const GeoMap::GeoNode*> get_nodes() override{
+                return m_crossing_nodes;
+            }
             std::vector<Point2> crossing_utm_xy_points();
             inline std::vector<const GeoMap::GeoNode*> crossing_geo_nodes(){
                 return m_crossing_nodes;
