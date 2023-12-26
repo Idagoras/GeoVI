@@ -153,10 +153,13 @@ namespace geovi {
                 void build_prior_distribution();
                 void build_adversarial_distribution();
                 void build_distribution(Point2& loc);
+                void modify_distribution();
+                void solve_opt(std::vector<double>& variables,double objective_sum);
+                void generate_points_to_cluster(geovi::algorithm::semantic::cluster& cl,std::vector<double>& distances);
                 void domain_disturbance(uint64_t index,Point2& result,Point2& loc);
 
                 DiscreteDistribution m_crossing_distribution;
-                DiscreteDistribution m_location_distribution;
+                std::vector<DiscreteDistribution> m_location_distribution;
                 geovi::geo::map::GeoMap& m_g_map;
                 std::vector<geovi::algorithm::semantic::cluster> m_clusters;
                 geovi::geo::map::MapFeatureFilter& m_filter;

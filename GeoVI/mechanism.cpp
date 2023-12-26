@@ -1,6 +1,8 @@
 #include "GeoVI/mechanism.h"
 #include "GeoVI/algorithm.h"
 #include <sstream>
+#include <algorithm>
+#include <nlopt.hpp>
 
 
 
@@ -125,7 +127,7 @@ GVEM::GVEM(geovi::geo::map::GeoMapVoronoiDiagramAdaptor &adaptor,float epsilon):
 }
 
 void GVEM::pull_data(geovi::algorithm::mechanism::DataStream &stream,
-                     geovi::algorithm::mechanism::Mechanism::once_finished_call_back call_back) {
+                    geovi::algorithm::mechanism::Mechanism::once_finished_call_back call_back) {
     DataParser<Point2> loc_parser;
     if(stream.open()) {
         while (!stream.eof()) {
@@ -205,7 +207,7 @@ GSEM::GSEM(geovi::geo::map::GeoMap &g_map,geovi::geo::map::MapFeatureFilter& fil
 }
 
 void GSEM::pull_data(geovi::algorithm::mechanism::DataStream &stream,
-                     geovi::algorithm::mechanism::Mechanism::once_finished_call_back call_back) {
+                    geovi::algorithm::mechanism::Mechanism::once_finished_call_back call_back) {
     DataParser<Point2> data_parser;
     if(stream.open()){
         while(!stream.eof()){
@@ -227,9 +229,9 @@ void GSEM::build_prior_distribution() {
     auto nodes = m_g_map.getGeoNodes();
     auto sites = m_filter.get_nodes();
     uint64_t valid_node_num = 0;
-    for(auto node : nodes){
+    for(auto& node : nodes){
         if(!node->features.empty()){
-            if(SemanticManager::getInstance()->have_semantic_mass(std::get<1>(node->features[0]),std::get<2>(node->features[0]))){
+            if(SemanticManager::getInstance().have_semantic_mass(std::get<1>(node->features[0]),std::get<2>(node->features[0]))){
                 valid_node_num += 1;
             }
         }
@@ -244,12 +246,94 @@ void GSEM::build_prior_distribution() {
         return true;
     });
     m_crossing_distribution.resize(m_clusters.size());
+    m_location_distribution.resize(m_clusters.size(),DiscreteDistribution());
 }
 
 void GSEM::build_distribution(geovi::Point2 &loc) {
+    Point2 utm_loc = {loc.x,loc.y};
+    int index = 0;
+    double p_mass_sum = 0.0;
     for(auto& cluster : m_clusters){
-
-        double distance = DistanceCalculator::euclidDistance2D(loc,cluster.centroid->utm_xy);
-
+        m_g_map.get_converter().convert(CoordinateSystemType::WGS84,CoordinateSystemType::UTM,utm_loc);
+        double distance = DistanceCalculator::euclidDistance2D(utm_loc,cluster.centroid->utm_xy);
+        double p_mass = std::exp(-(m_epsilon*distance));
+        m_crossing_distribution[index] = p_mass;
+        p_mass_sum += p_mass;
+        int el_index = 0;
+        for(auto& element : cluster.elements){
+            m_location_distribution[index].resize(cluster.elements.size());
+            double el_distance = DistanceCalculator::euclidDistance2D(cluster.centroid->utm_xy,element->utm_xy);
+            m_location_distribution[index][el_index] = std::exp(-(m_epsilon*el_distance));
+            el_index ++ ;
+        }
+        ++ index;
     }
+    for(auto& mass : m_crossing_distribution){
+        mass /= p_mass_sum;
+    }
+}
+
+void GSEM::modify_distribution(){
+    int index = 0;
+    double max_mass = std::numeric_limits<double>::min();
+    for(auto& cluster : m_clusters){
+        double cluster_p_mass_sum = std::accumulate(m_location_distribution[index].begin(),m_location_distribution[index].end(),0);
+        if(cluster_p_mass_sum > max_mass)
+            max_mass = cluster_p_mass_sum;
+        index ++;
+    }
+    index = 0;
+    for(auto& cluster : m_clusters){
+        std::vector<double> additional_distances;
+        double quality_difference = max_mass - std::accumulate(m_location_distribution[index].begin(),m_location_distribution[index].end(),0);
+        auto max_num_it = std::max_element(cluster.elements_num_of_categories.begin(),cluster.elements_num_of_categories.end());
+        int max_num = *max_num_it;
+        int min_cluster_size = max_num * cluster.categories_num;
+        int additional_points_num = min_cluster_size - max_num;
+        if(additional_points_num <= 0){
+            additional_distances.resize(1);
+        }else{
+            additional_distances.resize(additional_points_num);
+        }
+        solve_opt(additional_distances,quality_difference);
+        generate_points_to_cluster(cluster,additional_distances);
+        index ++;
+    }
+}
+
+void GSEM::solve_opt(std::vector<double>& variables,double objective_sum){
+    nlopt::opt opt(nlopt::LN_COBYLA,variables.size());
+    opt.set_min_objective([](const std::vector<double> & variables, std::vector<double> &grad, void *my_func_data)->double{
+        double sum = 0.0;
+        for(auto var : variables){
+            sum += var;
+        }
+        return sum;
+    },nullptr);
+    std::vector<double> constraints = {m_epsilon,objective_sum};
+    opt.add_equality_constraint([](const std::vector<double> & variables, std::vector<double> &grad, void *my_func_data)->double{
+        double sum = 0.0;
+        std::vector<double> cts = *reinterpret_cast<std::vector<double>*>(my_func_data);
+        double epsilon = cts[0];
+        double objective_sum = cts[1];
+        for(auto var : variables){
+            sum += std::exp(-epsilon*var);
+        }
+        return sum - objective_sum;
+    },&constraints);
+    opt.add_inequality_constraint([](const std::vector<double> & variables, std::vector<double> &grad, void *my_func_data)->double{
+        return *std::min_element(variables.begin(),variables.end());
+    },nullptr);
+    double min_distance;
+    nlopt::result result = opt.optimize(variables,min_distance);
+    if(result == nlopt::SUCCESS){
+        std::cout << "优化成功！" << std::endl;
+    }else{
+        std::cout << "优化失败！" << std::endl;
+    }
+    
+}
+
+void GSEM::generate_points_to_cluster(geovi::algorithm::semantic::cluster& cl,std::vector<double>& distances){
+    
 }

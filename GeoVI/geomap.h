@@ -185,6 +185,7 @@ namespace geovi
                 std::vector<double> shortestPathsDistance(double utm_x,double utm_y);
 
                 std::vector<Point2> utm_boundary();
+                geovi::CoordinateSystemConverter& get_converter();
 
 
 
@@ -219,13 +220,13 @@ namespace geovi
         public:
             virtual void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node);
             virtual void way_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoWay* node);
-            virtual std::vector<const GeoMap::GeoNode*> get_nodes();
+            virtual std::vector<const GeoMap::GeoNode*> get_nodes(){};
         };
 
         class CrossingFilter : public MapFeatureFilter {
         public:
             void node_filter(OSMMapFeature feature,const char * feature_value,const GeoMap::GeoNode* node) override;
-            inline std::vector<const GeoMap::GeoNode*> get_nodes() override{
+            virtual std::vector<const GeoMap::GeoNode*> get_nodes() override{
                 return m_crossing_nodes;
             }
             std::vector<Point2> crossing_utm_xy_points();

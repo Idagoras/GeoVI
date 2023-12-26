@@ -1,6 +1,7 @@
 #ifndef GEOVI_WRITER_H
 #define GEOVI_WRITER_H
 #include <string>
+#include <vector>
 
 
 namespace geovi{

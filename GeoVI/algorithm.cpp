@@ -23,7 +23,6 @@ using namespace geovi;
 
 static boost::property_tree::ptree s_pt;
 static boost::property_tree::ptree s_empty_pt;
-bool SemanticManager::is_load = false;
 
 using TagField = enum TagField {
     name = 0,
@@ -78,65 +77,65 @@ int DiscreteDistributionSampler::SampleFromDiscreteDistribution(Weights weights)
 // SemanticCategoryCalculator
 
 std::vector<geovi::geo::map::OSMMapFeature> SemanticCategoryCalculator::semantic_category_frequency_inverse_domain_frequency(geovi::geo::map::GeoMapVoronoiDiagramAdaptor& adaptor,
-                                                                                                                             Point2 loc,double r_small,double r_large,
-                                                                                                                             std::vector<double>& score_out){
-   std::vector<uint64_t> sites_index_in_small_radius_domain = adaptor.get_cell_indexes_in_circle_domain(r_small,loc);
-   std::vector<uint64_t> sites_index_in_large_radius_domain = adaptor.get_cell_indexes_in_circle_domain(r_large,loc);
-   std::vector<const GeoMap::GeoNode *> nodes_in_small_radius;
-   uint64_t small_radius_domain_osm_tag_loc_num = 0;
-   std::vector<double> small_radius_domain_osm_tags_scf(29);
-   for(auto index : sites_index_in_small_radius_domain){
-       auto nodes = adaptor.get_nodes_has_osm_tag_in_cell(index);
-       nodes_in_small_radius.insert(nodes_in_small_radius.end(),nodes.begin(),nodes.end());
-       small_radius_domain_osm_tag_loc_num += adaptor.get_nodes_in_cell_num(index);
-       for(int i =0 ; i< 29 ; i++){
-           small_radius_domain_osm_tags_scf[i] += adaptor.get_nodes_has_specified_osm_tag_in_cell_num(index,OSMMapFeature(i));
-       }
-   }
-   for(int i = 0 ; i < small_radius_domain_osm_tags_scf.size() ; i ++ ){
-       small_radius_domain_osm_tags_scf[i] /= small_radius_domain_osm_tag_loc_num;
-   }
+                                                                                                                            Point2 loc,double r_small,double r_large,
+                                                                                                                            std::vector<double>& score_out){
+    std::vector<uint64_t> sites_index_in_small_radius_domain = adaptor.get_cell_indexes_in_circle_domain(r_small,loc);
+    std::vector<uint64_t> sites_index_in_large_radius_domain = adaptor.get_cell_indexes_in_circle_domain(r_large,loc);
+    std::vector<const GeoMap::GeoNode *> nodes_in_small_radius;
+    uint64_t small_radius_domain_osm_tag_loc_num = 0;
+    std::vector<double> small_radius_domain_osm_tags_scf(29);
+    for(auto index : sites_index_in_small_radius_domain){
+        auto nodes = adaptor.get_nodes_has_osm_tag_in_cell(index);
+        nodes_in_small_radius.insert(nodes_in_small_radius.end(),nodes.begin(),nodes.end());
+        small_radius_domain_osm_tag_loc_num += adaptor.get_nodes_in_cell_num(index);
+        for(int i =0 ; i< 29 ; i++){
+            small_radius_domain_osm_tags_scf[i] += adaptor.get_nodes_has_specified_osm_tag_in_cell_num(index,OSMMapFeature(i));
+        }
+    }
+    for(int i = 0 ; i < small_radius_domain_osm_tags_scf.size() ; i ++ ){
+        small_radius_domain_osm_tags_scf[i] /= small_radius_domain_osm_tag_loc_num;
+    }
 
-   uint64_t  large_radius_domain_num = sites_index_in_large_radius_domain.size();
-   std::vector<double> large_radius_osm_tag_idf(29);
-   for(auto index : sites_index_in_large_radius_domain){
-       for(int i = 0; i < 29 ; i ++ ){
-           int osm_tag_num = adaptor.get_nodes_has_specified_osm_tag_in_cell_num(index,OSMMapFeature(i));
-           if(osm_tag_num > 0)
-               large_radius_osm_tag_idf[i] += 1;
-       }
-   }
-   for(int i = 0; i< large_radius_osm_tag_idf.size() ; i++){
-       large_radius_osm_tag_idf[i] = std::log((large_radius_osm_tag_idf[i]+1)/(large_radius_domain_num+1));
-   }
+    uint64_t  large_radius_domain_num = sites_index_in_large_radius_domain.size();
+    std::vector<double> large_radius_osm_tag_idf(29);
+    for(auto index : sites_index_in_large_radius_domain){
+        for(int i = 0; i < 29 ; i ++ ){
+            int osm_tag_num = adaptor.get_nodes_has_specified_osm_tag_in_cell_num(index,OSMMapFeature(i));
+            if(osm_tag_num > 0)
+                large_radius_osm_tag_idf[i] += 1;
+        }
+    }
+    for(int i = 0; i< large_radius_osm_tag_idf.size() ; i++){
+        large_radius_osm_tag_idf[i] = std::log((large_radius_osm_tag_idf[i]+1)/(large_radius_domain_num+1));
+    }
 
-   std::vector<double> small_radius_scf_idf(29);
-   for(int i = 0; i < 29 ; i++){
+    std::vector<double> small_radius_scf_idf(29);
+    for(int i = 0; i < 29 ; i++){
        small_radius_scf_idf[i] = large_radius_osm_tag_idf[i] * small_radius_domain_osm_tags_scf[i];
-   }
+    }
 
-   std::vector<double> small_radius_osm_tag_node_to_loc_min_distance(29,std::numeric_limits<double>::max());
-   for(auto node : nodes_in_small_radius){
-       double distance = DistanceCalculator::euclidDistance2D(loc,node->utm_xy);
-       for(auto feature_tuple : node->features){
-           int feature = get<TagField::map_feature>(feature_tuple);
-           small_radius_osm_tag_node_to_loc_min_distance[feature] = DistanceCalculator::double_distance_equal(distance,small_radius_osm_tag_node_to_loc_min_distance[feature]) < 0 ? distance : small_radius_osm_tag_node_to_loc_min_distance[feature];
-       }
-   }
-   score_out.resize(29,0);
-   for(int i = 0; i < 29 ; i++){
-       score_out[i] = small_radius_scf_idf[i] / (small_radius_osm_tag_node_to_loc_min_distance[i] + 0.1);
-   }
-   double max_score = std::numeric_limits<double>::min();
-   std::vector<OSMMapFeature> features_category;
-   for(int i = 0; i<29; i++){
-       if(score_out[i] > max_score){
-           features_category.clear();
-           features_category.push_back(OSMMapFeature(i));
-           max_score = score_out[i];
-       }else if(score_out[i] == max_score)
-           features_category.push_back(OSMMapFeature(i));
-   }
+    std::vector<double> small_radius_osm_tag_node_to_loc_min_distance(29,std::numeric_limits<double>::max());
+    for(auto node : nodes_in_small_radius){
+        double distance = DistanceCalculator::euclidDistance2D(loc,node->utm_xy);
+        for(auto feature_tuple : node->features){
+            int feature = get<TagField::map_feature>(feature_tuple);
+            small_radius_osm_tag_node_to_loc_min_distance[feature] = DistanceCalculator::double_distance_equal(distance,small_radius_osm_tag_node_to_loc_min_distance[feature]) < 0 ? distance : small_radius_osm_tag_node_to_loc_min_distance[feature];
+        }
+    }
+    score_out.resize(29,0);
+    for(int i = 0; i < 29 ; i++){
+        score_out[i] = small_radius_scf_idf[i] / (small_radius_osm_tag_node_to_loc_min_distance[i] + 0.1);
+    }
+    double max_score = std::numeric_limits<double>::min();
+    std::vector<OSMMapFeature> features_category;
+    for(int i = 0; i<29; i++){
+        if(score_out[i] > max_score){
+            features_category.clear();
+            features_category.push_back(OSMMapFeature(i));
+            max_score = score_out[i];
+        }else if(score_out[i] == max_score)
+            features_category.push_back(OSMMapFeature(i));
+    }
     return features_category;
 }
 
@@ -205,37 +204,29 @@ void build_tree(const ptree& p_tr,std::vector<std::string>& path,
     path.pop_back();
 }
 
-SemanticManager *SemanticManager::getInstance() {
-    if(SemanticManager::is_load){
-        return m_instance;
-    }else{
-        m_instance=new SemanticManager();
-        return m_instance;
-    }
+SemanticManager& SemanticManager::getInstance() {
+    static SemanticManager instance;
+    return instance;
+
 }
 
-SemanticManager::SemanticManager() {
-
-    if(!SemanticManager::is_load){
-        try{
-            read_xml("../GeoVI/semantic_tree.xml",s_pt);
-            SemanticManager::is_load=true;
-            std::vector<std::string> path;
-            path.push_back("root");
-            build_tree(s_pt.get_child("semantic-tree.root",s_pt),
-                       path,m_value_to_path,m_distance);
-
-            for(auto pair : m_distance){
-                std::cout << " key: " << pair.first << ":distance = " << pair.second << std::endl;
-            }
-        }catch(const ptree_error& e){
-            std::cout << "Error: " << e.what() << std::endl;
+SemanticManager::SemanticManager(){
+    try{
+        read_xml("../GeoVI/semantic_tree.xml",s_pt);
+        std::vector<std::string> path;
+        path.push_back("root");
+        build_tree(s_pt.get_child("semantic-tree.root",s_pt),
+                path,m_value_to_path,m_distance);
+        for(auto pair : m_distance){
+            std::cout << " key: " << pair.first << ":distance = " << pair.second << std::endl;
         }
+    }catch(const ptree_error& e){
+        std::cout << "Error: " << e.what() << std::endl;
     }
 }
 
 int SemanticManager::semantic_distance(geovi::geo::map::OSMMapFeature feature_1, std::string &feature_1_value,
-                                       geovi::geo::map::OSMMapFeature feature_2, std::string &feature_2_value) {
+                                    geovi::geo::map::OSMMapFeature feature_2, std::string &feature_2_value) {
     std::string key_1 = MapFeatureStringConverter::get(feature_1) + ":" +  feature_1_value;
     std::string key_2 = MapFeatureStringConverter::get(feature_2) + ":" + feature_2_value;
     std::string key_distance_1 = "root:" + MapFeatureStringConverter::get(feature_1) + ":";
@@ -338,7 +329,7 @@ void cluster::add_element(const geovi::geo::map::GeoMap::GeoNode* element,
             }
             std::string& category_feature_str = strs[0];
             std::string& category_value_str = strs[1];
-            if(similar_function(feature_str,value_str,category_feature_str,category_value_str,*(SemanticManager::getInstance()))){
+            if(similar_function(feature_str,value_str,category_feature_str,category_value_str,SemanticManager::getInstance())){
                 similar_category = category;
                 new_category = false;
                 break;
@@ -427,11 +418,11 @@ bool check_element_can_be_added_to_the_set(const GeoMap::GeoNode* element,cluste
 
 void ClusterCalculator::calculate(std::vector<cluster> &clusters,
                                   const std::vector<geo::map::GeoMap::GeoNode *> &elements,
-                                  const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
-                                  geovi::geo::map::GeoMap& g_map,
-                                  std::function<bool(std::string& feature_1,std::string& feature_value_1,
-                                                     std::string& feature_2,std::string& feature_value_2,
-                                                     SemanticManager& sm)> similar_function) {
+                                const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
+                                geovi::geo::map::GeoMap& g_map,
+                                std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                                    std::string& feature_2,std::string& feature_value_2,
+                                                    SemanticManager& sm)> similar_function) {
     std::vector<u_int8_t> elements_visited(elements.size(),0);
     std::map<int64_t,u_int8_t> centroids_visited;
     for(auto& centroid : centroids){
@@ -459,7 +450,7 @@ void ClusterCalculator::calculate(std::vector<cluster> &clusters,
                     if(!point->features.empty()){
                         OSMMapFeature feature = std::get<TagField::map_feature>(point->features[0]);
                         std::string feature_value = std::get<TagField::feature_value>(point->features[0]);
-                        if(!SemanticManager::getInstance()->have_semantic_mass(feature,feature_value)){
+                        if(!SemanticManager::getInstance().have_semantic_mass(feature,feature_value)){
                             if(elements_visited[point->index] == 0){
                                 if(check_element_can_be_added_to_the_set(point,cl,m_cluster_categories_num,m_cluster_min_size,m_cluster_expected_size)){
                                     cl.add_element(point,similar_function);

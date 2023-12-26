@@ -660,6 +660,10 @@ std::vector<Point2> GeoMap::utm_boundary(){
     };
 }
 
+CoordinateSystemConverter& GeoMap::get_converter(){
+    return *s_coordinate_system_converter;
+}
+
 using Highway_value = enum highway_value {
     bus_stop = 0,
     crossing ,

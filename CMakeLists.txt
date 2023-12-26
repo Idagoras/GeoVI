@@ -35,8 +35,13 @@ endif()
 # proj
 find_package(PROJ REQUIRED CONFIG)
 
+# Nlopt
+find_package(NLopt REQUIRED CONFIG)
+
 
 include_directories(
+    ${NLOPT_INCLUDE_DIRS}
+    ${CMAKE_SOURCE_DIR}/include
     ${Boost_INCLUDE_DIRS}
     ${OSMIUM_INCLUDE_DIRS}
     ${EXPAT_INCLUDE_DIRS}
@@ -57,4 +62,5 @@ add_executable(Test_Voronoi test/test_voronoi.cc)
 #target_link_libraries(Test geovi  ${OSMIUM_XML_LIBRARIES} PROJ::proj)
 #target_link_libraries(Test_Converter PROJ::proj geovi)
 target_link_libraries(Test_Voronoi geovi PROJ::proj)
-target_link_libraries(Test_Map geovi ${OSMIUM_XML_LIBRARIES} PROJ::proj)
+target_link_directories(Test_Map PRIVATE ${CMAKE_SOURCE_DIR}/lib ${NLOPT_LIBRARY_DIRS})
+target_link_libraries(Test_Map geovi ${OSMIUM_XML_LIBRARIES} PROJ::proj lpsolve55 NLOPT_LIBRARIES)

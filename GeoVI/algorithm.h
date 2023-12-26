@@ -60,20 +60,17 @@ namespace geovi{
 
                 class SemanticManager{
                 public:
-                    static SemanticManager* getInstance();
+                    static SemanticManager& getInstance();
+                    SemanticManager(const SemanticManager&) = delete;
+                    SemanticManager& operator=(const SemanticManager&) =delete;
                     int semantic_distance(geovi::geo::map::OSMMapFeature feature_1,std::string& feature_1_value,
-                                          geovi::geo::map::OSMMapFeature feature_2,std::string& feature_2_value);
+                                        geovi::geo::map::OSMMapFeature feature_2,std::string& feature_2_value);
                     bool have_semantic_mass(geovi::geo::map::OSMMapFeature feature,std::string feature_value);
-                    inline void set_semantic_similar_threshold(int threshold_distance){
-                        m_threshold_distance = threshold_distance;
-                    }
-                private:
-                    static SemanticManager* m_instance;
+                protected:
                     SemanticManager();
-                    static bool is_load ;
+                private:
                     std::map<std::string,std::vector<std::string>> m_value_to_path;
                     std::map<std::string ,int> m_distance;
-                    int m_threshold_distance = 2;
                 };
 
                 struct cluster{
@@ -83,7 +80,7 @@ namespace geovi{
                     void add_element(const geovi::geo::map::GeoMap::GeoNode* element);
 
                     void add_element(const geovi::geo::map::GeoMap::GeoNode* element,
-                                     std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                    std::function<bool(std::string& feature_1,std::string& feature_value_1,
                                                         std::string& feature_2,std::string& feature_value_2,
                                                         SemanticManager& sm)> similar_function);
 
@@ -101,12 +98,12 @@ namespace geovi{
                 public:
                     ClusterCalculator(int cluster_min_size,int cluster_expected_size,int cluster_categories_num);
                     void calculate(std::vector<cluster>& clusters,
-                                   const std::vector<geo::map::GeoMap::GeoNode*>& elements,
-                                   const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
-                                   geovi::geo::map::GeoMap& g_map,
-                                   std::function<bool(std::string& feature_1,std::string& feature_value_1,
-                                                      std::string& feature_2,std::string& feature_value_2,
-                                                      SemanticManager& sm)> similar_function);
+                                    const std::vector<geo::map::GeoMap::GeoNode*>& elements,
+                                    const std::vector<const geo::map::GeoMap::GeoNode*>& centroids,
+                                    geovi::geo::map::GeoMap& g_map,
+                                    std::function<bool(std::string& feature_1,std::string& feature_value_1,
+                                                        std::string& feature_2,std::string& feature_value_2,
+                                                        SemanticManager& sm)> similar_function);
                 private:
                     int m_cluster_min_size;
                     int m_cluster_expected_size;
