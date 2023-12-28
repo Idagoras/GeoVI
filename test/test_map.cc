@@ -41,9 +41,23 @@ void print_wgs84_point(const Point2& wgs84_point){
 
 
 int main(){
-    SemanticManager& sm = SemanticManager::getInstance();
 
+    std::shared_ptr<CrossingFilter> filter = make_shared<CrossingFilter>();
+    unique_ptr<OSMReader> reader = make_unique<OSMReader>("Paris_test.osm");
+    // minlat="48.8594200" minlon="2.3551100" maxlat="48.8605900" maxlon="2.3568400"
+    shared_ptr<GeoMap> geo_map = std::make_shared<GeoMap>(*reader,filter,48.8605900,2.3568400,48.8594200,2.3551100);
 
+    // 打印顶点数量
+    std::cout << "map has " << geo_map->numOfNodes() << " nodes " << std::endl << std::endl;
+
+    // 打印边的数量
+    std::cout << "map has " << geo_map->numOfWays() << " ways" << std::endl << std::endl;
+
+    auto sites = filter ->crossing_geo_nodes();
+    auto distances = geo_map->shortestPathsDistance(sites.at(0)->utm_xy.x,sites.at(0)->utm_xy.y);
+    for(auto site : sites){
+        cout << "site 0 -> site " << site->index << " distance :" << distances.at(site->index) << "m"<< std::endl;
+    }
     /*
     //writer.write_xml("output.xml");
 

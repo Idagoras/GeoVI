@@ -555,10 +555,13 @@ void GeoMap::m_add_way_to_graph(GeoWay& way){
     auto sr_vertex_descriptor = vertex(sr_index, m_graph);
     auto tg_vertex_descriptor = vertex(tg_index, m_graph);
     EdgeDescriptor e = add_edge(sr_vertex_descriptor, tg_vertex_descriptor, m_graph).first;
+    EdgeDescriptor e_reverse = add_edge(tg_vertex_descriptor, sr_vertex_descriptor, m_graph).first;
     auto weight_map = get(edge_weight, m_graph);
     weight_map[e] = way.capacity;
+    weight_map[e_reverse] = way.capacity;
     auto name_map = get(edge_name, m_graph);
     name_map[e] = way.name;
+    name_map[e_reverse] = way.name;
 
 }
 

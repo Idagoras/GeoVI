@@ -2,6 +2,7 @@
 #include "GeoVI/algorithm.h"
 #include <sstream>
 #include <algorithm>
+#include <numeric>
 #include <nlopt.hpp>
 
 
@@ -268,6 +269,8 @@ void GSEM::build_distribution(geovi::Point2 &loc) {
         }
         ++ index;
     }
+
+    *std::max_element(m_crossing_distribution.begin(),m_crossing_distribution.end()) = 1;
     for(auto& mass : m_crossing_distribution){
         mass /= p_mass_sum;
     }
